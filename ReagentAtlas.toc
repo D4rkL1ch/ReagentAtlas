@@ -1,0 +1,12 @@
+## Interface: 16000
+## Title: Reagent Atlas
+## Notes: Shows which recipes use an item, who can craft them, and whether it is worth keeping.
+## Author: TwinUnicorns
+## Version: 0.1.0
+## SavedVariables: ReagentAtlasDB
+## OptionalDeps: Auctionator
+## Category: Professions
+
+# Load order: Data -> Core -> Modules -> UI
+
+Core.lua

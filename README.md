@@ -1,0 +1,48 @@
+<p align="center"><img src="docs/icon.png" width="128" alt="Reagent Atlas icon"></p>
+
+# Reagent Atlas
+
+A World of Warcraft: **Forever** addon that tells you whether the stuff you pick up is worth keeping.
+
+Hover any item in your bags and Reagent Atlas shows:
+
+- **Which profession recipes use it**, across all professions, with the required skill level.
+- **Who can craft them**: recipes known by your current character are highlighted green, recipes known by one of your alts blue (with the alt's name).
+- **A predicted value tier**: *Vendor*, *Useful*, *Valuable* or *Keep!*, estimated from recipe data and refined with Auctionator prices when available.
+- **How many you own**, across bags and banks of all your characters.
+
+A browser window (`/ratlas`) lists every reagent in the game with filters for profession, tier, owned and craftable, and optional pips mark valuable items right in your bags.
+
+Reagent Atlas only displays information. It never loots, sells, posts or scans for you.
+
+## Status
+
+Pre-alpha, in development. Targets the WoW Forever client 1.60.x (modern addon API).
+
+## Repository layout
+
+| Path | What |
+| --- | --- |
+| `ReagentAtlas.toc`, `Core.lua`, `Data/`, `Modules/`, `UI/` | The addon itself (what gets deployed) |
+| `tools/` | Data builder (`build_data.py`), deploy and setup scripts. Not shipped. |
+| `docs/` | Icon and design references |
+| `SPEC.md` | Full implementation spec |
+| `CLAUDE.md` | Instructions for AI coding agents working on this repo |
+
+## Development
+
+1. Clone the repo anywhere (not inside the WoW folder).
+2. Open it in VS Code with the **Lua** (LuaLS) and **WoW API** extensions.
+3. Deploy to the game with `tools/deploy.ps1 -GamePath <Forever client folder>` (or set `REAGENTATLAS_GAME_PATH` once), which copies only the addon files into `Interface\AddOns\ReagentAtlas`.
+4. In game: `/reload`, and keep BugSack/BugGrabber installed to catch errors.
+5. Offline tests with stubbed WoW APIs: `tools/tests/run.ps1` (uses the LuaLS binary from the VS Code extension as the interpreter).
+
+Recipe data in `Data/` is generated from the game client's DB2 tables with `tools/build_data.py`; don't edit it by hand. See `SPEC.md` → *Data sourcing*.
+
+## Optional dependencies
+
+- [Auctionator](https://www.curseforge.com/wow/addons/auctionator): adds AH prices to the value tier.
+
+## License
+
+All rights reserved © TwinUnicorns (for now).

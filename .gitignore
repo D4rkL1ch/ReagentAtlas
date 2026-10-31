@@ -1,0 +1,20 @@
+# DB2 CSV exports (large, regenerated per build)
+tools/db2/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Build output
+dist/
+*.zip
+
+# Editors / OS
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
