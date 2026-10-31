@@ -195,24 +195,14 @@ end
 
 -- Diagnostics ---------------------------------------------------------------
 
-local function HasAuctionatorAPI()
-	return Auctionator ~= nil and Auctionator.API ~= nil and Auctionator.API.v1 ~= nil
-end
-
 local function PrintStatus()
 	local gameVersion, build, _, tocVersion = GetBuildInfo()
 	ns:Print(("v%s"):format(ns.version))
 	ns:Print(("client %s (build %s), interface %s"):format(
 		tostring(gameVersion), tostring(build), tostring(tocVersion)))
 	ns:Print(("recipe data: build %s"):format(tostring(ns.DATA_BUILD)))
-
-	local auctionatorLoaded = C_AddOns and C_AddOns.IsAddOnLoaded and C_AddOns.IsAddOnLoaded("Auctionator")
-	if HasAuctionatorAPI() then
-		ns:Print("Auctionator API v1: found")
-	elseif auctionatorLoaded then
-		ns:Print("Auctionator API v1: |cffff5555missing|r (Auctionator is loaded)")
-	else
-		ns:Print("Auctionator API v1: not loaded")
+	if ns.Pricing then
+		ns:Print("prices: " .. ns.Pricing:StatusText())
 	end
 end
 

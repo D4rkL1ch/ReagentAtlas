@@ -80,12 +80,12 @@ test("/ratlas prints version, interface and Auctionator status", function()
 	contains(out, "v0.1.0", "version")
 	contains(out, "interface 16000", "interface")
 	contains(out, "recipe data: build", "data build")
-	contains(out, "Auctionator API v1: not loaded", "auctionator status")
+	contains(out, "prices: none (Auctionator not loaded)", "auctionator status")
 
 	stubs.printed = {}
 	_G.Auctionator = { API = { v1 = {} } }
 	stubs.slash("/ratlas", "version")
-	contains(table.concat(stubs.printed, "\n"), "Auctionator API v1: found", "found")
+	contains(table.concat(stubs.printed, "\n"), "prices: Auctionator API v1", "found")
 end)
 
 test("unknown command gives a hint", function()

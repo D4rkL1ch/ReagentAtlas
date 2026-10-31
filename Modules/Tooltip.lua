@@ -65,8 +65,19 @@ end
 
 -- Rendering -----------------------------------------------------------------
 
+-- "Reagent Atlas: Valuable · AH 1s 20c (3 days old)"; the tier includes the
+-- auction price adjustment when Auctionator has a fresh price.
 local function AddTierLine(tooltip, info)
-	tooltip:AddLine(ns.Valuation:ColorTier(info.tier, "Reagent Atlas: " .. ns.Valuation:GetTierName(info.tier)))
+	local tier, price, age = ns.Valuation:GetTier(info.itemID)
+	local text = ns.Valuation:ColorTier(tier, "Reagent Atlas: " .. ns.Valuation:GetTierName(tier))
+	if price then
+		local priceText = "· AH " .. ns.Pricing:FormatMoney(price)
+		if age and age >= 1 then
+			priceText = priceText .. (age == 1 and " (1 day old)" or (" (%d days old)"):format(age))
+		end
+		text = text .. " " .. Color(priceText, COLOR_TEXT)
+	end
+	tooltip:AddLine(text)
 end
 
 -- Your own class gets a short green note; otherwise name the classes.

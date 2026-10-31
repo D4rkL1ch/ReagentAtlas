@@ -14,6 +14,9 @@ Valuation.WEIGHTS = {
 	ownQuality = { [2] = 10, [3] = 15, [4] = 20 }, -- the reagent's own quality (4 = epic and up)
 	spellMinTier = 2,     -- spell reagents are at least Useful
 	vendorMaxTier = 2,    -- vendor-sold reagents are capped at Useful
+	priceRaiseFactor = 5, -- a fresh AH price this many times the vendor price...
+	priceRaiseMin = 10000, -- ...and at least this much (copper) raises the tier one step
+	priceCapTier = 2,     -- an AH price below the vendor price caps the tier at Useful
 }
 
 local DEFAULT_MAX_SKILL = 300
@@ -145,6 +148,34 @@ end
 
 function Valuation:ClearCache()
 	wipe(cache)
+end
+
+-- The data tier adjusted by an auction price (copper, or nil). Vendor-sold
+-- reagents stay capped: their AH price only reflects the vendor markup.
+function Valuation:AdjustTier(info, price)
+	local tier = info.tier
+	local sell = info.sellPrice
+	if not price or not sell or sell <= 0 then return tier end
+	local W = self.WEIGHTS
+	if price < sell then
+		return math.min(tier, W.priceCapTier)
+	end
+	if price >= sell * W.priceRaiseFactor and price >= W.priceRaiseMin then
+		tier = math.min(tier + 1, self.TIER_KEEP)
+		if info.vendor then
+			tier = math.min(tier, W.vendorMaxTier)
+		end
+	end
+	return tier
+end
+
+-- Final tier of an item, plus the auction price (copper) and its age in days
+-- that went into it. Returns nil for items no recipe or spell uses.
+function Valuation:GetTier(itemID)
+	local info = self:GetInfo(itemID)
+	if not info then return nil end
+	local price, age = ns.Pricing:GetPrice(itemID)
+	return self:AdjustTier(info, price), price, age
 end
 
 function Valuation:GetTierName(tier)

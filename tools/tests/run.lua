@@ -74,7 +74,7 @@ function T.useFixture(ns)
 	ns.DATA_BUILD = "99999"
 end
 
-for _, file in ipairs({ "test_core.lua", "test_valuation.lua", "test_tooltip.lua", "test_characters.lua", "test_data.lua" }) do
+for _, file in ipairs({ "test_core.lua", "test_valuation.lua", "test_tooltip.lua", "test_characters.lua", "test_pricing.lua", "test_data.lua" }) do
 	assert(loadfile(testDir .. file))(T)
 end
 
