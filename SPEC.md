@@ -101,10 +101,11 @@ ReagentAtlasDB = {
       bank = { [itemID] = count },
     },
   },
+  account = { bank = { [itemID] = count } },  -- warband bank, shared by all characters
 }
 ```
 
-Keys are `Name-Realm`. Only counts are stored, never item links, to keep the file small. A migration function runs on `version` mismatch.
+Keys are `Name-Realm`. Only counts are stored, never item links, and only for items in `ns.Reagents`, to keep the file small. `/ratlas forget Name-Realm` removes a deleted character. A migration function runs on `version` mismatch.
 
 ## Data sourcing
 
@@ -125,7 +126,7 @@ The in-game API only lists recipes a character knows, so the full recipe databas
 
 Two hand-maintained lists cover what the DB2 data lacks: `tools/spell_reagents.csv` (overrides for the spell reagent mapping) and `tools/vendor_reagents.csv` (reagents NPC vendors sell; vendor inventories are server data).
 
-**Fallback / validation:** `Professions.lua` also records recipe data seen in-game when a profession window is open. A debug command `/ratlas diff` compares it against the generated data and reports mismatches.
+**Fallback / validation:** `Professions.lua` notes learned recipes seen in an open profession window that the generated data lacks. `/ratlas diff` lists them (session only; reagent lists are not compared yet).
 
 ## Value tier & Auctionator
 
@@ -161,7 +162,7 @@ The first draft (skill / 300 × 40, min(count, 10) × 2, +10/+20 for output qual
 
 ## Key WoW APIs and events
 
-Forever uses the modern retail-style API. Names below are from the retail API; confirm each with the LuaLS/Ketho annotations and in-game before relying on it.
+Forever uses the modern retail-style API. Names below are from the retail API; confirm each with the LuaLS/Ketho annotations and in-game before relying on it. Forever's own UI source and generated API docs are mirrored in the `forever` branch of github.com/Gethe/wow-ui-source; check there first for what Forever actually has.
 
 | Area | API / event | Use |
 | --- | --- | --- |
@@ -169,8 +170,9 @@ Forever uses the modern retail-style API. Names below are from the retail API; c
 | Tooltip | `MODIFIER_STATE_CHANGED` | Refresh the tooltip when Shift is pressed or released. |
 | Bags | `C_Container.GetContainerNumSlots`, `C_Container.GetContainerItemInfo` | Count items; info table has `itemID` and `stackCount`. |
 | Bags | `BAG_UPDATE_DELAYED` | Rescan bags (debounced). |
-| Bank | `BANKFRAME_OPENED`, `PLAYERBANKSLOTS_CHANGED` | Bank is only readable while open; scan then and cache. Confirm Forever's bank container IDs (retail uses bank tabs). |
-| Professions | `TRADE_SKILL_LIST_UPDATE`, `C_TradeSkillUI.GetAllRecipeIDs`, `C_TradeSkillUI.GetRecipeInfo` | Record learned recipes when the window is open. |
+| Bank | `BANKFRAME_OPENED/CLOSED`, `PLAYERBANKSLOTS_CHANGED`, `PLAYER_ACCOUNT_BANK_TAB_SLOTS_CHANGED`, `C_Bank.FetchPurchasedBankTabIDs(Enum.BankType.Character/Account)`, `C_Bank.CanViewBank` | Bank is only readable while open; scan then and cache. Forever uses retail-style tabs: character tabs are bag IDs 6-14, warband tabs 15-23. |
+| Professions | `GetProfessions`, `GetProfessionInfo`, `SKILL_LINES_CHANGED` | Profession ranks at login, no window needed. Forever returns prof1, prof2, first aid, fishing, cooking. |
+| Professions | `TRADE_SKILL_SHOW`, `TRADE_SKILL_LIST_UPDATE`, `C_TradeSkillUI.GetAllRecipeIDs`, `C_TradeSkillUI.GetRecipeInfo` (`learned`), `IsTradeSkillLinked/Guild/NPCCrafting` | Record learned recipes when your own window is open (debounced). `NEW_RECIPE_LEARNED` adds single recipes without the window. |
 | Professions | `C_TradeSkillUI.GetBaseProfessionInfo` | Profession skill line and rank. |
 | Items | `C_Item.GetItemInfo`, `Item:CreateFromItemID():ContinueOnItemLoad` | Names, icons, quality; handle uncached items async. |
 | Character | `UnitName`, `GetNormalizedRealmName`, `UnitClass` | Build the `Name-Realm` key. |
@@ -195,7 +197,7 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 
 - [x] Does wow.tools.local / DBC2CSV read the Forever client cleanly (WoWDBDefs coverage for the Forever build)? Yes: wago.tools serves Forever (`wowf`, 1.60.1.70707) tables, used by `tools/fetch_db2.py`.
 - [ ] Does the Forever build of Auctionator keep `Auctionator.API.v1`?
-- [ ] Forever bank layout: classic bank bags or retail-style bank tabs? Decides Inventory.lua bank scanning.
+- [x] Forever bank layout: classic bank bags or retail-style bank tabs? Retail-style tabs (Enum.BagIndex 6-14 character, 15-23 warband) plus a reagent bag (5), per the Forever 1.60.1 API docs. Confirm in-game that the warband bank is enabled.
 - [x] Spell reagents: which classes and spells use reagents in Forever? Derived from DB2 (`SpellReagents` + `SpellClassOptions` + class skill lines): 23 items in 1.60.1. Gaps (e.g. Levitate) fixed in `tools/spell_reagents.csv`.
 - [ ] Vendor-sold reagents: `tools/vendor_reagents.csv` (58 items) is from Classic knowledge; verify against Forever vendors after launch.
 - [ ] Heuristic weights are guesses until the live economy settles after launch; plan a tuning pass a few weeks in.

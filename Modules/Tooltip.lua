@@ -4,12 +4,17 @@ local Tooltip = ns:RegisterModule("Tooltip", {})
 
 local MAX_COLLAPSED_PROFS = 2   -- professions named on the "Used in" line
 local MAX_EXPANDED_RECIPES = 30 -- recipe lines in the Shift view before "and N more"
+local MAX_NAMES = 3             -- character names listed before "+N"
+
+-- The default font has no check mark glyph; use the ready-check texture.
+local CHECK = "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t "
 
 local COLOR_TEXT = "ffe8e2d0"
 local COLOR_HINT = "ff9d9d9d"
 local COLOR_HEADER = "ffffd100"
 local COLOR_UNKNOWN = "ff9d9d9d"
 local COLOR_YOURS = "ff1eff00"
+local COLOR_ALT = "ff66b3ff"
 
 local function Color(text, color)
 	return WrapTextInColorCode(text, color)
@@ -87,6 +92,56 @@ local function AddVendorLine(tooltip, info)
 	end
 end
 
+-- "you, Brewdin, Frostia +2": the current character first, at most
+-- MAX_NAMES names.
+local function NameList(isMe, keys)
+	local names = {}
+	if isMe then names[1] = "you" end
+	for _, key in ipairs(keys) do
+		if #names >= MAX_NAMES then
+			return table.concat(names, ", ") .. (" +%d"):format(#keys + (isMe and 1 or 0) - MAX_NAMES)
+		end
+		names[#names + 1] = ns:CharDisplayName(key)
+	end
+	return table.concat(names, ", ")
+end
+
+-- Recipes using the item that any of your characters can craft.
+local function AddCraftLine(tooltip, info)
+	local count, isMe, altSet = 0, false, {}
+	for _, recipeID in ipairs(ns.Reagents[info.itemID].r) do
+		local mine, alts = ns.Professions:GetKnownBy(recipeID)
+		if mine or #alts > 0 then
+			count = count + 1
+			isMe = isMe or mine
+			for _, key in ipairs(alts) do altSet[key] = true end
+		end
+	end
+	if count == 0 then return end
+	local alts = {}
+	for key in pairs(altSet) do alts[#alts + 1] = key end
+	table.sort(alts)
+	local who = NameList(isMe, alts)
+	if isMe then
+		tooltip:AddLine(Color(("You can craft %d (%s)"):format(count, who), COLOR_YOURS))
+	else
+		tooltip:AddLine(Color(("Your alts can craft %d (%s)"):format(count, who), COLOR_ALT))
+	end
+end
+
+local function AddOwnedLine(tooltip, info)
+	local total, holders, warband = ns.Inventory:GetCounts(info.itemID)
+	if total == 0 then return end
+	local text = ("Owned: %d"):format(total)
+	if #holders > 1 then
+		text = text .. (" across %d characters"):format(#holders)
+	end
+	if warband > 0 then
+		text = text .. (#holders > 0 and " + warband bank" or " (warband bank)")
+	end
+	tooltip:AddLine(Color(text, COLOR_TEXT))
+end
+
 local function AddCollapsed(tooltip, info)
 	AddTierLine(tooltip, info)
 	if info.recipeCount > 0 then
@@ -101,11 +156,44 @@ local function AddCollapsed(tooltip, info)
 		local noun = info.recipeCount == 1 and "recipe" or "recipes"
 		tooltip:AddLine(Color(("Used in %d %s · %s"):format(info.recipeCount, noun, profText), COLOR_TEXT))
 		tooltip:AddLine(Color(("Highest: %s %d"):format(Tooltip:GetProfessionName(info.topProf), info.topSkill), COLOR_TEXT))
+		AddCraftLine(tooltip, info)
 	end
 	AddSpellLine(tooltip, info)
 	AddVendorLine(tooltip, info)
+	AddOwnedLine(tooltip, info)
 	if info.recipeCount > 0 then
 		tooltip:AddLine(Color("Hold Shift for all recipes", COLOR_HINT))
+	end
+end
+
+-- Green with a check if you know the recipe, blue with the alt's name if an
+-- alt does, grey otherwise.
+local function AddRecipeLine(tooltip, recipeID)
+	local label = ("%s (%d)"):format(Tooltip:GetRecipeName(recipeID), ns.Recipes[recipeID].skill)
+	local isMe, alts = ns.Professions:GetKnownBy(recipeID)
+	if isMe then
+		tooltip:AddDoubleLine(Color(CHECK .. label, COLOR_YOURS), Color(NameList(true, alts), COLOR_YOURS))
+	elseif #alts > 0 then
+		tooltip:AddDoubleLine(Color(CHECK .. label, COLOR_ALT), Color(NameList(false, alts), COLOR_ALT))
+	else
+		tooltip:AddLine(Color("· " .. label, COLOR_UNKNOWN))
+	end
+end
+
+-- Per-character owned counts, as in the mockup: "Brewdin    Bags 27 · Bank 20".
+local function AddOwnedBreakdown(tooltip, info)
+	local total, holders, warband = ns.Inventory:GetCounts(info.itemID)
+	if total == 0 then return end
+	tooltip:AddLine(" ")
+	for _, h in ipairs(holders) do
+		local where = {}
+		if h.bags > 0 then where[#where + 1] = "Bags " .. h.bags end
+		if h.bank > 0 then where[#where + 1] = "Bank " .. h.bank end
+		local name = h.isMe and "You" or ns:CharDisplayName(h.key)
+		tooltip:AddDoubleLine(Color(name, COLOR_TEXT), Color(table.concat(where, " · "), COLOR_TEXT))
+	end
+	if warband > 0 then
+		tooltip:AddDoubleLine(Color("Warband bank", COLOR_TEXT), Color(tostring(warband), COLOR_TEXT))
 	end
 end
 
@@ -132,8 +220,7 @@ local function AddExpanded(tooltip, info)
 		tooltip:AddLine(Color(Tooltip:GetProfessionName(prof), COLOR_HEADER))
 		for _, recipeID in ipairs(byProf[prof]) do
 			if shown >= MAX_EXPANDED_RECIPES then break end
-			local text = ("· %s (%d)"):format(Tooltip:GetRecipeName(recipeID), ns.Recipes[recipeID].skill)
-			tooltip:AddLine(Color(text, COLOR_UNKNOWN))
+			AddRecipeLine(tooltip, recipeID)
 			shown = shown + 1
 		end
 	end
@@ -143,6 +230,7 @@ local function AddExpanded(tooltip, info)
 
 	AddSpellLine(tooltip, info)
 	AddVendorLine(tooltip, info)
+	AddOwnedBreakdown(tooltip, info)
 end
 
 -- Builds the Reagent Atlas section for an item. Separate from the hook so it

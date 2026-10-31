@@ -15,4 +15,6 @@ Data\Reagents.lua
 Core.lua
 
 Modules\Valuation.lua
+Modules\Professions.lua
+Modules\Inventory.lua
 Modules\Tooltip.lua

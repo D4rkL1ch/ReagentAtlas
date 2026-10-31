@@ -53,6 +53,27 @@ function ns:UnregisterEvent(event, handler)
 	end
 end
 
+-- Addon-internal messages (e.g. "CHAR_DATA_CHANGED"). Kept apart from game
+-- events because RegisterEvent errors on names the client doesn't know.
+local messageHandlers = {}
+
+function ns:RegisterMessage(message, handler)
+	local list = messageHandlers[message]
+	if not list then
+		list = {}
+		messageHandlers[message] = list
+	end
+	list[#list + 1] = handler
+end
+
+function ns:Fire(message, ...)
+	local list = messageHandlers[message]
+	if not list then return end
+	for i = 1, #list do
+		list[i](message, ...)
+	end
+end
+
 -- Module registry -----------------------------------------------------------
 -- Modules call ns:RegisterModule("Name", mod) at file load. OnInit runs after
 -- ADDON_LOADED (SavedVariables ready), OnLogin after PLAYER_LOGIN.
@@ -130,10 +151,11 @@ local function InitDB()
 	ApplyDefaults(db.settings, DEFAULT_SETTINGS)
 	db.ui = db.ui or {}
 	db.chars = db.chars or {}
+	db.account = db.account or {}   -- account-wide data, e.g. the warband bank
 	ns.db = db
 end
 
--- Current character ---------------------------------------------------------
+-- Characters ----------------------------------------------------------------
 
 -- "Name-Realm" key used in ReagentAtlasDB.chars. Realm may be nil very early
 -- in the loading process, so only call this from PLAYER_LOGIN onwards.
@@ -142,6 +164,33 @@ function ns:GetCharKey()
 	local realm = GetNormalizedRealmName()
 	if not name or not realm then return nil end
 	return name .. "-" .. realm
+end
+
+-- The current character's record in ReagentAtlasDB.chars, created on first
+-- use. Returns nil before the character key is known.
+function ns:GetCharData()
+	local key = self:GetCharKey()
+	if not key then return nil end
+	local char = self.db.chars[key]
+	if not char then
+		char = { profs = {}, bags = {}, bank = {} }
+		self.db.chars[key] = char
+	end
+	local _, class = UnitClass("player")
+	char.class = class
+	char.faction = UnitFactionGroup("player")
+	char.lastSeen = GetServerTime()
+	return char, key
+end
+
+-- Character name for display: "Name" on the current realm, else "Name-Realm".
+function ns:CharDisplayName(key)
+	local name, realm = key:match("^(.-)%-(.+)$")
+	if not name then return key end
+	if realm == GetNormalizedRealmName() then
+		return name
+	end
+	return key
 end
 
 -- Diagnostics ---------------------------------------------------------------
@@ -170,6 +219,13 @@ end
 -- Slash command -------------------------------------------------------------
 
 local commands = {}
+local commandHelp = {}
+
+-- Modules add subcommands here; fn receives the rest of the line.
+function ns:RegisterCommand(name, usage, fn)
+	commands[name] = fn
+	commandHelp[#commandHelp + 1] = usage
+end
 
 commands[""] = PrintStatus
 commands.version = PrintStatus
@@ -177,8 +233,26 @@ commands.version = PrintStatus
 commands.help = function()
 	ns:Print("commands:")
 	print("  /ratlas - version and client info")
+	for _, usage in ipairs(commandHelp) do
+		print("  /ratlas " .. usage)
+	end
 	print("  /ratlas help - this list")
 end
+
+ns:RegisterCommand("forget", "forget Name-Realm - remove a deleted character's data", function(arg)
+	local key = strtrim(arg or "")
+	if key == "" then
+		ns:Print("usage: /ratlas forget Name-Realm")
+	elseif key == ns:GetCharKey() then
+		ns:Print("can't forget the character you're logged in on.")
+	elseif ns.db.chars[key] then
+		ns.db.chars[key] = nil
+		ns:Fire("CHAR_DATA_CHANGED")
+		ns:Print(("forgot %s."):format(key))
+	else
+		ns:Print(("no data for '%s'. Keys are case-sensitive, e.g. Thrall-Stormrage."):format(key))
+	end
+end)
 
 SLASH_REAGENTATLAS1 = "/ratlas"
 SlashCmdList.REAGENTATLAS = function(msg)

@@ -58,7 +58,7 @@ function M.newTooltip()
 	function tt:Text()
 		local out = {}
 		for i, line in ipairs(self.lines) do
-			out[i] = line:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+			out[i] = line:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T[^|]*|t ", "[v] ")
 		end
 		return table.concat(out, "\n")
 	end
@@ -72,9 +72,25 @@ function M.reset()
 	M.errors = {}
 	M.shift = false
 	M.classToken = "WARRIOR"
+	M.timers = {}
+	-- Character state, changed by tests.
+	M.professions = {}       -- array of { skillLine, rank, maxRank } in GetProfessions order
+	M.tradeSkill = nil       -- open window: { profID, skillLevel, recipes = { [id] = learned }, linked, filteredOnly }
+	M.containers = {}        -- [bagID] = array of { itemID, count } (nil = empty slot)
+	M.bankTabs = { [0] = { 6, 7 }, [2] = { 15 } }
+	M.accountBankViewable = true
+	M.noBankAPI = false
 	SlashCmdList = {}
 	Auctionator = nil
 	ReagentAtlasDB = nil
+end
+
+-- Run pending C_Timer callbacks (including ones they schedule).
+function M.runTimers()
+	while #M.timers > 0 do
+		local fn = table.remove(M.timers, 1)
+		fn()
+	end
 end
 
 -- Globals -------------------------------------------------------------------
@@ -136,5 +152,65 @@ TooltipDataProcessor = {
 		table.insert(tooltipPostCalls[kind], fn)
 	end,
 }
+
+
+C_Timer = { After = function(_, fn) M.timers[#M.timers + 1] = fn end }
+function GetServerTime() return 1800000000 end
+function UnitFactionGroup() return "Horde" end
+
+-- Professions: GetProfessions returns indices into M.professions (5 slots).
+function GetProfessions()
+	local p = M.professions
+	return p[1] and 1, p[2] and 2, p[3] and 3, p[4] and 4, p[5] and 5
+end
+function GetProfessionInfo(index)
+	local p = M.professions[index]
+	return "Prof", 0, p.rank, p.maxRank, 0, 0, p.skillLine
+end
+
+C_TradeSkillUI = {
+	IsTradeSkillReady = function() return M.tradeSkill ~= nil end,
+	IsTradeSkillLinked = function() return M.tradeSkill and M.tradeSkill.linked or false end,
+	IsTradeSkillGuild = function() return false end,
+	IsTradeSkillGuildMember = function() return false end,
+	IsNPCCrafting = function() return false end,
+	GetBaseProfessionInfo = function()
+		local t = M.tradeSkill
+		return { professionID = t.profID, skillLevel = t.skillLevel, maxSkillLevel = 300 }
+	end,
+	GetProfessionInfoBySkillLineID = function(id)
+		-- retail-style child tier lines 2937-2948 map to their parent
+		local parents = { [2945] = 165, [2948] = 197 }
+		return { professionID = id, parentProfessionID = parents[id] or 0 }
+	end,
+	GetRecipeInfo = function(id)
+		local learned = M.tradeSkill.recipes[id]
+		if learned == nil then return nil end
+		return { recipeID = id, learned = learned, name = "Recipe " .. id }
+	end,
+	GetFilteredRecipeIDs = function()
+		local ids = {}
+		for id in pairs(M.tradeSkill.recipes) do ids[#ids + 1] = id end
+		return ids
+	end,
+}
+C_TradeSkillUI.GetAllRecipeIDs = C_TradeSkillUI.GetFilteredRecipeIDs
+
+C_Container = {
+	GetContainerNumSlots = function(bag) return M.containers[bag] and 16 or 0 end,
+	GetContainerItemInfo = function(bag, slot)
+		local item = M.containers[bag] and M.containers[bag][slot]
+		if not item then return nil end
+		return { itemID = item[1], stackCount = item[2] }
+	end,
+}
+C_Bank = {
+	FetchPurchasedBankTabIDs = function(bankType)
+		if M.noBankAPI then error("no API") end
+		return M.bankTabs[bankType] or {}
+	end,
+	CanViewBank = function(bankType) return bankType ~= 2 or M.accountBankViewable end,
+}
+Enum.BankType = { Character = 0, Guild = 1, Account = 2 }
 
 return M
