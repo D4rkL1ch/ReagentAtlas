@@ -16,7 +16,7 @@ test("collapsed tooltip matches the mockup layout", function()
 		"Reagent Atlas: Valuable",
 		"Used in 7 recipes · Leatherworking, Tailoring...",
 		"Highest: Leatherworking 285",
-		"Spell reagent: Mage, Priest",
+		"Spell reagent for Mage, Priest",
 		"Hold Shift for all recipes",
 	}, "\n"))
 	contains(tt.lines[2], "|cff4da6ff", "tier colored blue")
@@ -40,7 +40,7 @@ test("Shift view groups recipes by profession, skill desc", function()
 		"Engineering",
 		"· Recipe #990006 (200)",
 		"· Recipe #990007 (150)",
-		"Spell reagent: Mage, Priest",
+		"Spell reagent for Mage, Priest",
 	}, "\n"))
 end)
 
@@ -63,7 +63,47 @@ test("spell-only reagent has no recipe lines or Shift hint", function()
 	boot()
 	local tt = stubs.newTooltip()
 	tt:SetItem(17020)
-	eq(tt:Text(), " \nReagent Atlas: Vendor\nSpell reagent: Mage")
+	eq(tt:Text(), " \nReagent Atlas: Useful\nSpell reagent for Mage\nSold by vendors")
+end)
+
+test("spell reagent line names classes in class colors", function()
+	boot()
+	local tt = stubs.newTooltip()
+	tt:SetItem(17056)
+	local line
+	for _, l in ipairs(tt.lines) do
+		if l:find("Spell reagent", 1, true) then line = l end
+	end
+	contains(line, "|cff3fc7ebMage|r", "Mage in class color")
+	contains(line, "Priest", "Priest named")
+end)
+
+test("spell reagent for your own class says so", function()
+	boot()
+	stubs.classToken = "PRIEST"
+	local tt = stubs.newTooltip()
+	tt:SetItem(17056)
+	contains(tt:Text(), "\nSpell reagent for your class\n", "own class")
+	eq(tt:Text():find("Mage", 1, true), nil, "other classes not listed")
+	contains(table.concat(tt.lines, "\n"), "|cff1eff00Spell reagent for your class", "green")
+end)
+
+test("vendor-sold reagent says so in both views", function()
+	boot()
+	local tt = stubs.newTooltip()
+	tt:SetItem(2604)
+	eq(tt:Text(), table.concat({
+		" ",
+		"Reagent Atlas: Useful",
+		"Used in 2 recipes · Blacksmithing",
+		"Highest: Blacksmithing 300",
+		"Sold by vendors",
+		"Hold Shift for all recipes",
+	}, "\n"))
+	stubs.shift = true
+	tt:SetItem(2604)
+	local lines = tt:Text()
+	eq(lines:sub(-#"Sold by vendors"), "Sold by vendors", "last line of Shift view")
 end)
 
 test("unknown items get no lines", function()

@@ -6,6 +6,11 @@ local function boot()
 	return T.boot(nil, T.useFixture)
 end
 
+-- Expected demand points for n recipes (weights: 15 points, full at 40).
+local function demand(n)
+	return math.min(math.log(1 + n) / math.log(41), 1) * 15
+end
+
 test("tier boundaries", function()
 	local V = boot().Valuation
 	eq(V:TierForScore(0), 1, "0")
@@ -18,16 +23,18 @@ test("tier boundaries", function()
 	eq(V:TierForScore(250), 4, "250")
 end)
 
-test("Light Feather scores per the spec heuristic", function()
+test("Light Feather scores per the heuristic", function()
 	local info = boot().Valuation:GetInfo(17056)
-	-- skill 285/300*40 = 38, 7 recipes = 14, best quality uncommon = 0,
-	-- 3 professions = 5, spell reagent = 10
-	near(info.score, 67, "score")
+	-- skill 285/300*35, 7 recipes, best output uncommon = 0, 3 professions = 5,
+	-- own quality common = 0; being a spell reagent only sets a floor
+	near(info.score, 285 / 300 * 35 + demand(7) + 5, "score")
 	eq(info.tier, 3, "tier")
 	eq(info.recipeCount, 7, "recipeCount")
 	eq(info.topSkill, 285, "topSkill")
 	eq(info.topProf, 165, "topProf")
 	eq(info.spellClasses[2], "PRIEST", "spell classes")
+	eq(info.vendor, false, "vendor")
+	eq(info.sellPrice, 4, "sell price")
 end)
 
 test("professions ordered by recipe count, ties by highest skill", function()
@@ -40,22 +47,44 @@ end)
 
 test("low skill reagent is Vendor", function()
 	local info = boot().Valuation:GetInfo(2589)
-	-- 1/300*40 + 2*2 + 5 (two professions)
-	near(info.score, 40 / 300 + 4 + 5, "score")
+	near(info.score, 1 / 300 * 35 + demand(2) + 5, "score")
 	eq(info.tier, 1, "tier")
 end)
 
 test("epic and rare outputs add their bonus", function()
 	local V = boot().Valuation
-	near(V:GetInfo(12360).score, 40 + 2 + 20, "epic")
-	near(V:GetInfo(12359).score, 260 / 300 * 40 + 2 + 10, "rare")
+	-- 12360 is also uncommon itself (+10)
+	near(V:GetInfo(12360).score, 35 + demand(1) + 10 + 10, "epic")
+	near(V:GetInfo(12359).score, 260 / 300 * 35 + demand(1) + 5, "rare")
 end)
 
-test("spell-only reagent gets an entry", function()
-	local info = boot().Valuation:GetInfo(17020)
+test("own quality counts, epic and above capped at the epic bonus", function()
+	local ns = boot()
+	near(ns.Valuation:GetInfo(20725).score, 35 + demand(1) + 10 + 20, "epic reagent")
+	ns.Reagents[20725].q = 5
+	ns.Valuation:ClearCache()
+	near(ns.Valuation:GetInfo(20725).score, 35 + demand(1) + 10 + 20, "legendary reagent")
+end)
+
+test("vendor-sold reagents are capped at Useful", function()
+	local info = boot().Valuation:GetInfo(2604)
+	-- 300 skill, 2 recipes, epic output, 1 profession: Valuable by score...
+	near(info.score, 35 + demand(2) + 10, "score")
+	-- ...but anyone can buy it
+	eq(info.tier, 2, "tier")
+	eq(info.vendor, true, "vendor flag")
+end)
+
+test("spell reagents are at least Useful", function()
+	local ns = boot()
+	local info = ns.Valuation:GetInfo(17020)
 	eq(info.recipeCount, 0, "recipes")
-	near(info.score, 10, "score")
-	eq(info.tier, 1, "tier")
+	near(info.score, 0, "score")
+	eq(info.tier, 2, "spell-only tier")
+	-- a low-scoring recipe reagent that is also a spell reagent
+	ns.Reagents[2589].spell = { "ROGUE" }
+	ns.Valuation:ClearCache()
+	eq(ns.Valuation:GetInfo(2589).tier, 2, "Linen as spell reagent")
 end)
 
 test("items no recipe uses return nil", function()
@@ -64,13 +93,30 @@ test("items no recipe uses return nil", function()
 	eq(V:GetInfo(nil), nil, "nil id")
 end)
 
-test("recipe count caps at 10", function()
+test("demand grows on a log scale and caps at demandFull", function()
 	local ns = boot()
-	local r = {}
-	for i = 1, 15 do
-		ns.Recipes[700000 + i] = { prof = 197, skill = 0, reagents = { [5000] = 1 } }
-		r[i] = 700000 + i
+	local function addItem(itemID, n)
+		local r = {}
+		for i = 1, n do
+			local id = itemID * 1000 + i
+			ns.Recipes[id] = { prof = 197, skill = 0, reagents = { [itemID] = 1 } }
+			r[i] = id
+		end
+		ns.Reagents[itemID] = { r = r, q = 1 }
 	end
-	ns.Reagents[5000] = { r = r }
-	near(ns.Valuation:GetInfo(5000).score, 20, "score")
+	addItem(5001, 10)
+	addItem(5002, 40)
+	addItem(5003, 200)
+	near(ns.Valuation:GetInfo(5001).score, demand(10), "10 recipes")
+	near(ns.Valuation:GetInfo(5002).score, 15, "40 recipes")
+	near(ns.Valuation:GetInfo(5003).score, 15, "200 recipes")
+end)
+
+test("skill scales against MAX_SKILL from the data", function()
+	local ns = boot()
+	ns.MAX_SKILL = 600
+	near(ns.Valuation:GetInfo(12359).score, 260 / 600 * 35 + demand(1) + 5, "half-height cap")
+	ns.Valuation:ClearCache()
+	ns.MAX_SKILL = nil -- older data without the constant falls back to 300
+	near(ns.Valuation:GetInfo(12359).score, 260 / 300 * 35 + demand(1) + 5, "fallback")
 end)

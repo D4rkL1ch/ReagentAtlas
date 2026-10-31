@@ -36,7 +36,7 @@ Pre-alpha, in development. Targets the WoW Forever client 1.60.x (modern addon A
 3. Deploy to the game with `tools/deploy.ps1 -GamePath <Forever client folder>` (or set `REAGENTATLAS_GAME_PATH` once), which copies only the addon files into `Interface\AddOns\ReagentAtlas`.
 4. In game: `/reload`, and keep BugSack/BugGrabber installed to catch errors.
 5. Offline tests with stubbed WoW APIs: `tools/tests/run.ps1` (uses the LuaLS binary from the VS Code extension as the interpreter).
-6. Regenerate `Data/` with Python 3.12+: `python tools/build_data.py` (real DB2 export in `tools/db2/`) or `python tools/build_data.py --sample` (small fixture in `tools/sample/`).
+6. Regenerate `Data/` with Python 3.12+: `python tools/fetch_db2.py` (downloads the latest WoW Forever DB2 tables from wago.tools into `tools/db2/`), then `python tools/build_data.py`. `python tools/build_data.py --sample` builds from the small fixture in `tools/sample/` instead.
 
 Recipe data in `Data/` is generated from the game client's DB2 tables with `tools/build_data.py`; don't edit it by hand. See `SPEC.md` → *Data sourcing*.
 

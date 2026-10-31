@@ -9,6 +9,7 @@ local COLOR_TEXT = "ffe8e2d0"
 local COLOR_HINT = "ff9d9d9d"
 local COLOR_HEADER = "ffffd100"
 local COLOR_UNKNOWN = "ff9d9d9d"
+local COLOR_YOURS = "ff1eff00"
 
 local function Color(text, color)
 	return WrapTextInColorCode(text, color)
@@ -50,19 +51,40 @@ local function ClassName(token)
 	return (LOCALIZED_CLASS_NAMES_MALE and LOCALIZED_CLASS_NAMES_MALE[token]) or token
 end
 
+-- Localized class name in its class color.
+local function ColoredClassName(token)
+	local name = ClassName(token)
+	local color = C_ClassColor and C_ClassColor.GetClassColor and C_ClassColor.GetClassColor(token)
+	return color and color:WrapTextInColorCode(name) or Color(name, COLOR_TEXT)
+end
+
 -- Rendering -----------------------------------------------------------------
 
 local function AddTierLine(tooltip, info)
 	tooltip:AddLine(ns.Valuation:ColorTier(info.tier, "Reagent Atlas: " .. ns.Valuation:GetTierName(info.tier)))
 end
 
+-- Your own class gets a short green note; otherwise name the classes.
 local function AddSpellLine(tooltip, info)
-	if not info.spellClasses then return end
+	local classes = info.spellClasses
+	if not classes then return end
+	local _, playerClass = UnitClass("player")
 	local names = {}
-	for i, token in ipairs(info.spellClasses) do
-		names[i] = ClassName(token)
+	for i, token in ipairs(classes) do
+		if token == playerClass then
+			tooltip:AddLine(Color("Spell reagent for your class", COLOR_YOURS))
+			return
+		end
+		names[i] = ColoredClassName(token)
 	end
-	tooltip:AddLine(Color("Spell reagent: " .. table.concat(names, ", "), COLOR_TEXT))
+	tooltip:AddLine(Color("Spell reagent for ", COLOR_TEXT) .. table.concat(names, Color(", ", COLOR_TEXT)))
+end
+
+-- Explains why a vendor-sold reagent never rates above Useful.
+local function AddVendorLine(tooltip, info)
+	if info.vendor then
+		tooltip:AddLine(Color("Sold by vendors", COLOR_HINT))
+	end
 end
 
 local function AddCollapsed(tooltip, info)
@@ -81,6 +103,7 @@ local function AddCollapsed(tooltip, info)
 		tooltip:AddLine(Color(("Highest: %s %d"):format(Tooltip:GetProfessionName(info.topProf), info.topSkill), COLOR_TEXT))
 	end
 	AddSpellLine(tooltip, info)
+	AddVendorLine(tooltip, info)
 	if info.recipeCount > 0 then
 		tooltip:AddLine(Color("Hold Shift for all recipes", COLOR_HINT))
 	end
@@ -119,6 +142,7 @@ local function AddExpanded(tooltip, info)
 	end
 
 	AddSpellLine(tooltip, info)
+	AddVendorLine(tooltip, info)
 end
 
 -- Builds the Reagent Atlas section for an item. Separate from the hook so it

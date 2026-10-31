@@ -1,3 +1,6 @@
 itemID,class,note
-17056,MAGE,Slow Fall (verify in Forever)
-17056,PRIEST,Levitate (verify in Forever)
+17056,PRIEST,Levitate has no class link in the DB2 data
+5517,-MAGE,Khadgar's Unlocking (Season of Discovery leftover)
+5518,-MAGE,Khadgar's Unlocking (Season of Discovery leftover)
+8147,-MAGE,Khadgar's Unlocking (Season of Discovery leftover)
+8148,-MAGE,Khadgar's Unlocking (Season of Discovery leftover)

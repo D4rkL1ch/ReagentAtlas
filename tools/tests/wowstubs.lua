@@ -71,6 +71,7 @@ function M.reset()
 	M.printed = {}
 	M.errors = {}
 	M.shift = false
+	M.classToken = "WARRIOR"
 	SlashCmdList = {}
 	Auctionator = nil
 	ReagentAtlasDB = nil
@@ -106,6 +107,7 @@ function UnitName() return "Tester" end
 function GetNormalizedRealmName() return "StubRealm" end
 function InCombatLockdown() return false end
 function IsShiftKeyDown() return M.shift end
+function UnitClass() return M.classToken, M.classToken end
 
 C_AddOns = {
 	GetAddOnMetadata = function(_, field)
@@ -119,6 +121,13 @@ C_Spell = { GetSpellName = function(id) return M.spellNames[id] end }
 C_Item = { GetItemNameByID = function(id) if id == 990102 then return "Feathered Boots" end end }
 
 LOCALIZED_CLASS_NAMES_MALE = { MAGE = "Mage", PRIEST = "Priest" }
+C_ClassColor = {
+	GetClassColor = function(token)
+		if token == "MAGE" then
+			return { WrapTextInColorCode = function(_, text) return "|cff3fc7eb" .. text .. "|r" end }
+		end
+	end,
+}
 
 Enum = { TooltipDataType = { Item = 0 } }
 TooltipDataProcessor = {

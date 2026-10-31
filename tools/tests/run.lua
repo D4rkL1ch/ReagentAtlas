@@ -70,10 +70,11 @@ end
 function T.useFixture(ns)
 	local fx = dofile(testDir .. "fixture.lua")
 	ns.Recipes, ns.Reagents, ns.ProfessionNames = fx.Recipes, fx.Reagents, fx.ProfessionNames
+	ns.MAX_SKILL = fx.MAX_SKILL
 	ns.DATA_BUILD = "99999"
 end
 
-for _, file in ipairs({ "test_core.lua", "test_valuation.lua", "test_tooltip.lua" }) do
+for _, file in ipairs({ "test_core.lua", "test_valuation.lua", "test_tooltip.lua", "test_data.lua" }) do
 	assert(loadfile(testDir .. file))(T)
 end
 

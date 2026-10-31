@@ -13,11 +13,19 @@ may be written as Name[0] or Name_0):
     SpellEffect.csv       SpellID, Effect, EffectItemType
     ItemSparse.csv        ID, OverallQualityID
     SpellName.csv         ID, Name_lang (optional; used to drop test spells)
-    build.txt             client build number (optional, else --build)
+    SpellClassOptions.csv SpellID, SpellClassSet (optional; maps class spells)
+    build.txt             client version, e.g. 1.60.1.70707 (optional, else --build)
 
-Spell reagents (items classes use for spells) come from spell_reagents.csv in the
-source dir if present, else tools/spell_reagents.csv, which is maintained by hand:
-there is no DB2 table that lists them directly. Columns: itemID, class, note.
+Real Forever tables can be downloaded from wago.tools (product "wowf"), e.g.
+https://wago.tools/db2/SpellReagents/csv?build=1.60.1.70707
+
+Spell reagents (items consumed by class spells) are derived from SpellReagents
+plus SpellClassOptions and the class skill lines. Gaps and mistakes in that
+mapping are fixed in spell_reagents.csv (source dir if present, else
+tools/spell_reagents.csv): columns itemID, class, note; "-CLASS" removes.
+
+Vendor-sold reagents come from vendor_reagents.csv (source dir if present, else
+tools/vendor_reagents.csv), maintained by hand: columns itemID, name.
 """
 
 from __future__ import annotations
@@ -48,10 +56,26 @@ PROFESSIONS = {
     129: "First Aid",
     185: "Cooking",
     356: "Fishing",
+    40: "Poisons",
 }
 
+# SpellClassOptions.SpellClassSet is the spell family, not the class ID.
+SPELL_FAMILY_CLASS = {
+    3: "MAGE", 4: "WARRIOR", 5: "WARLOCK", 6: "PRIEST", 7: "DRUID",
+    8: "ROGUE", 9: "HUNTER", 10: "PALADIN", 11: "SHAMAN",
+}
+# SkillLineAbility.ClassMask bits (1 << (classID - 1)).
+CLASS_MASK = {
+    1: "WARRIOR", 2: "PALADIN", 4: "HUNTER", 8: "ROGUE", 16: "PRIEST",
+    64: "SHAMAN", 128: "MAGE", 256: "WARLOCK", 1024: "DRUID",
+}
+SKILL_CATEGORY_CLASS = 7
+# Class skill lines whose spells are not normal class spells (Season of
+# Discovery rune engraving data still present in the Forever client).
+EXCLUDED_CLASS_LINES = {2851}
+
 EFFECT_CREATE_ITEM = 24
-TEST_SPELL = re.compile(r"\b(test|dnd|deprecated|unused|old)\b|\[ph\]", re.IGNORECASE)
+TEST_SPELL = re.compile(r"\b(test|dnd|dnt|deprecated|unused|old)\b|\[ph\]|^copy of", re.IGNORECASE)
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -120,19 +144,60 @@ def load_outputs(src: Path) -> dict[int, int]:
     return result
 
 
-def load_item_quality(src: Path) -> dict[int, int]:
-    return {to_int(r["ID"]): to_int(col(r, "OverallQualityID")) for r in read_csv(src / "ItemSparse.csv")}
+def load_items(src: Path) -> dict[int, tuple[int, int]]:
+    """itemID -> (quality, vendor sell price in copper)."""
+    return {
+        to_int(r["ID"]): (to_int(col(r, "OverallQualityID")), to_int(col(r, "SellPrice")))
+        for r in read_csv(src / "ItemSparse.csv")
+    }
 
 
-def load_spell_reagent_classes(path: Path) -> dict[int, list[str]]:
+def load_spell_classes(src: Path) -> dict[int, set[str]]:
+    """Class spell ID -> classes, from SpellClassOptions and class skill lines."""
     result: dict[int, set[str]] = {}
+    path = src / "SpellClassOptions.csv"
     if path.exists():
         for row in read_csv(path):
-            item = to_int(row.get("itemID", ""))
-            cls = row.get("class", "").strip().upper()
-            if item and cls:
-                result.setdefault(item, set()).add(cls)
-    return {item: sorted(classes) for item, classes in result.items()}
+            cls = SPELL_FAMILY_CLASS.get(to_int(col(row, "SpellClassSet")))
+            if cls:
+                result.setdefault(to_int(col(row, "SpellID")), set()).add(cls)
+
+    class_lines = set()
+    path = src / "SkillLine.csv"
+    if path.exists():
+        for row in read_csv(path):
+            if to_int(col(row, "CategoryID")) == SKILL_CATEGORY_CLASS:
+                class_lines.add(to_int(row["ID"]))
+    class_lines -= EXCLUDED_CLASS_LINES
+
+    excluded_spells = set()
+    for row in read_csv(src / "SkillLineAbility.csv"):
+        line, spell = to_int(col(row, "SkillLine")), to_int(col(row, "Spell"))
+        if line in EXCLUDED_CLASS_LINES:
+            excluded_spells.add(spell)
+        elif line in class_lines:
+            mask = to_int(col(row, "ClassMask"))
+            for bit, cls in CLASS_MASK.items():
+                if mask & bit:
+                    result.setdefault(spell, set()).add(cls)
+    for spell in excluded_spells:
+        result.pop(spell, None)
+    return result
+
+
+def apply_spell_reagent_overrides(path: Path, classes_by_item: dict[int, set[str]]) -> None:
+    """Rows of itemID,class,note: "MAGE" adds a class, "-MAGE" removes it."""
+    if not path.exists():
+        return
+    for row in read_csv(path):
+        item = to_int(row.get("itemID", ""))
+        cls = row.get("class", "").strip().upper()
+        if not item or not cls:
+            continue
+        if cls.startswith("-"):
+            classes_by_item.get(item, set()).discard(cls[1:])
+        else:
+            classes_by_item.setdefault(item, set()).add(cls)
 
 
 def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
@@ -140,7 +205,7 @@ def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
     names = load_spell_names(src)
     reagents = load_reagents(src)
     outputs = load_outputs(src)
-    quality = load_item_quality(src)
+    items = load_items(src)
 
     recipes: dict[int, dict] = {}
     for row in read_csv(src / "SkillLineAbility.csv"):
@@ -150,15 +215,31 @@ def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
             continue
         if TEST_SPELL.search(names.get(spell, "")):
             continue
-        recipe = {"prof": prof, "skill": to_int(col(row, "MinSkillLineRank")), "reagents": reagents[spell]}
+        # Forever leaves MinSkillLineRank at 1 for nearly every recipe; the
+        # skill where the recipe turns yellow is the usable difficulty signal.
+        skill = max(to_int(col(row, "MinSkillLineRank")), to_int(col(row, "TrivialSkillLineRankLow")))
+        recipe = {"prof": prof, "skill": skill, "reagents": reagents[spell]}
         out = outputs.get(spell)
         if out:
             recipe["out"] = out
-            recipe["outQ"] = quality.get(out, 1)
+            recipe["outQ"] = items.get(out, (1, 0))[0]
         # A spell can appear on several skill lines; keep the lowest requirement.
         prev = recipes.get(spell)
         if prev is None or recipe["skill"] < prev["skill"]:
             recipes[spell] = recipe
+
+    # Some recipes exist twice (an original and a re-added copy). Drop copies
+    # with the same profession, output and reagents, keeping the lower spell ID.
+    seen: dict[tuple, int] = {}
+    for spell in sorted(recipes):
+        r = recipes[spell]
+        if "out" not in r:
+            continue
+        key = (r["prof"], r["out"], tuple(sorted(r["reagents"].items())))
+        if key in seen:
+            del recipes[spell]
+        else:
+            seen[key] = spell
 
     index: dict[int, dict] = {}
     for spell, recipe in recipes.items():
@@ -167,12 +248,38 @@ def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
     for entry in index.values():
         entry["r"].sort(key=lambda s: (-recipes[s]["skill"], s))
 
-    # A fixture may carry its own list; real exports use the hand-maintained one.
-    spell_path = src / "spell_reagents.csv"
-    if not spell_path.exists():
-        spell_path = ROOT / "tools" / "spell_reagents.csv"
-    for item, classes in load_spell_reagent_classes(spell_path).items():
-        index.setdefault(item, {"r": []})["spell"] = classes
+    # Spell reagents: items consumed by class spells.
+    spell_classes = load_spell_classes(src)
+    classes_by_item: dict[int, set[str]] = {}
+    for spell, spell_reagents in reagents.items():
+        classes = spell_classes.get(spell)
+        if not classes or spell in recipes or TEST_SPELL.search(names.get(spell, "")):
+            continue
+        for item in spell_reagents:
+            classes_by_item.setdefault(item, set()).update(classes)
+
+    # A fixture may carry its own overrides; real exports use the repo one.
+    override_path = src / "spell_reagents.csv"
+    if not override_path.exists():
+        override_path = ROOT / "tools" / "spell_reagents.csv"
+    apply_spell_reagent_overrides(override_path, classes_by_item)
+    for item, classes in classes_by_item.items():
+        if classes:
+            index.setdefault(item, {"r": []})["spell"] = sorted(classes)
+
+    # Vendor-sold reagents. NPC vendor inventories are server data, not in the
+    # client DB2, so this list is maintained by hand.
+    vendor_path = src / "vendor_reagents.csv"
+    if not vendor_path.exists():
+        vendor_path = ROOT / "tools" / "vendor_reagents.csv"
+    if vendor_path.exists():
+        for row in read_csv(vendor_path):
+            entry = index.get(to_int(row.get("itemID", "")))
+            if entry is not None:
+                entry["vendor"] = True
+
+    for item, entry in index.items():
+        entry["q"], entry["sell"] = items.get(item, (1, 0))
 
     return recipes, index
 
@@ -185,18 +292,19 @@ def lua_str_list(items: list[str]) -> str:
     return "{ " + ", ".join(f'"{s}"' for s in items) + " }"
 
 
-def header(build_id: str) -> list[str]:
+def header(version: str) -> list[str]:
     return [
         "-- Generated by tools/build_data.py. Do not edit by hand.",
-        f"-- Source build: {build_id}",
+        f"-- Source: {version}",
         "local addonName, ns = ...",
         "",
     ]
 
 
-def write_recipes(recipes: dict[int, dict], build_id: str) -> None:
-    lines = header(build_id)
+def write_recipes(recipes: dict[int, dict], build_id: str, version: str) -> None:
+    lines = header(version)
     lines.append(f'ns.DATA_BUILD = "{build_id}"')
+    lines.append(f"ns.MAX_SKILL = {max((r['skill'] for r in recipes.values()), default=0)}")
     lines.append("")
     lines.append("ns.ProfessionNames = {")
     for pid in sorted(PROFESSIONS):
@@ -215,15 +323,18 @@ def write_recipes(recipes: dict[int, dict], build_id: str) -> None:
     (OUT_DIR / "Recipes.lua").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
-def write_reagents(index: dict[int, dict], build_id: str) -> None:
-    lines = header(build_id)
+def write_reagents(index: dict[int, dict], version: str) -> None:
+    lines = header(version)
     lines.append("local G = {}")
     lines.append("ns.Reagents = G")
     for item in sorted(index):
         e = index[item]
         fields = ["r = { " + ", ".join(str(s) for s in e["r"]) + " }" if e["r"] else "r = {}"]
+        fields += [f"q = {e['q']}", f"sell = {e['sell']}"]
         if "spell" in e:
             fields.append(f"spell = {lua_str_list(e['spell'])}")
+        if e.get("vendor"):
+            fields.append("vendor = true")
         lines.append(f"G[{item}] = {{ {', '.join(fields)} }}")
     (OUT_DIR / "Reagents.lua").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
@@ -232,7 +343,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--sample", action="store_true", help="use the tools/sample fixture")
     parser.add_argument("--src", type=Path, help="directory with the DB2 CSVs (default tools/db2)")
-    parser.add_argument("--build", help="client build number for ns.DATA_BUILD")
+    parser.add_argument("--build", help="client version or build, e.g. 1.60.1.70707")
     args = parser.parse_args()
 
     src = args.src or (ROOT / "tools" / ("sample" if args.sample else "db2"))
@@ -247,11 +358,15 @@ def main() -> int:
         print("error: unknown client build. Pass --build or add build.txt to the source dir.", file=sys.stderr)
         return 1
 
+    # GetBuildInfo() reports the build number alone ("70707"), so compare on that.
+    version = build_id
+    build_id = build_id.rsplit(".", 1)[-1]
+
     recipes, index = build(src)
     OUT_DIR.mkdir(exist_ok=True)
-    write_recipes(recipes, build_id)
-    write_reagents(index, build_id)
-    print(f"build {build_id}: {len(recipes)} recipes, {len(index)} reagents -> {OUT_DIR}")
+    write_recipes(recipes, build_id, version)
+    write_reagents(index, version)
+    print(f"build {version}: {len(recipes)} recipes, {len(index)} reagents -> {OUT_DIR}")
     return 0
 
 

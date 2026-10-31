@@ -24,7 +24,7 @@ Reagent Atlas is a WoW Forever (client 1.60.x, modern addon API) addon that tell
 
 | Feature | Behavior | Priority |
 | --- | --- | --- |
-| Item tooltip (collapsed) | Tier badge, recipe count, top professions, highest skill level, owned total, AH price if known. Max ~5 lines. | P0 |
+| Item tooltip (collapsed) | Tier badge, recipe count, top professions, highest skill level, owned total, AH price if known. Max ~5 lines. Spell reagents read "Spell reagent for your class" (green) for your own class, otherwise "Spell reagent for <classes>" in class colors. | P0 |
 | Item tooltip (Shift held) | Full recipe list grouped by profession, sorted by skill desc. Craftable recipes marked with a check and the character name. | P0 |
 | Alt-aware highlighting | Recipes known by the current character are green; known by an alt are blue with the alt's name; unknown are grey. | P0 |
 | Account-wide inventory | Counts per character for bags + bank; tooltip shows total and a per-character breakdown on Shift. | P1 |
@@ -110,15 +110,20 @@ Keys are `Name-Realm`. Only counts are stored, never item links, to keep the fil
 
 The in-game API only lists recipes a character knows, so the full recipe database is generated offline from the client's DB2 tables and shipped with the addon.
 
-1. Export the relevant DB2 tables as CSV from the locally installed Forever client using Marlamin's wow.tools.local or DBC2CSV (table layouts from WoWDBDefs). Put the CSVs in `tools/db2/` (git-ignored). Confirm WoWDBDefs covers the Forever build number.
+1. Download the DB2 tables as CSV with `python tools/fetch_db2.py [version]`. It pulls them from wago.tools, which tracks WoW Forever as product `wowf` (first build seen: 1.60.1.70707). They land in `tools/db2/` (git-ignored). Exporting from a local client with wow.tools.local or DBC2CSV also works.
 2. Join them in `tools/build_data.py`:
-   - `SkillLineAbility` → recipe spell ID to profession skill line and required skill
-   - `SpellReagents` → reagent itemIDs and counts per recipe spell
+   - `SkillLineAbility` → recipe spell ID to profession skill line and skill. Forever leaves `MinSkillLineRank` at 1, so the skill used is `TrivialSkillLineRankLow` (where the recipe turns yellow).
+   - `SpellReagents` → reagent itemIDs and counts per spell (recipes and class spells)
    - `SpellEffect` (create-item effect) → output itemID
-   - `ItemSparse` → item quality, vendor price, name (name only for debugging)
-3. Filter to primary + secondary professions, drop internal or test spells.
-4. Emit `Data/Recipes.lua` and the inverted `Data/Reagents.lua`, with the build number in a header comment.
-5. Re-run on every client build; add a `ns.DATA_BUILD` constant and print a one-time warning in chat if it differs from `GetBuildInfo()`.
+   - `ItemSparse` → item quality, vendor sell price
+   - `SkillLine` → child (tier) skill lines folded into their parent profession; class skill lines
+   - `SpellClassOptions` → class of a spell (spell family) for spell reagents
+   - `SpellName` → used to drop test/DND spells
+3. Filter to primary + secondary professions plus Poisons, drop internal or test spells and Season of Discovery engraving leftovers, drop duplicate recipes (same profession, output and reagents).
+4. Emit `Data/Recipes.lua` (with `ns.DATA_BUILD` and `ns.MAX_SKILL`, the highest recipe skill) and the inverted `Data/Reagents.lua` (recipes, own quality `q`, vendor sell price `sell`, spell classes, `vendor` flag).
+5. Re-run on every client build. Chat shows a one-time warning per client build if `ns.DATA_BUILD` differs from `GetBuildInfo()`.
+
+Two hand-maintained lists cover what the DB2 data lacks: `tools/spell_reagents.csv` (overrides for the spell reagent mapping) and `tools/vendor_reagents.csv` (reagents NPC vendors sell; vendor inventories are server data).
 
 **Fallback / validation:** `Professions.lua` also records recipe data seen in-game when a profession window is open. A debug command `/ratlas diff` compares it against the generated data and reports mismatches.
 
@@ -126,18 +131,24 @@ The in-game API only lists recipes a character knows, so the full recipe databas
 
 The tier is a prediction, not a price: a score from recipe data, optionally nudged by Auctionator. All weights live in one table in `Valuation.lua` so they can be tuned after launch.
 
-**Heuristic score (0–100)**
+**Heuristic score (0–100)** — calibrated on the Forever 1.60.1 data (613 reagents)
 
 | Signal | Points |
 | --- | --- |
-| Highest required skill of any recipe using it | skill / 300 × 40 |
-| Number of recipes using it | min(count, 10) × 2 |
-| Best output quality among those recipes (rare/epic) | +10 rare, +20 epic |
+| Highest skill of any recipe using it | min(skill / `MAX_SKILL`, 1) × 35 (`MAX_SKILL` = 325 in 1.60.1) |
+| Number of recipes using it | min(log(1 + count) / log(41), 1) × 15 (full at 40 recipes) |
+| Best output quality among those recipes | +5 rare, +10 epic |
 | Used in 2+ professions | +5 |
-| Spell reagent | +10 |
-| Not used in any recipe and not a spell reagent | score = 0 |
+| The reagent's own quality | +10 uncommon, +15 rare, +20 epic or better |
+| Spell reagent | tier at least Useful (no score bonus) |
+| Sold by NPC vendors | tier capped at Useful |
+| Not used in any recipe and not a spell reagent | no tier (nothing shown) |
 
 Tiers: 0–14 Vendor, 15–39 Useful, 40–69 Valuable, 70+ Keep!
+
+Resulting spread on 1.60.1: 31 Keep!, 239 Valuable, 301 Useful, 42 Vendor. Examples: Arcanite Bar, Essences, Large Brilliant Shard, Nexus Crystal → Keep!; Thorium Bar, Rugged Leather, Black Lotus, Runecloth → Valuable; Linen, Wool, Light Leather, Peacebloom → Useful; dyes, threads, vials, spices → Useful (vendor cap). Pure-price outliers (Black Lotus) are expected to be lifted by the Auctionator rule below.
+
+The first draft (skill / 300 × 40, min(count, 10) × 2, +10/+20 for output quality, +10 for spell reagents) put 114 reagents on Keep! and most vendor goods on Valuable or Keep!, because recipe counts saturate at 10 and common materials are used in 50–200 recipes.
 
 **Auctionator bridge (`Pricing.lua`)**
 
@@ -182,10 +193,11 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 
 ## Open questions and risks
 
-- [ ] Does wow.tools.local / DBC2CSV read the Forever client cleanly (WoWDBDefs coverage for the Forever build)?
+- [x] Does wow.tools.local / DBC2CSV read the Forever client cleanly (WoWDBDefs coverage for the Forever build)? Yes: wago.tools serves Forever (`wowf`, 1.60.1.70707) tables, used by `tools/fetch_db2.py`.
 - [ ] Does the Forever build of Auctionator keep `Auctionator.API.v1`?
 - [ ] Forever bank layout: classic bank bags or retail-style bank tabs? Decides Inventory.lua bank scanning.
-- [ ] Spell reagents: which classes and spells use reagents in Forever? The data tool needs a source for this list. Interim: hand-maintained `tools/spell_reagents.csv` (itemID, class, note), read by `build_data.py`.
+- [x] Spell reagents: which classes and spells use reagents in Forever? Derived from DB2 (`SpellReagents` + `SpellClassOptions` + class skill lines): 23 items in 1.60.1. Gaps (e.g. Levitate) fixed in `tools/spell_reagents.csv`.
+- [ ] Vendor-sold reagents: `tools/vendor_reagents.csv` (58 items) is from Classic knowledge; verify against Forever vendors after launch.
 - [ ] Heuristic weights are guesses until the live economy settles after launch; plan a tuning pass a few weeks in.
 - [ ] Name for the addon: "Reagent Atlas" is a working title.
 
