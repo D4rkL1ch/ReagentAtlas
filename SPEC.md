@@ -185,7 +185,7 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 - [ ] Does wow.tools.local / DBC2CSV read the Forever client cleanly (WoWDBDefs coverage for the Forever build)?
 - [ ] Does the Forever build of Auctionator keep `Auctionator.API.v1`?
 - [ ] Forever bank layout: classic bank bags or retail-style bank tabs? Decides Inventory.lua bank scanning.
-- [ ] Spell reagents: which classes and spells use reagents in Forever? The data tool needs a source for this list.
+- [ ] Spell reagents: which classes and spells use reagents in Forever? The data tool needs a source for this list. Interim: hand-maintained `tools/spell_reagents.csv` (itemID, class, note), read by `build_data.py`.
 - [ ] Heuristic weights are guesses until the live economy settles after launch; plan a tuning pass a few weeks in.
 - [ ] Name for the addon: "Reagent Atlas" is a working title.
 

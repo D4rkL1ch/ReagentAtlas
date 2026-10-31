@@ -155,6 +155,7 @@ local function PrintStatus()
 	ns:Print(("v%s"):format(ns.version))
 	ns:Print(("client %s (build %s), interface %s"):format(
 		tostring(gameVersion), tostring(build), tostring(tocVersion)))
+	ns:Print(("recipe data: build %s"):format(tostring(ns.DATA_BUILD)))
 
 	local auctionatorLoaded = C_AddOns and C_AddOns.IsAddOnLoaded and C_AddOns.IsAddOnLoaded("Auctionator")
 	if HasAuctionatorAPI() then
@@ -199,8 +200,23 @@ local function OnAddonLoaded(event, loadedName)
 	CallModules("OnInit")
 end
 
+-- Warn once per client build when the recipe data was generated for another
+-- build (SPEC.md > Data sourcing, step 5). Sample data warns every session.
+local function CheckDataBuild()
+	local dataBuild = ns.DATA_BUILD
+	local _, clientBuild = GetBuildInfo()
+	if dataBuild == "sample" then
+		ns:Print("using sample recipe data (development build).")
+	elseif dataBuild and tostring(dataBuild) ~= tostring(clientBuild) and ns.db.warnedBuild ~= clientBuild then
+		ns:Print(("recipe data is from build %s, client is %s. Recipes may be out of date."):format(
+			tostring(dataBuild), tostring(clientBuild)))
+		ns.db.warnedBuild = clientBuild
+	end
+end
+
 local function OnPlayerLogin(event)
 	ns:UnregisterEvent(event, OnPlayerLogin)
+	CheckDataBuild()
 	CallModules("OnLogin")
 end
 

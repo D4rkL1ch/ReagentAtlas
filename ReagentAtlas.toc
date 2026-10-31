@@ -9,4 +9,10 @@
 
 # Load order: Data -> Core -> Modules -> UI
 
+Data\Recipes.lua
+Data\Reagents.lua
+
 Core.lua
+
+Modules\Valuation.lua
+Modules\Tooltip.lua
