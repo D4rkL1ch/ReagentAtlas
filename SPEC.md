@@ -28,9 +28,11 @@ Reagent Atlas is a WoW Forever (client 1.60.x, modern addon API) addon that tell
 | Item tooltip (Shift held) | Full recipe list grouped by profession, sorted by skill desc. Craftable recipes marked with a check and the character name. | P0 |
 | Alt-aware highlighting | Recipes known by the current character are green; known by an alt are blue with the alt's name; unknown are grey. | P0 |
 | Account-wide inventory | Counts per character for bags + bank; tooltip shows total and a per-character breakdown on Shift. | P1 |
-| Browser window | `/ratlas` opens a two-pane window: filterable reagent list (left), detail pane (right). Movable, position saved. | P1 |
-| Bag markers | Small tier-colored corner pip on Valuable / Keep! items in default bags. Toggleable. | P2 |
-| Settings | Toggles for tooltip, markers, Auctionator use, minimum tier for markers. Uses the modern Settings panel. | P2 |
+| Browser window | `/ratlas` opens a two-pane window: filterable reagent list (left: search, profession, min tier, owned, craftable; filters are saved, the search is not), detail pane (right: tier, AH and vendor price, owned/recipes/craftable, where the items are, recipe list marked by who knows each). Movable, position saved. Hovering a row shows the item tooltip. | P1 |
+| Bag markers | Small tier-colored diamond pip in the top-left corner of default bag slots at or above the minimum tier (default Valuable). Toggleable. Hooks each bag window's `UpdateItems` (retail container frames in Forever); the bank window is not marked. | P2 |
+| Settings | Toggles for tooltip, markers, minimap icon, Auctionator use, minimum tier for markers, and an Open button for the browser. A "Status & characters" subpage shows version, data build and price source, lists tracked characters with a confirmed Forget button, and lists learned recipes missing from the data. Uses the modern Settings panel (Esc → Options → AddOns, the gear in the browser, right-click on the minimap icon, or `/ratlas config`; not in combat). | P2 |
+| Minimap access | Always an entry in Blizzard's AddOns button by the minimap (runtime `AddonCompartmentFrame:RegisterAddon`, so no global), plus a draggable round icon that can be turned off. Left-click: browser. Right-click: settings. Angle saved in `ui.minimapAngle`. Own code, no LibDBIcon. | P2 |
+| No typing required | Every slash command has a UI equivalent; the commands stay as shortcuts. | P1 |
 
 Tier colors: Vendor = grey, Useful = white, Valuable = blue, Keep! = orange.
 
@@ -54,7 +56,8 @@ ReagentAtlas/
     BagMarkers.lua          -- tier pips on bag item buttons
   UI/
     Browser.lua             -- main window, list (ScrollBox), filters, detail pane
-    Settings.lua            -- Settings panel registration
+    Settings.lua            -- Settings panel, status & characters subpage
+    MinimapButton.lua       -- minimap icon and AddOns button entry
   tools/
     build_data.py           -- generates Data/*.lua from exported DB2 CSVs (not shipped)
 ```
@@ -91,8 +94,8 @@ ns.Reagents[itemID] = {
 ```lua
 ReagentAtlasDB = {
   version = 1,
-  settings = { tooltip = true, markers = true, useAuctionator = true, markerMinTier = 3 },
-  ui = { point = {...}, filters = {...} },
+  settings = { tooltip = true, markers = true, useAuctionator = true, markerMinTier = 3, minimapIcon = true },
+  ui = { point = {...}, filters = {...}, minimapAngle = 225 },
   chars = {
     ["Name-Realm"] = {
       class = "MAGE", faction = "Horde", lastSeen = 1730000000,
@@ -157,7 +160,7 @@ The first draft (skill / 300 × 40, min(count, 10) × 2, +10/+20 for output qual
 - Price: `Auctionator.API.v1.GetAuctionPriceByItemID("ReagentAtlas", itemID)` → copper or nil.
 - Freshness: `Auctionator.API.v1.GetAuctionAgeByItemID("ReagentAtlas", itemID)` → days or nil; ignore prices older than 7 days.
 - Price age 0 means seen today. If Auctionator has no age function, the price is used without one.
-- Wrap every call in `pcall`; on any error disable the bridge for the session (one chat notice; `/ratlas` shows the reason).
+- Wrap every call in `pcall`; on any error disable the bridge for the session (one chat notice; `/ratlas version` shows the reason).
 - Optional: `Auctionator.API.v1.RegisterForDBUpdate("ReagentAtlas", fn)` fires the internal `PRICES_CHANGED` message after a scan, for UI that needs to redraw. Prices are not cached.
 - When a fresh price exists: if price ≥ 5 × vendor price **and** ≥ 1g, raise the tier one step (max Keep!); if price < vendor price, cap at Useful. Vendor-sold reagents stay capped at Useful (their AH price is just the vendor markup). Items without a vendor sell price are not adjusted. The 1g floor keeps cheap commons (Linen, Copper Ore at 20× vendor) from rising; it is in `Valuation.WEIGHTS` with the other knobs.
 - Tooltip shows the price beside the tier, as in the mockup: "Reagent Atlas: Valuable · AH 1s 20c", plus "(N days old)" from 1 day on.
@@ -199,7 +202,9 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 ## Open questions and risks
 
 - [x] Does wow.tools.local / DBC2CSV read the Forever client cleanly (WoWDBDefs coverage for the Forever build)? Yes: wago.tools serves Forever (`wowf`, 1.60.1.70707) tables, used by `tools/fetch_db2.py`.
-- [ ] Does the Forever build of Auctionator keep `Auctionator.API.v1`?
+- [x] `## Interface:` number: `16001` on Forever 1.60.1 (from the TOCs of ElvUI, BugSack, Auctionator and ToxiUI's Camelot build; the client reported 16000 as out of date). Re-check on every major patch.
+- [x] Esc closing the browser would need a named frame in `UISpecialFrames`, i.e. a second global. Decided: keep one global, no Esc; the window closes with its X, the minimap entries or `/ratlas`.
+- [x] Does the Forever build of Auctionator keep `Auctionator.API.v1`? Yes: version 341 has `GetAuctionPriceByItemID`, `GetAuctionAgeByItemID` and `RegisterForDBUpdate`.
 - [x] Forever bank layout: classic bank bags or retail-style bank tabs? Retail-style tabs (Enum.BagIndex 6-14 character, 15-23 warband) plus a reagent bag (5), per the Forever 1.60.1 API docs. Confirm in-game that the warband bank is enabled.
 - [x] Spell reagents: which classes and spells use reagents in Forever? Derived from DB2 (`SpellReagents` + `SpellClassOptions` + class skill lines): 23 items in 1.60.1. Gaps (e.g. Levitate) fixed in `tools/spell_reagents.csv`.
 - [ ] Vendor-sold reagents: `tools/vendor_reagents.csv` (58 items) is from Classic knowledge; verify against Forever vendors after launch.

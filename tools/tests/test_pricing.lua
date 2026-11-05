@@ -88,7 +88,7 @@ test("useAuctionator = false turns prices off", function()
 	fakeAuctionator({ [12359] = 15000 })
 	local ns = boot({ version = 1, settings = { useAuctionator = false } })
 	eq(ns.Pricing:GetPrice(12359), nil, "price")
-	stubs.slash("/ratlas", "")
+	stubs.slash("/ratlas", "version")
 	contains(table.concat(stubs.printed, "\n"), "turned off in settings", "status")
 end)
 
@@ -106,7 +106,7 @@ test("an Auctionator error disables the bridge for the session, once", function(
 	-- The tooltip still renders without a price.
 	contains(tooltipFor(ns, 12359), "Reagent Atlas:", "tooltip")
 	stubs.printed = {}
-	stubs.slash("/ratlas", "")
+	stubs.slash("/ratlas", "version")
 	contains(table.concat(stubs.printed, "\n"), "off after an error", "status")
 	eq(#stubs.errors, 0, "no Lua errors")
 end)

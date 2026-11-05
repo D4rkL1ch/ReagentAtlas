@@ -6,12 +6,105 @@ local M = {}
 local frames = {}
 local tooltipPostCalls = {}
 
-local function newFrame()
-	local f = { events = {}, scripts = {} }
-	function f:RegisterEvent(e) self.events[e] = true end
-	function f:UnregisterEvent(e) self.events[e] = nil end
-	function f:SetScript(name, fn) self.scripts[name] = fn end
-	frames[#frames + 1] = f
+-- Widgets (frames, textures, font strings) share one method table. Methods
+-- record state the tests read back (shown, text, color, points); the rest
+-- are no-ops. Unknown methods error, so a typo in UI code fails the tests.
+local W = {}
+local widgetMT = { __index = W }
+
+local function noop() end
+for _, name in ipairs({
+	"SetSize", "SetWidth", "SetHeight", "SetAllPoints", "SetToplevel", "SetFrameStrata",
+	"SetClampedToScreen", "SetMovable", "EnableMouse", "RegisterForDrag", "StartMoving",
+	"StopMovingOrSizing", "SetJustifyH", "SetWordWrap", "SetRotation", "SetHighlightTexture",
+	"SetOwner", "SetItemByID", "SetElementExtent", "SetFrameLevel", "RegisterForClicks",
+	"SetNormalTexture", "Raise", "AddLine",
+}) do W[name] = noop end
+
+local function newWidget(kind, parent)
+	local w = setmetatable({ kind = kind, parent = parent, events = {}, scripts = {}, shown = true, points = {} }, widgetMT)
+	frames[#frames + 1] = w
+	return w
+end
+
+function W:RegisterEvent(e) self.events[e] = true end
+function W:UnregisterEvent(e) self.events[e] = nil end
+function W:SetScript(name, fn) self.scripts[name] = fn end
+function W:HookScript(name, fn)
+	local old = self.scripts[name]
+	self.scripts[name] = function(...)
+		if old then old(...) end
+		fn(...)
+	end
+end
+function W:GetParent() return self.parent end
+function W:Show()
+	local was = self.shown
+	self.shown = true
+	if not was and self.scripts.OnShow then self.scripts.OnShow(self) end
+end
+function W:Hide() self.shown = false end
+function W:SetShown(shown) if shown then self:Show() else self:Hide() end end
+function W:IsShown() return self.shown end
+function W:SetPoint(...) self.points[#self.points + 1] = { ... } end
+function W:ClearAllPoints() self.points = {} end
+function W:GetPoint(i)
+	local p = self.points[i or 1]
+	if not p then return nil end
+	-- point, relativeTo, relativePoint, x, y as SetPoint(point, rel, relPoint, x, y)
+	return p[1], p[2], p[3], p[4], p[5]
+end
+function W:SetText(text) self.text = text end
+function W:GetText() return self.text end
+function W:SetChecked(v) self.checked = v end
+function W:GetChecked() return self.checked end
+function W:SetColorTexture(r, g, b, a) self.color = { r, g, b, a } end
+function W:SetTexture(t) self.texture = t end
+function W:CreateTexture() return newWidget("Texture", self) end
+function W:CreateFontString() return newWidget("FontString", self) end
+function W:SetTitle(text) self.title = text end
+
+-- WowScrollBoxList: SetDataProvider "renders" up to 40 elements through the
+-- view's initializer, reusing row frames like the real ScrollBox.
+local SCROLLBOX_VISIBLE = 40
+function W:SetDataProvider(provider)
+	self.provider = provider
+	self.rows = self.rows or {}
+	local view = self.view
+	for i = 1, math.min(#provider.list, SCROLLBOX_VISIBLE) do
+		self.rows[i] = self.rows[i] or newWidget("Button", self)
+		view.initializer(self.rows[i], provider.list[i])
+	end
+	for i = #provider.list + 1, #self.rows do self.rows[i]:Hide() end
+end
+function W:ForEachFrame(fn)
+	for i = 1, math.min(#(self.provider and self.provider.list or {}), #(self.rows or {})) do
+		fn(self.rows[i])
+	end
+end
+
+function M.newWidget(kind, parent) return newWidget(kind, parent) end
+function M.allWidgets() return frames end
+
+-- A bag window like Blizzard's ContainerFrameMixin: one item button per slot
+-- of `bagID`; UpdateItems is what the game calls when contents change.
+function M.newBagFrame(bagID, slots)
+	local f = newWidget("Frame")
+	f.buttons = {}
+	for slot = 1, slots and #slots or 0 do
+		local b = newWidget("ItemButton", f)
+		function b:GetBagID() return bagID end
+		function b:GetID() return slot end
+		f.buttons[slot] = b
+	end
+	function f:EnumerateValidItems()
+		local i = 0
+		return function()
+			i = i + 1
+			if self.buttons[i] then return i, self.buttons[i] end
+		end
+	end
+	function f:UpdateItems() self.updates = (self.updates or 0) + 1 end
 	return f
 end
 
@@ -80,7 +173,16 @@ function M.reset()
 	M.bankTabs = { [0] = { 6, 7 }, [2] = { 15 } }
 	M.accountBankViewable = true
 	M.noBankAPI = false
+	M.combat = false
+	M.popup = nil
+	M.compartment = {}
+	AddonCompartmentFrame = { RegisterAddon = function(_, data) M.compartment[#M.compartment + 1] = data end }
+	M.noDropdown = false
+	M.itemLoads = {}
 	SlashCmdList = {}
+	Settings = M.newSettings()
+	ContainerFrameCombinedBags = nil
+	ContainerFrameContainer = { ContainerFrames = { M.newBagFrame(0, {}) } }
 	Auctionator = nil
 	ReagentAtlasDB = nil
 end
@@ -105,7 +207,107 @@ function print(...)
 	M.printed[#M.printed + 1] = table.concat(parts, " ")
 end
 
-function CreateFrame() return newFrame() end
+function CreateFrame(kind, _, parent, template)
+	local w = newWidget(kind, parent)
+	w.template = template
+	if template == "UICheckButtonTemplate" then
+		w.Text = newWidget("FontString", w)
+	elseif template == "WowStyle1DropdownTemplate" then
+		if M.noDropdown then error("unknown template") end
+		function w:SetupMenu(fn)
+			self.menu = fn
+		end
+	end
+	return w
+end
+UIParent = newWidget("Frame")
+GameTooltip = newWidget("GameTooltip")
+
+-- Minimap: 140 wide, centered at (500, 400), scale 1.
+Minimap = newWidget("Frame")
+function Minimap:GetWidth() return 140 end
+function Minimap:GetCenter() return 500, 400 end
+function Minimap:GetEffectiveScale() return 1 end
+function Minimap:GetFrameLevel() return 2 end
+M.cursor = { 0, 0 }
+function GetCursorPosition() return M.cursor[1], M.cursor[2] end
+math.atan2 = math.atan2 or function(y, x) return math.atan(y, x) end
+
+-- Popups: StaticPopup_Show records the dialog; tests run its OnAccept.
+StaticPopupDialogs = {}
+YES, NO = "Yes", "No"
+function StaticPopup_Show(name, text) M.popup = { name = name, text = text, dialog = StaticPopupDialogs[name] } end
+function date(fmt, t) return os.date("!" .. fmt, t) end
+
+function CreateSettingsButtonInitializer(name, buttonText, click)
+	return { name = name, buttonText = buttonText, click = click }
+end
+
+-- ScrollBox helpers.
+function CreateScrollBoxListLinearView()
+	local view = {}
+	function view:SetElementExtent() end
+	function view:SetElementInitializer(_, fn) self.initializer = fn end
+	return view
+end
+ScrollUtil = { InitScrollBoxListWithScrollBar = function(box, _, view) box.view = view end }
+function CreateDataProvider(list) return { list = list } end
+ScrollBoxConstants = { RetainScrollPosition = true }
+
+-- hooksecurefunc(table, name, fn) / hooksecurefunc(name, fn): post-hook.
+function hooksecurefunc(t, name, fn)
+	if type(t) == "string" then t, name, fn = _G, t, name end
+	local orig = t[name]
+	t[name] = function(...)
+		local r = { orig(...) }
+		fn(...)
+		return unpack(r)
+	end
+end
+
+-- Settings API: records registrations; setting:SetValue writes the saved
+-- table and runs the value-changed callbacks like the real panel.
+function M.newSettings()
+	local s = { categories = {}, settings = {}, callbacks = {}, controls = {}, opened = nil }
+	s.VarType = { Boolean = "boolean", Number = "number", String = "string" }
+	s.initializers = {}
+	function s.RegisterVerticalLayoutCategory(name)
+		local category = { name = name, GetID = function() return "cat:" .. name end }
+		s.categories[#s.categories + 1] = category
+		return category, { AddInitializer = function(_, init) s.initializers[#s.initializers + 1] = init end }
+	end
+	function s.RegisterCanvasLayoutSubcategory(_, frame, name)
+		s.canvas = { frame = frame, name = name }
+	end
+	function s.RegisterAddOnSetting(_, variable, key, tbl, varType, label, default)
+		local setting = { variable = variable, key = key, varType = varType, label = label, default = default }
+		function setting:GetValue() return tbl[key] end
+		function setting:SetValue(v)
+			tbl[key] = v
+			for _, cb in ipairs(s.callbacks[variable] or {}) do cb(nil, self, v) end
+		end
+		s.settings[key] = setting
+		return setting
+	end
+	function s.SetOnValueChangedCallback(variable, cb)
+		s.callbacks[variable] = s.callbacks[variable] or {}
+		table.insert(s.callbacks[variable], cb)
+	end
+	function s.CreateCheckbox(_, setting) s.controls[#s.controls + 1] = { kind = "checkbox", setting = setting } end
+	function s.CreateDropdown(_, setting, options)
+		s.controls[#s.controls + 1] = { kind = "dropdown", setting = setting, options = options }
+	end
+	function s.CreateControlTextContainer()
+		local data = {}
+		return {
+			Add = function(_, value, label) data[#data + 1] = { value = value, label = label } end,
+			GetData = function() return data end,
+		}
+	end
+	function s.RegisterAddOnCategory(category) s.registered = category end
+	function s.OpenToCategory(id) s.opened = id end
+	return s
+end
 function geterrorhandler() return function(err) M.errors[#M.errors + 1] = err end end
 
 function strjoin(sep, ...) return table.concat({ ... }, sep) end
@@ -121,7 +323,7 @@ function WrapTextInColorCode(text, color) return "|c" .. color .. text .. "|r" e
 function GetBuildInfo() return "1.60.0", "99999", "Nov 4 2026", 16000 end
 function UnitName() return "Tester" end
 function GetNormalizedRealmName() return "StubRealm" end
-function InCombatLockdown() return false end
+function InCombatLockdown() return M.combat end
 function IsShiftKeyDown() return M.shift end
 function UnitClass() return M.classToken, M.classToken end
 
@@ -134,7 +336,16 @@ C_AddOns = {
 
 M.spellNames = { [2963] = "Bolt of Linen Cloth", [990001] = "Feathered Jerkin" }
 C_Spell = { GetSpellName = function(id) return M.spellNames[id] end }
-C_Item = { GetItemNameByID = function(id) if id == 990102 then return "Feathered Boots" end end }
+-- Item names: a few fixed ones plus M.itemNames set by tests.
+M.itemNames = {}
+C_Item = {
+	GetItemNameByID = function(id)
+		if id == 990102 then return "Feathered Boots" end
+		return M.itemNames[id]
+	end,
+	GetItemIconByID = function(id) return 100000 + id end,
+	RequestLoadItemDataByID = function(id) M.itemLoads[#M.itemLoads + 1] = id end,
+}
 
 LOCALIZED_CLASS_NAMES_MALE = { MAGE = "Mage", PRIEST = "Priest" }
 C_ClassColor = {

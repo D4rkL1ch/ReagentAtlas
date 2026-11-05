@@ -1,4 +1,4 @@
-## Interface: 16000
+## Interface: 16001
 ## Title: Reagent Atlas
 ## Notes: Shows which recipes use an item, who can craft them, and whether it is worth keeping.
 ## Author: TwinUnicorns
@@ -6,6 +6,7 @@
 ## SavedVariables: ReagentAtlasDB
 ## OptionalDeps: Auctionator
 ## Category: Professions
+## IconTexture: Interface\Icons\INV_Misc_Book_09
 
 # Load order: Data -> Core -> Modules -> UI
 
@@ -19,3 +20,8 @@ Modules\Valuation.lua
 Modules\Professions.lua
 Modules\Inventory.lua
 Modules\Tooltip.lua
+Modules\BagMarkers.lua
+
+UI\Settings.lua
+UI\Browser.lua
+UI\MinimapButton.lua

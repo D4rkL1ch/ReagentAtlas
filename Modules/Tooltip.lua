@@ -117,6 +117,11 @@ local function NameList(isMe, keys)
 	return table.concat(names, ", ")
 end
 
+-- Shared with the browser's recipe list.
+function Tooltip:FormatNames(isMe, keys)
+	return NameList(isMe, keys)
+end
+
 -- Recipes using the item that any of your characters can craft.
 local function AddCraftLine(tooltip, info)
 	local count, isMe, altSet = 0, false, {}

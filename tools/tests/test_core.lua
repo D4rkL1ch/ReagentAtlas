@@ -72,10 +72,10 @@ test("char key is Name-Realm", function()
 	eq(ns:GetCharKey(), "Tester-StubRealm", "key")
 end)
 
-test("/ratlas prints version, interface and Auctionator status", function()
+test("/ratlas version prints version, interface and price status", function()
 	T.boot(nil)
 	stubs.printed = {}
-	stubs.slash("/ratlas", "")
+	stubs.slash("/ratlas", "version")
 	local out = table.concat(stubs.printed, "\n")
 	contains(out, "v0.1.0", "version")
 	contains(out, "interface 16000", "interface")

@@ -23,7 +23,22 @@
 		"Lua.diagnostics.globals": [
 			"SlashCmdList",
 			"TooltipDataProcessor",
-			"LOCALIZED_CLASS_NAMES_MALE"
+			"LOCALIZED_CLASS_NAMES_MALE",
+			"ContainerFrameCombinedBags",
+			"ContainerFrameContainer",
+			"Settings",
+			"ITEM_QUALITY_COLORS",
+			"ScrollUtil",
+			"ButtonFrameTemplate_HidePortrait",
+			"CreateScrollBoxListLinearView",
+			"CreateDataProvider",
+			"ScrollBoxConstants",
+			"StaticPopupDialogs",
+			"YES",
+			"NO",
+			"CreateSettingsButtonInitializer",
+			"StaticPopup_Show",
+			"AddonCompartmentFrame"
 		]
 	}
 }

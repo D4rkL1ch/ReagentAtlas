@@ -108,6 +108,7 @@ local DEFAULT_SETTINGS = {
 	markers = true,
 	useAuctionator = true,
 	markerMinTier = 3,
+	minimapIcon = true,
 }
 
 -- Fill missing keys from defaults without overwriting user values.
@@ -195,14 +196,23 @@ end
 
 -- Diagnostics ---------------------------------------------------------------
 
-local function PrintStatus()
+-- Status lines for /ratlas version and the settings panel.
+function ns:GetStatusLines()
 	local gameVersion, build, _, tocVersion = GetBuildInfo()
-	ns:Print(("v%s"):format(ns.version))
-	ns:Print(("client %s (build %s), interface %s"):format(
-		tostring(gameVersion), tostring(build), tostring(tocVersion)))
-	ns:Print(("recipe data: build %s"):format(tostring(ns.DATA_BUILD)))
-	if ns.Pricing then
-		ns:Print("prices: " .. ns.Pricing:StatusText())
+	local lines = {
+		("v%s"):format(self.version),
+		("client %s (build %s), interface %s"):format(tostring(gameVersion), tostring(build), tostring(tocVersion)),
+		("recipe data: build %s"):format(tostring(self.DATA_BUILD)),
+	}
+	if self.Pricing then
+		lines[#lines + 1] = "prices: " .. self.Pricing:StatusText()
+	end
+	return lines
+end
+
+local function PrintStatus()
+	for _, line in ipairs(ns:GetStatusLines()) do
+		ns:Print(line)
 	end
 end
 
@@ -217,28 +227,42 @@ function ns:RegisterCommand(name, usage, fn)
 	commandHelp[#commandHelp + 1] = usage
 end
 
-commands[""] = PrintStatus
+commands[""] = function()
+	if ns.Browser then ns.Browser:Toggle() else PrintStatus() end
+end
 commands.version = PrintStatus
 
 commands.help = function()
 	ns:Print("commands:")
-	print("  /ratlas - version and client info")
+	print("  /ratlas - open or close the reagent browser (also on the minimap)")
+	print("  /ratlas version - version, client and price source")
 	for _, usage in ipairs(commandHelp) do
 		print("  /ratlas " .. usage)
 	end
 	print("  /ratlas help - this list")
 end
 
+-- Removes a character's saved data. Shared by /ratlas forget and the settings
+-- panel. Returns true, or false and why not ("current" or "unknown").
+function ns:ForgetCharacter(key)
+	if key == self:GetCharKey() then return false, "current" end
+	if not self.db.chars[key] then return false, "unknown" end
+	self.db.chars[key] = nil
+	self:Fire("CHAR_DATA_CHANGED")
+	return true
+end
+
 ns:RegisterCommand("forget", "forget Name-Realm - remove a deleted character's data", function(arg)
 	local key = strtrim(arg or "")
 	if key == "" then
 		ns:Print("usage: /ratlas forget Name-Realm")
-	elseif key == ns:GetCharKey() then
-		ns:Print("can't forget the character you're logged in on.")
-	elseif ns.db.chars[key] then
-		ns.db.chars[key] = nil
-		ns:Fire("CHAR_DATA_CHANGED")
+		return
+	end
+	local ok, reason = ns:ForgetCharacter(key)
+	if ok then
 		ns:Print(("forgot %s."):format(key))
+	elseif reason == "current" then
+		ns:Print("can't forget the character you're logged in on.")
 	else
 		ns:Print(("no data for '%s'. Keys are case-sensitive, e.g. Thrall-Stormrage."):format(key))
 	end

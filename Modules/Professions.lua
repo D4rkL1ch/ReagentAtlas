@@ -177,16 +177,23 @@ function Professions:GetKnownBy(recipeID)
 	return isMe, alts
 end
 
+-- Learned recipes missing from the data, as sorted "Name (id)" lines. Only
+-- profession windows opened this session are checked.
+function Professions:GetMissingRecipes()
+	local names = {}
+	for recipeID, name in pairs(missingFromData) do
+		names[#names + 1] = ("%s (%d)"):format(type(name) == "string" and name or "?", recipeID)
+	end
+	table.sort(names)
+	return names
+end
+
 -- Lifecycle -----------------------------------------------------------------
 
 function Professions:OnInit()
 	ns:RegisterMessage("CHAR_DATA_CHANGED", function() knownIndex = nil end)
 	ns:RegisterCommand("diff", "diff - learned recipes missing from the recipe data", function()
-		local names = {}
-		for recipeID, name in pairs(missingFromData) do
-			names[#names + 1] = ("%s (%d)"):format(type(name) == "string" and name or "?", recipeID)
-		end
-		table.sort(names)
+		local names = Professions:GetMissingRecipes()
 		if #names == 0 then
 			ns:Print("no differences found. Open each profession window first; only what was opened this session is checked.")
 		else
