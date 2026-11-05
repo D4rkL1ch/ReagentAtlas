@@ -620,17 +620,9 @@ local function UpdateTrackButtons()
 	end)
 end
 
-local function CountChars()
-	local n = 0
-	for _ in pairs(ns.db.chars) do n = n + 1 end
-	return n
-end
-
 -- noun: what the list holds, plural ("reagents").
 function Browser:SetSubtitle(shown, total, noun)
-	local chars = CountChars()
-	frame.Subtitle:SetText(Color(("%d of %d %s · %d character%s tracked"):format(
-		shown, total, noun, chars, chars == 1 and "" or "s"), COLOR_HINT))
+	frame.Subtitle:SetText(Color(("%d of %d %s"):format(shown, total, noun), COLOR_HINT))
 end
 
 local function UpdateSubtitle(shown)
@@ -697,12 +689,16 @@ local function CreateBrowser()
 	content:SetPoint("BOTTOMRIGHT", -8, 8)
 	frame.Content = content
 
-	frame.Subtitle = CreateLabel(content, "GameFontHighlightSmall")
-	frame.Subtitle:SetPoint("TOPRIGHT", -PAD, -6)
-
 	frame.Tabs = {}
 	CreateTab(1, "Reagents", TAB_REAGENTS)
 	CreateTab(2, "Crafting", TAB_CRAFTING)
+
+	-- Beside the tabs, so a wider font cuts it short rather than running under them.
+	frame.Subtitle = CreateLabel(content, "GameFontHighlightSmall")
+	frame.Subtitle:SetPoint("LEFT", frame.Tabs[TAB_CRAFTING], "RIGHT", 8, 0)
+	frame.Subtitle:SetPoint("RIGHT", content, "TOPRIGHT", -PAD, -TAB_HEIGHT / 2)
+	frame.Subtitle:SetJustifyH("RIGHT")
+	frame.Subtitle:SetWordWrap(false)
 
 	-- Left pane: filters, column headers, reagent list.
 	local left, right = Browser:CreatePanes()
