@@ -9,6 +9,8 @@ local ROW_HEIGHT = 30
 local RECIPE_ROW_HEIGHT = 22
 local RECIPE_ICON = 18
 local TRAINER_ICON = "Interface\\Icons\\INV_Misc_Book_09" -- recipes with no recipe item
+local TRACK_ICON = "Interface\\Buttons\\UI-PlusButton-Up"
+local UNTRACK_ICON = "Interface\\Buttons\\UI-MinusButton-Up"
 local TIER_COL, OWNED_COL = 70, 50
 local PAD = 12
 
@@ -66,6 +68,11 @@ end
 function Browser:GetRecipeItem(recipeID)
 	local source = ns.RecipeSources and ns.RecipeSources[recipeID]
 	return source and source.i
+end
+
+function Browser:GetRecipeIcon(recipeID)
+	local item = self:GetRecipeItem(recipeID)
+	return item and C_Item.GetItemIconByID(item) or TRAINER_ICON
 end
 
 -- A recipe row stands for what it crafts; enchants have only their spell.
@@ -355,6 +362,11 @@ end
 
 local KNOWN_COLOR = { me = COLOR_YOURS, alt = COLOR_ALT, none = COLOR_UNKNOWN }
 
+-- Adds or removes from the tracking list and shows the list on adding.
+local function ToggleTracked(kind, id)
+	if ns.Tracker:Toggle(kind, id) then ns.TrackerUI:Open() end
+end
+
 local function SetSpellTooltip(spellID, name)
 	if GameTooltip.SetSpellByID then
 		GameTooltip:SetSpellByID(spellID)
@@ -397,8 +409,19 @@ end
 
 local function InitRecipeRow(row, recipe)
 	if not row.Name then
+		row.Track = CreateFrame("Button", nil, row)
+		row.Track:SetSize(16, 16)
+		row.Track:SetPoint("RIGHT", -4, 0)
+		row.Track:SetHitRectInsets(-4, -4, -3, -3) -- the full row height
+		row.Track:SetScript("OnClick", function() ToggleTracked("recipe", row.recipeID) end)
+		row.Track:SetScript("OnEnter", function(self)
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+			GameTooltip:AddLine(ns.Tracker:Find("recipe", row.recipeID) and "Stop tracking this recipe" or "Track this recipe")
+			GameTooltip:Show()
+		end)
+		row.Track:SetScript("OnLeave", function() GameTooltip:Hide() end)
 		row.Who = CreateLabel(row, "GameFontHighlightSmall")
-		row.Who:SetPoint("RIGHT", -6, 0)
+		row.Who:SetPoint("RIGHT", row.Track, "LEFT", -4, 0)
 		row.Who:SetWidth(110)
 		row.Who:SetJustifyH("RIGHT")
 		row.Who:SetWordWrap(false)
@@ -409,6 +432,7 @@ local function InitRecipeRow(row, recipe)
 		row.Name = CreateLabel(row, "GameFontHighlight")
 		row.Recipe = CreateFrame("Button", nil, row)
 		row.Recipe:SetSize(RECIPE_ICON, RECIPE_ICON)
+		row.Recipe:SetHitRectInsets(-2, -2, -2, -2)
 		row.Recipe:SetPoint("LEFT", 4, 0)
 		row.Recipe:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
 		row.Recipe.Icon = row.Recipe:CreateTexture(nil, "ARTWORK")
@@ -425,7 +449,8 @@ local function InitRecipeRow(row, recipe)
 		row:SetScript("OnLeave", function() GameTooltip:Hide() end)
 	end
 	row.recipeID, row.recipeName = recipe.recipeID, recipe.name
-	row.Recipe.Icon:SetTexture(recipe.recipeItem and C_Item.GetItemIconByID(recipe.recipeItem) or TRAINER_ICON)
+	row.Recipe.Icon:SetTexture(Browser:GetRecipeIcon(recipe.recipeID))
+	row.Track:SetNormalTexture(ns.Tracker:Find("recipe", recipe.recipeID) and UNTRACK_ICON or TRACK_ICON)
 	local color = KNOWN_COLOR[recipe.known]
 	local mark = recipe.known == "none" and "·" or CHECK
 	row.Name:SetText(Color(mark .. " " .. recipe.name, color))
@@ -448,19 +473,35 @@ function Browser:CreateList(parent, rowHeight, initializer)
 	return box
 end
 
-local function SavePosition()
-	local point, _, relPoint, x, y = frame:GetPoint(1)
-	ns.db.ui.point = { point, relPoint, x, y }
-end
-
-local function RestorePosition()
-	frame:ClearAllPoints()
-	local p = ns.db.ui.point
+-- A movable titled window, position saved in ns.db.ui[pointKey]. Shared with
+-- the tracking list; "..." is where it opens the first time.
+---@return table
+function Browser:CreateWindow(width, height, title, pointKey, ...)
+	local window = CreateFrame("Frame", nil, UIParent, "ButtonFrameTemplate") --[[@as table]]
+	window:SetSize(width, height)
+	window:SetToplevel(true)
+	window:SetFrameStrata("HIGH")
+	window:SetClampedToScreen(true)
+	window:SetMovable(true)
+	window:EnableMouse(true)
+	window:RegisterForDrag("LeftButton")
+	window:SetScript("OnDragStart", window.StartMoving)
+	window:SetScript("OnDragStop", function(self)
+		self:StopMovingOrSizing()
+		local point, _, relPoint, x, y = self:GetPoint(1)
+		ns.db.ui[pointKey] = { point, relPoint, x, y }
+	end)
+	if ButtonFrameTemplate_HidePortrait then ButtonFrameTemplate_HidePortrait(window) end
+	if window.Inset then window.Inset:Hide() end
+	if window.SetTitle then window:SetTitle(title) end
+	window:ClearAllPoints()
+	local p = ns.db.ui[pointKey]
 	if p and p[1] then
-		frame:SetPoint(p[1], UIParent, p[2], p[3], p[4])
+		window:SetPoint(p[1], UIParent, p[2], p[3], p[4])
 	else
-		frame:SetPoint("CENTER")
+		window:SetPoint(...)
 	end
+	return window
 end
 
 local function CreateDetail(parent)
@@ -468,8 +509,12 @@ local function CreateDetail(parent)
 	d.Edge, d.Icon = CreateIcon(parent, 44)
 	d.Edge:SetPoint("TOPLEFT", PAD, -PAD)
 	d.Name = CreateLabel(parent, "GameFontNormalHuge")
+	d.Track = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
+	d.Track:SetSize(70, 22)
+	d.Track:SetPoint("TOPRIGHT", -PAD, -PAD)
+	d.Track:SetScript("OnClick", function() ToggleTracked("item", selected) end)
 	d.Name:SetPoint("TOPLEFT", d.Edge, "TOPRIGHT", 12, -2)
-	d.Name:SetPoint("RIGHT", -PAD, 0)
+	d.Name:SetPoint("RIGHT", d.Track, "LEFT", -8, 0)
 	d.Name:SetJustifyH("LEFT")
 	d.Name:SetWordWrap(false)
 	d.Tier = CreateLabel(parent, "GameFontNormal")
@@ -522,7 +567,7 @@ local function UpdateDetail()
 	local d = frame.Detail
 	local detail = selected and Browser:GetDetail(selected)
 	local show = detail ~= nil
-	for _, region in ipairs({ d.Edge, d.Icon, d.Name, d.Tier, d.Price, d.Where, d.UsedIn, d.Legend, d.Recipes }) do
+	for _, region in ipairs({ d.Edge, d.Icon, d.Name, d.Tier, d.Price, d.Where, d.UsedIn, d.Legend, d.Recipes, d.Track }) do
 		region:SetShown(show)
 	end
 	for _, stat in ipairs(d.Stats) do stat:GetParent():SetShown(show) end
@@ -541,7 +586,19 @@ local function UpdateDetail()
 	local where = #detail.where > 0 and table.concat(detail.where, ", ") or "—"
 	d.Where:SetText(Color("Where it is: ", COLOR_HINT) .. Color(where, COLOR_TEXT))
 	d.UsedIn:SetShown(#detail.recipes > 0)
+	d.Track:SetText(ns.Tracker:Find("item", detail.itemID) and "Untrack" or "Track")
 	d.Recipes:SetDataProvider(CreateDataProvider(detail.recipes))
+end
+
+-- Only the track buttons: rebuilding the recipe list would reset its scroll
+-- under someone working down it.
+local function UpdateTrackButtons()
+	if not (frame and frame:IsShown()) then return end
+	local d = frame.Detail
+	d.Track:SetText(ns.Tracker:Find("item", selected) and "Untrack" or "Track")
+	d.Recipes:ForEachFrame(function(row)
+		row.Track:SetNormalTexture(ns.Tracker:Find("recipe", row.recipeID) and UNTRACK_ICON or TRACK_ICON)
+	end)
 end
 
 local function CountChars()
@@ -561,23 +618,7 @@ local function UpdateSubtitle(shown)
 end
 
 local function CreateBrowser()
-	frame = CreateFrame("Frame", nil, UIParent, "ButtonFrameTemplate") --[[@as table]]
-	frame:SetSize(WIDTH, HEIGHT)
-	frame:SetToplevel(true)
-	frame:SetFrameStrata("HIGH")
-	frame:SetClampedToScreen(true)
-	frame:SetMovable(true)
-	frame:EnableMouse(true)
-	frame:RegisterForDrag("LeftButton")
-	frame:SetScript("OnDragStart", frame.StartMoving)
-	frame:SetScript("OnDragStop", function(self)
-		self:StopMovingOrSizing()
-		SavePosition()
-	end)
-	if ButtonFrameTemplate_HidePortrait then ButtonFrameTemplate_HidePortrait(frame) end
-	if frame.Inset then frame.Inset:Hide() end
-	if frame.SetTitle then frame:SetTitle("Reagent Atlas") end
-	RestorePosition()
+	frame = Browser:CreateWindow(WIDTH, HEIGHT, "Reagent Atlas", "point", "CENTER")
 
 	-- Gear in the title bar. Closes the browser so it can't cover the panel.
 	local gear = CreateFrame("Button", nil, frame)
@@ -648,6 +689,12 @@ local function CreateBrowser()
 	ownedCheck:SetPoint("TOPLEFT", profChoice, "BOTTOMLEFT", -2, -6)
 	local craftCheck = CreateCheck(left, "Craftable", "craftable")
 	craftCheck:SetPoint("LEFT", ownedCheck, "LEFT", 100, 0)
+
+	local trackerButton = CreateFrame("Button", nil, left, "UIPanelButtonTemplate")
+	trackerButton:SetSize(110, 22)
+	trackerButton:SetPoint("LEFT", craftCheck, "LEFT", 124, 0)
+	trackerButton:SetText("Tracking list")
+	trackerButton:SetScript("OnClick", function() ns.TrackerUI:Toggle() end)
 
 	-- The list leaves 16px on the right for the scroll bar; column headers
 	-- line up with the row layout in InitItemRow.
@@ -730,6 +777,7 @@ function Browser:OnInit()
 	ns:RegisterMessage("CHAR_DATA_CHANGED", QueueRefresh)
 	ns:RegisterMessage("PRICES_CHANGED", QueueRefresh)
 	ns:RegisterMessage("SETTINGS_CHANGED", QueueRefresh)
+	ns:RegisterMessage("TRACKER_CHANGED", UpdateTrackButtons)
 	ns:RegisterEvent("ITEM_DATA_LOAD_RESULT", function(_, itemID)
 		if requested[itemID] then QueueRefresh() end
 	end)

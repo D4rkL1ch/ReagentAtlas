@@ -9,10 +9,12 @@ local RADIUS_OFFSET = 5   -- past the minimap's edge
 
 local button
 
--- Left click: browser. Right click: settings.
+-- Left click: browser. Shift-click: tracking list. Right click: settings.
 local function OnClick(buttonName)
 	if buttonName == "RightButton" then
 		ns.SettingsUI:Open()
+	elseif IsShiftKeyDown() then
+		ns.TrackerUI:Toggle()
 	else
 		ns.Browser:Toggle()
 	end
@@ -22,6 +24,7 @@ local function ShowHint(owner)
 	GameTooltip:SetOwner(owner, "ANCHOR_LEFT")
 	GameTooltip:AddLine(TITLE)
 	GameTooltip:AddLine("Left-click: reagent browser", 1, 1, 1)
+	GameTooltip:AddLine("Shift-click: tracking list", 1, 1, 1)
 	GameTooltip:AddLine("Right-click: settings", 1, 1, 1)
 	GameTooltip:Show()
 end

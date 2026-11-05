@@ -18,7 +18,8 @@ for _, name in ipairs({
 	"SetClampedToScreen", "SetMovable", "EnableMouse", "RegisterForDrag", "StartMoving",
 	"StopMovingOrSizing", "SetJustifyH", "SetWordWrap", "SetRotation", "SetHighlightTexture",
 	"SetOwner", "SetItemByID", "SetSpellByID", "SetElementExtent", "SetFrameLevel", "RegisterForClicks",
-	"SetNormalTexture", "Raise", "AddLine",
+	"SetNormalTexture", "Raise", "AddLine", "SetAutoFocus", "SetNumeric", "SetMaxLetters", "SetFocus",
+	"ClearFocus", "HighlightText", "SetHitRectInsets",
 }) do W[name] = noop end
 
 local function newWidget(kind, parent)
@@ -43,7 +44,11 @@ function W:Show()
 	self.shown = true
 	if not was and self.scripts.OnShow then self.scripts.OnShow(self) end
 end
-function W:Hide() self.shown = false end
+function W:Hide()
+	local was = self.shown
+	self.shown = false
+	if was and self.scripts.OnHide then self.scripts.OnHide(self) end
+end
 function W:SetShown(shown) if shown then self:Show() else self:Hide() end end
 function W:IsShown() return self.shown end
 function W:SetPoint(...) self.points[#self.points + 1] = { ... } end
@@ -166,6 +171,9 @@ function M.reset()
 	M.shift = false
 	M.classToken = "WARRIOR"
 	M.timers = {}
+	M.now = 0
+	M.sounds = {}
+	M.notices = {}
 	-- Character state, changed by tests.
 	M.professions = {}       -- array of { skillLine, rank, maxRank } in GetProfessions order
 	M.tradeSkill = nil       -- open window: { profID, skillLevel, recipes = { [id] = learned }, linked, filteredOnly }
@@ -190,12 +198,21 @@ function M.reset()
 	ReagentAtlasDB = nil
 end
 
--- Run pending C_Timer callbacks (including ones they schedule).
-function M.runTimers()
+-- Run pending C_Timer callbacks in due order on a virtual clock (including
+-- ones they schedule). With `seconds`, stops that far ahead of now.
+function M.runTimers(seconds)
+	local limit = seconds and M.now + seconds
 	while #M.timers > 0 do
-		local fn = table.remove(M.timers, 1)
-		fn()
+		local nextIndex = 1
+		for i = 2, #M.timers do
+			if M.timers[i].at < M.timers[nextIndex].at then nextIndex = i end
+		end
+		if limit and M.timers[nextIndex].at > limit then break end
+		local timer = table.remove(M.timers, nextIndex)
+		M.now = timer.at
+		timer.fn()
 	end
+	if limit then M.now = limit end
 end
 
 -- Globals -------------------------------------------------------------------
@@ -388,7 +405,12 @@ TooltipDataProcessor = {
 }
 
 
-C_Timer = { After = function(_, fn) M.timers[#M.timers + 1] = fn end }
+C_Timer = { After = function(delay, fn) M.timers[#M.timers + 1] = { at = M.now + delay, fn = fn } end }
+
+SOUNDKIT = { IG_QUEST_LIST_COMPLETE = 878 }
+function PlaySound(kit, channel) M.sounds[#M.sounds + 1] = { kit = kit, channel = channel } end
+RaidWarningFrame = {}
+function RaidNotice_AddMessage(_, text) M.notices[#M.notices + 1] = text end
 function GetServerTime() return 1800000000 end
 function UnitFactionGroup() return "Horde" end
 

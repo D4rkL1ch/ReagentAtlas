@@ -111,6 +111,7 @@ end)
 
 test("list updates are debounced into one scan", function()
 	local ns = boot()
+	stubs.runTimers() -- login timers
 	stubs.tradeSkill = { profID = 165, skillLevel = 290, recipes = { [990001] = true } }
 	stubs.fire("TRADE_SKILL_LIST_UPDATE")
 	stubs.fire("TRADE_SKILL_LIST_UPDATE")

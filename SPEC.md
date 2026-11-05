@@ -1,6 +1,6 @@
 # Reagent Atlas — Implementation Spec
 
-Last updated: Oct 31, 2026
+Last updated: Nov 6, 2026
 
 ## Overview & goals
 
@@ -29,12 +29,24 @@ Reagent Atlas is a WoW Forever (client 1.60.x, modern addon API) addon that tell
 | Alt-aware highlighting | Recipes known by the current character are green; known by an alt are blue with the alt's name; unknown are grey. | P0 |
 | Account-wide inventory | Counts per character for bags + bank; tooltip shows total and a per-character breakdown on Shift. | P1 |
 | Browser window | `/ratlas` opens a two-pane window: filterable reagent list (left: search, profession, min tier, owned, craftable; filters are saved, the search is not), detail pane (right: tier, AH and vendor price, owned/recipes/craftable, where the items are, recipe list marked by who knows each, with the source of unknown recipes). Movable, position saved. Hovering a reagent row shows its item tooltip. A recipe row stands for the crafted item (the spell for enchants); its icon stands for the recipe (the recipe item, or the craft spell for trainer recipes) and its tooltip adds the full source. Modified clicks on any of these work as on an item link (Shift links to chat, Ctrl previews in the dressing room). | P1 |
+| Tracking list | A small movable window (browser button, Shift-click on the minimap entries, Settings, `/ratlas track`) listing tracked recipes and reagents; it stays open across reloads and can be left open in combat. Add with Track in the browser's detail pane or + on a recipe row; a recipe is reachable from any of its reagents. A recipe shows have / need per reagent, then who knows it, or where to get it (`Sources:GetDetailLines`, with the unconfirmed note). A plain click folds it. A reagent shows the owned count, optionally against a goal. Clicking a count sets the goal in the footer box: how many of a reagent (empty clears it), or how many crafts of a recipe (needs multiply; empty means one). Reaching a goal alerts: raid-warning text, a chat line and a sound (Settings toggle, Master channel). See "Tracking list" below. | P1 |
 | Bag markers | Small tier-colored diamond pip in the top-left corner of default bag slots at or above the minimum tier (default Valuable). Toggleable. Hooks each bag window's `UpdateItems` (retail container frames in Forever); the bank window is not marked. | P2 |
 | Settings | Toggles for tooltip, markers, minimap icon, Auctionator use, minimum tier for markers, and an Open button for the browser. A "Status & characters" subpage shows version, data build and price source, lists tracked characters with a confirmed Forget button, and lists learned recipes missing from the data. Uses the modern Settings panel (Esc → Options → AddOns, the gear in the browser, right-click on the minimap icon, or `/ratlas config`; not in combat). | P2 |
 | Minimap access | Always an entry in Blizzard's AddOns button by the minimap (runtime `AddonCompartmentFrame:RegisterAddon`, so no global), plus a draggable round icon that can be turned off. Left-click: browser. Right-click: settings. Angle saved in `ui.minimapAngle`. Own code, no LibDBIcon. | P2 |
 | No typing required | Every slash command has a UI equivalent; the commands stay as shortcuts. | P1 |
 
 Tier colors: Vendor = grey, Useful = white, Valuable = blue, Keep! = orange.
+
+### Tracking list
+
+Counts are the same account-wide total as everywhere else (bags and banks of every character plus the warband bank), so a goal can be met by items on an alt; hovering a row shows where they are. Each entry counts on its own: two recipes needing the same 5 bars are both met by 5 bars.
+
+Alerts fire when a goal goes from unmet to met, and a goal that falls short again re-arms. The `done` flag is saved, so a met goal stays quiet after a relog, and one you already meet when you set it never alerts: only a later gain does. A reagent without a goal never alerts.
+
+Two guards keep counts in flux from causing false alerts:
+
+- Items moved between bags and bank are counted twice or not at all until the bank scan runs (0.2 s after the bag scan). Goals are checked once counts have been quiet for 0.5 s, so that delay must stay above `BANK_SCAN_DELAY`.
+- Bags can read as partly empty right after login, which would re-arm met goals and alert on every login. The first check runs 5 s after login.
 
 ## Architecture & file layout
 
@@ -54,10 +66,12 @@ ReagentAtlas/
     Pricing.lua             -- Auctionator bridge, returns price or nil
     Valuation.lua           -- tier heuristic, combines data + price
     Sources.lua             -- recipe source tags and detail lines
+    Tracker.lua             -- tracked recipes and reagents, goals, alerts
     Tooltip.lua             -- TooltipDataProcessor hook, collapsed/expanded render
     BagMarkers.lua          -- tier pips on bag item buttons
   UI/
     Browser.lua             -- main window, list (ScrollBox), filters, detail pane
+    TrackerWindow.lua       -- tracking list window
     Settings.lua            -- Settings panel, status & characters subpage
     MinimapButton.lua       -- minimap icon and AddOns button entry
   tools/
@@ -108,8 +122,12 @@ ns.SourceNPCs[npcID] = { "Name", "Zone", "AH" } -- sides: "A", "H", "AH" or "" (
 ```lua
 ReagentAtlasDB = {
   version = 1,
-  settings = { tooltip = true, markers = true, useAuctionator = true, markerMinTier = 3, minimapIcon = true },
-  ui = { point = {...}, filters = {...}, minimapAngle = 225 },
+  settings = { tooltip = true, markers = true, useAuctionator = true, markerMinTier = 3, minimapIcon = true, trackerSound = true },
+  ui = { point = {...}, filters = {...}, minimapAngle = 225, trackerPoint = {...}, trackerShown = true },
+  tracked = {  -- in the order added
+    { kind = "item", id = itemID, need = 20, done = true },            -- need optional
+    { kind = "recipe", id = recipeSpellID, need = 1, collapsed = true }, -- need = crafts
+  },
   chars = {
     ["Name-Realm"] = {
       class = "MAGE", faction = "Horde", lastSeen = 1730000000,
@@ -208,6 +226,7 @@ Forever uses the modern retail-style API. Names below are from the retail API; c
 | Character | `UnitName`, `GetNormalizedRealmName`, `UnitClass` | Build the `Name-Realm` key. |
 | UI list | `CreateScrollBoxListLinearView`, `ScrollUtil.InitScrollBoxListWithScrollBar` | Virtualized reagent list in the browser. |
 | Settings | `Settings.RegisterVerticalLayoutCategory`, `Settings.RegisterAddOnCategory` | Options panel. |
+| Alerts | `RaidNotice_AddMessage(RaidWarningFrame, text, color)`, fallback `UIErrorsFrame:AddMessage`; `PlaySound(SOUNDKIT.IG_QUEST_LIST_COMPLETE, "Master")`, fallback kit 888 | Tracking list goals. The names come from retail annotations; the raid notice and kit 888 are used by addons running on Forever. |
 
 Addon restrictions introduced in Midnight target combat data; none of the above should be affected, but never touch protected frames in combat (check `InCombatLockdown()` before showing/moving the browser).
 
@@ -234,6 +253,7 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 - [ ] Vendor-sold reagents: `tools/vendor_reagents.csv` (58 items) is from Classic knowledge; verify against Forever vendors after launch.
 - [ ] Recipe sources: confirm Classic-era vendors and drops against Forever. New Forever recipes (most of the 987 unknown in 1.60.1, some possibly unused Season of Discovery leftovers) have no source yet; re-check QuestieDB as it fills in, or add merchant-window recording.
 - [ ] Licensing: `Data/Sources.lua` derives from QuestieDB, which allows copying under GPLv3 terms but cannot promise every historic contributor agreed. Decide the addon's licence before any public release.
+- [ ] Tracking list alert: confirm in-game that `SOUNDKIT.IG_QUEST_LIST_COMPLETE` plays on Forever and is loud enough (Blizzard's Forever constants could not be checked offline).
 - [ ] Heuristic weights are guesses until the live economy settles after launch; plan a tuning pass a few weeks in.
 - [ ] Name for the addon: "Reagent Atlas" is a working title.
 

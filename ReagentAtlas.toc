@@ -21,9 +21,11 @@ Modules\Valuation.lua
 Modules\Professions.lua
 Modules\Inventory.lua
 Modules\Sources.lua
+Modules\Tracker.lua
 Modules\Tooltip.lua
 Modules\BagMarkers.lua
 
 UI\Settings.lua
 UI\Browser.lua
+UI\TrackerWindow.lua
 UI\MinimapButton.lua

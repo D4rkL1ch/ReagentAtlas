@@ -40,7 +40,11 @@
 			"StaticPopup_Show",
 			"AddonCompartmentFrame",
 			"HandleModifiedItemClick",
-			"ChatEdit_InsertLink"
+			"ChatEdit_InsertLink",
+			"UIErrorsFrame",
+			"RaidNotice_AddMessage",
+			"RaidWarningFrame",
+			"SOUNDKIT"
 		]
 	}
 }

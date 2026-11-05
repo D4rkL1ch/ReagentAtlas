@@ -17,6 +17,7 @@ local TOGGLES = {
 	{ "markers", "Bag markers", "Show a tier-colored pip on bag items at or above the minimum tier." },
 	{ "minimapIcon", "Minimap icon", "Show the Reagent Atlas icon on the minimap. It is always listed under the AddOns button there too." },
 	{ "useAuctionator", "Use Auctionator prices", "Adjust tiers and show AH prices from Auctionator scans, if Auctionator is installed." },
+	{ "trackerSound", "Tracking list sound", "Play a sound when you have enough of something on the tracking list." },
 }
 
 local category
@@ -177,6 +178,8 @@ function SettingsUI:OnInit()
 	if layout and layout.AddInitializer and CreateSettingsButtonInitializer then
 		layout:AddInitializer(CreateSettingsButtonInitializer("Reagent browser", "Open",
 			function() ns.Browser:Open() end, "Open the reagent browser window.", true))
+		layout:AddInitializer(CreateSettingsButtonInitializer("Tracking list", "Open",
+			function() ns.TrackerUI:Open() end, "Open the list of tracked recipes and reagents.", true))
 	end
 
 	for _, toggle in ipairs(TOGGLES) do

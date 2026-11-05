@@ -109,6 +109,7 @@ local DEFAULT_SETTINGS = {
 	useAuctionator = true,
 	markerMinTier = 3,
 	minimapIcon = true,
+	trackerSound = true,
 }
 
 -- Fill missing keys from defaults without overwriting user values.
@@ -153,6 +154,7 @@ local function InitDB()
 	db.ui = db.ui or {}
 	db.chars = db.chars or {}
 	db.account = db.account or {}   -- account-wide data, e.g. the warband bank
+	db.tracked = db.tracked or {}   -- tracking list, see Modules/Tracker.lua
 	ns.db = db
 end
 

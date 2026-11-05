@@ -416,8 +416,8 @@ test("settings panel registers toggles and the tier dropdown", function()
 	eq(Settings.registered.name, "Reagent Atlas", "category")
 	local kinds = {}
 	for i, control in ipairs(Settings.controls) do kinds[i] = control.kind .. ":" .. control.setting.key end
-	eq(table.concat(kinds, ","), "checkbox:tooltip,checkbox:markers,checkbox:minimapIcon,checkbox:useAuctionator,dropdown:markerMinTier", "controls")
-	local options = Settings.controls[5].options()
+	eq(table.concat(kinds, ","), "checkbox:tooltip,checkbox:markers,checkbox:minimapIcon,checkbox:useAuctionator,checkbox:trackerSound,dropdown:markerMinTier", "controls")
+	local options = Settings.controls[6].options()
 	eq(#options, 3, "Useful, Valuable, Keep!")
 	eq(options[1].value, ns.Valuation.TIER_USEFUL, "first option")
 end)
