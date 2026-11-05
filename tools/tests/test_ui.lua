@@ -52,13 +52,13 @@ end
 
 -- Browser model -------------------------------------------------------------
 
-test("BuildRows: all reagents, best tier first, then by name", function()
+test("BuildRows: all reagents, best tier first, then by score", function()
 	local ns = boot()
 	local rows = ns.Browser:BuildRows(filters())
 	eq(#rows, 7, "every fixture reagent")
 	for i = 2, #rows do
 		local a, b = rows[i - 1], rows[i]
-		assert(a.tier > b.tier or (a.tier == b.tier and a.name < b.name),
+		assert(a.tier > b.tier or (a.tier == b.tier and a.score >= b.score),
 			("order at %d: %s/%d before %s/%d"):format(i, a.name, a.tier, b.name, b.tier))
 	end
 end)
@@ -80,18 +80,16 @@ test("BuildRows: each filter narrows, and filters combine", function()
 	assert(valuable < all, "min tier hides lower tiers")
 end)
 
-test("BuildRows: uncached names sort last, skip searches and are requested once", function()
+test("BuildRows: uncached names keep their place, skip searches and are requested once", function()
 	local ns = boot()
-	stubs.itemNames[2604] = nil
-	local rows = ns.Browser:BuildRows(filters())
-	local dyeTier, seenDye = ns.Valuation:GetTier(2604), false
-	for _, row in ipairs(rows) do
-		if row.itemID == 2604 then
-			seenDye = true
-		elseif seenDye and row.tier == dyeTier then
-			error("named row after the unnamed one in the same tier")
-		end
+	local function order()
+		local ids = {}
+		for i, row in ipairs(ns.Browser:BuildRows(filters())) do ids[i] = row.itemID end
+		return table.concat(ids, ",")
 	end
+	local before = order()
+	stubs.itemNames[2604] = nil
+	eq(order(), before, "rows don't move while a name loads")
 	eq(has(ns.Browser:BuildRows(filters({ search = "dye" })), 2604), false, "not matched by search")
 	ns.Browser:BuildRows(filters())
 	local requests = 0
@@ -191,6 +189,106 @@ test("clicking a row fills the detail pane", function()
 	assert(name, "detail name")
 	local where = findWidget(function(w) return w.kind == "FontString" and type(w.text) == "string" and w.text:find("Where it is", 1, true) end)
 	contains(where.text, "Bags 20 (Brewdin)", "where line")
+end)
+
+local function itemRow(id)
+	local list = findWidget(function(w) return w.template == "WowScrollBoxList" and w.rows and w.rows[1] and w.rows[1].Owned end)
+	for _, r in ipairs(list.rows) do
+		if r.itemID == id then return r end
+	end
+end
+
+test("modified click on a reagent links it instead of selecting", function()
+	local ns = boot()
+	open(ns)
+	local row = itemRow(17056)
+	stubs.modifier = "CHATLINK"
+	row.scripts.OnClick(row)
+	eq(table.concat(stubs.linked, ","), "item:17056", "linked")
+	eq(row.Selected.shown, false, "not selected")
+	stubs.modifier = nil
+	row.scripts.OnClick(row)
+	eq(#stubs.linked, 1, "plain click links nothing")
+	eq(row.Selected.shown, true, "plain click selects")
+end)
+
+test("modified click on an uncached reagent falls back to selecting", function()
+	local ns = boot()
+	open(ns)
+	local row = itemRow(17056)
+	stubs.uncachedItems[17056] = true
+	stubs.modifier = "CHATLINK"
+	row.scripts.OnClick(row)
+	eq(#stubs.linked, 0, "no link yet")
+	eq(row.Selected.shown, true, "selected")
+end)
+
+test("recipe rows link the crafted item, or the spell for enchants", function()
+	local ns = boot()
+	ns.Recipes[990050] = { prof = 333, skill = 300, reagents = { [17056] = 1 } }
+	stubs.modifier = "CHATLINK"
+	eq(ns.Browser:HandleCraftedClick(990001), true, "crafted item")
+	eq(ns.Browser:HandleCraftedClick(990050), true, "enchant")
+	eq(table.concat(stubs.linked, ","), "item:990101,spell:990050", "links")
+	stubs.modifier = nil
+	eq(ns.Browser:HandleCraftedClick(990001), false, "plain click")
+	eq(ns.Browser:HandleCraftedClick(990050), false, "plain click on an enchant")
+	eq(#stubs.linked, 2, "nothing more linked")
+end)
+
+test("recipe icons link the recipe item, or the spell for trainer recipes", function()
+	local ns = boot()
+	ns.RecipeSources = { [990001] = { i = 555 } }
+	stubs.modifier = "CHATLINK"
+	eq(ns.Browser:HandleRecipeClick(990001), true, "recipe item")
+	eq(ns.Browser:HandleRecipeClick(990002), true, "trainer recipe")
+	eq(table.concat(stubs.linked, ","), "item:555,spell:990002", "links")
+end)
+
+test("each recipe row has its own recipe icon, wired to that recipe", function()
+	local ns = boot()
+	ns.RecipeSources = { [990001] = { i = 555 } }
+	open(ns)
+	ns.Browser:Select(17056)
+	local list = findWidget(function(w) return w.template == "WowScrollBoxList" and w.rows and w.rows[1] and w.rows[1].Recipe end)
+	local byID = {}
+	for _, r in ipairs(list.rows) do byID[r.recipeID] = r end
+	eq(byID[990001].Recipe.Icon.texture, 100555, "recipe item's icon")
+	contains(byID[990002].Recipe.Icon.texture, "INV_Misc_Book", "trainer book")
+
+	local item
+	rawset(GameTooltip, "SetItemByID", function(_, id) item = id end)
+	local row = byID[990001]
+	row.scripts.OnEnter(row)
+	eq(item, 990101, "row hover: crafted item")
+	row.Recipe.scripts.OnEnter(row.Recipe)
+	eq(item, 555, "icon hover: recipe item")
+	rawset(GameTooltip, "SetItemByID", nil)
+
+	stubs.modifier = "CHATLINK"
+	row.scripts.OnClick(row)
+	row.Recipe.scripts.OnClick(row.Recipe)
+	eq(table.concat(stubs.linked, ","), "item:990101,item:555", "row links the item, icon the recipe")
+end)
+
+test("selecting a reagent preloads crafted and recipe items for their tooltips", function()
+	local ns = boot()
+	ns.RecipeSources = { [990001] = { i = 555 } }
+	ns.Browser:GetDetail(17056)
+	local loads = {}
+	for _, id in ipairs(stubs.itemLoads) do loads[id] = true end
+	eq(loads[990101], true, "crafted item")
+	eq(loads[555], true, "recipe item")
+end)
+
+test("hovering an enchant previews the spell", function()
+	local ns = boot()
+	ns.Recipes[990050] = { prof = 333, skill = 300, reagents = { [17056] = 1 } }
+	local spell
+	rawset(GameTooltip, "SetSpellByID", function(_, id) spell = id end)
+	ns.Browser:ShowCrafted({}, 990050, "Enchant")
+	rawset(GameTooltip, "SetSpellByID", nil)
+	eq(spell, 990050, "spell")
 end)
 
 test("filter checkboxes are saved and narrow the list", function()

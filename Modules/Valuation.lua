@@ -6,8 +6,10 @@ local Valuation = ns:RegisterModule("Valuation", {})
 -- Forever 1.60.1 data; expect a tuning pass a few weeks after launch.
 Valuation.WEIGHTS = {
 	skillPoints = 35,     -- highest recipe skill, scaled against ns.MAX_SKILL
-	demandPoints = 15,    -- number of recipes, log scale...
+	demandPoints = 15,    -- recipes using it directly or via its chain, whichever is more, log scale...
 	demandFull = 40,      -- ...reaching full points at this many recipes
+	chainPoints = 20,     -- high-end recipes it feeds through its crafting chain, log scale...
+	chainFull = 100,      -- ...reaching full points at this many recipes
 	rareOutput = 5,       -- best output is rare (quality 3)
 	epicOutput = 10,      -- best output is epic or better (quality 4+)
 	multiProfession = 5,  -- used in 2+ professions
@@ -22,7 +24,7 @@ Valuation.WEIGHTS = {
 local DEFAULT_MAX_SKILL = 300
 
 -- Lower score bound of each tier; index = tier number.
-Valuation.TIER_MIN = { 0, 15, 40, 70 }
+Valuation.TIER_MIN = { 0, 15, 45, 78 }
 
 Valuation.TIER_VENDOR = 1
 Valuation.TIER_USEFUL = 2
@@ -94,10 +96,12 @@ local function Analyze(itemID)
 	local maxSkill = ns.MAX_SKILL or DEFAULT_MAX_SKILL
 	if maxSkill <= 0 then maxSkill = DEFAULT_MAX_SKILL end
 
+	local deep = entry.deep or 0 -- high-end recipes reached through the crafting chain
 	local score = 0
 	if count > 0 then
 		score = math.min(topSkill / maxSkill, 1) * W.skillPoints
-			+ math.min(math.log(1 + count) / math.log(1 + W.demandFull), 1) * W.demandPoints
+			+ math.min(math.log(1 + math.max(count, deep)) / math.log(1 + W.demandFull), 1) * W.demandPoints
+			+ math.min(math.log(1 + deep) / math.log(1 + W.chainFull), 1) * W.chainPoints
 		if bestQ >= 4 then
 			score = score + W.epicOutput
 		elseif bestQ == 3 then

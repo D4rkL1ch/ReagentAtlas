@@ -25,10 +25,10 @@ Reagent Atlas is a WoW Forever (client 1.60.x, modern addon API) addon that tell
 | Feature | Behavior | Priority |
 | --- | --- | --- |
 | Item tooltip (collapsed) | Tier badge, recipe count, top professions, highest skill level, owned total, AH price if known. Max ~5 lines. Spell reagents read "Spell reagent for your class" (green) for your own class, otherwise "Spell reagent for <classes>" in class colors. | P0 |
-| Item tooltip (Shift held) | Full recipe list grouped by profession, sorted by skill desc. Craftable recipes marked with a check and the character name. | P0 |
+| Item tooltip (Shift held) | Full recipe list grouped by profession, sorted by skill desc. Craftable recipes marked with a check and the character name. Recipes nobody knows show where to get them (vendor and zone, drop, quest, likely trainer, reputation hint), with one note when any of that is unconfirmed. | P0 |
 | Alt-aware highlighting | Recipes known by the current character are green; known by an alt are blue with the alt's name; unknown are grey. | P0 |
 | Account-wide inventory | Counts per character for bags + bank; tooltip shows total and a per-character breakdown on Shift. | P1 |
-| Browser window | `/ratlas` opens a two-pane window: filterable reagent list (left: search, profession, min tier, owned, craftable; filters are saved, the search is not), detail pane (right: tier, AH and vendor price, owned/recipes/craftable, where the items are, recipe list marked by who knows each). Movable, position saved. Hovering a row shows the item tooltip. | P1 |
+| Browser window | `/ratlas` opens a two-pane window: filterable reagent list (left: search, profession, min tier, owned, craftable; filters are saved, the search is not), detail pane (right: tier, AH and vendor price, owned/recipes/craftable, where the items are, recipe list marked by who knows each, with the source of unknown recipes). Movable, position saved. Hovering a reagent row shows its item tooltip. A recipe row stands for the crafted item (the spell for enchants); its icon stands for the recipe (the recipe item, or the craft spell for trainer recipes) and its tooltip adds the full source. Modified clicks on any of these work as on an item link (Shift links to chat, Ctrl previews in the dressing room). | P1 |
 | Bag markers | Small tier-colored diamond pip in the top-left corner of default bag slots at or above the minimum tier (default Valuable). Toggleable. Hooks each bag window's `UpdateItems` (retail container frames in Forever); the bank window is not marked. | P2 |
 | Settings | Toggles for tooltip, markers, minimap icon, Auctionator use, minimum tier for markers, and an Open button for the browser. A "Status & characters" subpage shows version, data build and price source, lists tracked characters with a confirmed Forget button, and lists learned recipes missing from the data. Uses the modern Settings panel (Esc → Options → AddOns, the gear in the browser, right-click on the minimap icon, or `/ratlas config`; not in combat). | P2 |
 | Minimap access | Always an entry in Blizzard's AddOns button by the minimap (runtime `AddonCompartmentFrame:RegisterAddon`, so no global), plus a draggable round icon that can be turned off. Left-click: browser. Right-click: settings. Angle saved in `ui.minimapAngle`. Own code, no LibDBIcon. | P2 |
@@ -47,11 +47,13 @@ ReagentAtlas/
   Data/
     Reagents.lua            -- generated: itemID -> recipe refs, spell reagent info
     Recipes.lua             -- generated: recipeID -> profession, skill, output itemID, reagents
+    Sources.lua             -- generated: recipeID -> where to get the recipe
   Modules/
     Inventory.lua           -- scans bags/bank, writes per-character counts
     Professions.lua         -- records known recipes per character
     Pricing.lua             -- Auctionator bridge, returns price or nil
     Valuation.lua           -- tier heuristic, combines data + price
+    Sources.lua             -- recipe source tags and detail lines
     Tooltip.lua             -- TooltipDataProcessor hook, collapsed/expanded render
     BagMarkers.lua          -- tier pips on bag item buttons
   UI/
@@ -87,6 +89,18 @@ ns.Reagents[itemID] = {
   r = { recipeSpellID, ... },  -- sorted by skill desc
   spell = { "MAGE", "ROGUE" }, -- optional: classes using it as a spell reagent
 }
+
+-- Data/Sources.lua (recipes with a recipe item; absent = probably a trainer)
+ns.RecipeSources[recipeSpellID] = {
+  i = 12233,                 -- recipe item
+  v = { npcID, ... },        -- vendors
+  q = { "Quest name", ... }, -- quest rewards
+  d = { npcID, ... },        -- droppers, when at most 5
+  dn = 69, dz = { "Zone", ... }, dzn = 12, -- else: creature count, top 3 zones, zone count
+  o = true,                  -- chests or containers
+  fac = "Cenarion Circle", rep = "Friendly", -- required reputation
+}
+ns.SourceNPCs[npcID] = { "Name", "Zone", "AH" } -- sides: "A", "H", "AH" or "" (unrecorded)
 ```
 
 **SavedVariables: `ReagentAtlasDB`**
@@ -129,6 +143,13 @@ The in-game API only lists recipes a character knows, so the full recipe databas
 
 Two hand-maintained lists cover what the DB2 data lacks: `tools/spell_reagents.csv` (overrides for the spell reagent mapping) and `tools/vendor_reagents.csv` (reagents NPC vendors sell; vendor inventories are server data).
 
+**Recipe sources:** vendors and loot are server data, and Forever's API has no `GetRecipeSourceText`, so `Data/Sources.lua` joins two inputs:
+
+- Client tables: `SpellEffect` (learn-spell effect) + `ItemEffect` + `ItemXItemEffect` + `Item` (class 9) link a recipe to its recipe item; `ItemSparse` gives the required reputation; `Faction` and `AreaTable` give names.
+- QuestieDB's Forever tables at the commit pinned in `tools/fetch_db2.py`: vendors, drops, containers, quest rewards, NPC zones. They are read as text, never executed. Bump the pin on purpose and review the `Data/Sources.lua` diff.
+
+Coverage in 1.60.1 (2,518 recipes): 718 name a source, 98 have only a reputation hint, 987 have a recipe item with no known source, 715 have no recipe item and read "Trainer (likely)", which is an inference. QuestieDB has none of the 1,059 recipe items with IDs of 25000 or above, which are new in the Forever client. The named sources are Classic-era and unconfirmed in Forever, so the UI says so.
+
 **Fallback / validation:** `Professions.lua` notes learned recipes seen in an open profession window that the generated data lacks. `/ratlas diff` lists them (session only; reagent lists are not compared yet).
 
 ## Value tier & Auctionator
@@ -140,7 +161,8 @@ The tier is a prediction, not a price: a score from recipe data, optionally nudg
 | Signal | Points |
 | --- | --- |
 | Highest skill of any recipe using it | min(skill / `MAX_SKILL`, 1) × 35 (`MAX_SKILL` = 325 in 1.60.1) |
-| Number of recipes using it | min(log(1 + count) / log(41), 1) × 15 (full at 40 recipes) |
+| Number of recipes using it | min(log(1 + max(count, chain)) / log(41), 1) × 15 (full at 40 recipes) |
+| High-end recipes in its crafting chain | min(log(1 + chain) / log(101), 1) × 20 (full at 100 recipes) |
 | Best output quality among those recipes | +5 rare, +10 epic |
 | Used in 2+ professions | +5 |
 | The reagent's own quality | +10 uncommon, +15 rare, +20 epic or better |
@@ -148,9 +170,11 @@ The tier is a prediction, not a price: a score from recipe data, optionally nudg
 | Sold by NPC vendors | tier capped at Useful |
 | Not used in any recipe and not a spell reagent | no tier (nothing shown) |
 
-Tiers: 0–14 Vendor, 15–39 Useful, 40–69 Valuable, 70+ Keep!
+Tiers: 0–14 Vendor, 15–44 Useful, 45–77 Valuable, 78+ Keep! The browser sorts by tier, then score, then name.
 
-Resulting spread on 1.60.1: 31 Keep!, 239 Valuable, 301 Useful, 42 Vendor. Examples: Arcanite Bar, Essences, Large Brilliant Shard, Nexus Crystal → Keep!; Thorium Bar, Rugged Leather, Black Lotus, Runecloth → Valuable; Linen, Wool, Light Leather, Peacebloom → Useful; dyes, threads, vials, spices → Useful (vendor cap). Pure-price outliers (Black Lotus) are expected to be lifted by the Auctionator rule below.
+**Crafting chain** (`deep` in `Data/Reagents.lua`): the number of distinct recipes at skill 250 or above that an item reaches, directly or through what it crafts, so a reagent with few recipes still counts for what its output feeds. Arcane Crystal has 3 direct recipes and 109 in its chain through Arcanite Bar. Only high-end recipes count, because raw chains favour starter materials (Copper Ore reaches 188 recipes, 1 of them high-end). Conversions are not followed, since their output also comes from elsewhere: single-input transmutes (Fire to Earth) and leather up-conversions (Light to Medium). Smelting and cloth bolts are followed. Skill 250 is `HIGH_END_SKILL` in `tools/build_data.py`.
+
+Resulting spread on 1.60.1: 58 Keep!, 215 Valuable, 298 Useful, 42 Vendor. Examples: Arcanite Bar, Essences, Arcane Crystal, Black Lotus, Thorium Bar, Rugged Leather → Keep!; Thorium Ore, Runecloth, Iron Bar → Valuable; Linen, Light Leather, Copper Bar → Useful; Copper Ore → Vendor; dyes, threads, vials, spices → Useful (vendor cap).
 
 The first draft (skill / 300 × 40, min(count, 10) × 2, +10/+20 for output quality, +10 for spell reagents) put 114 reagents on Keep! and most vendor goods on Valuable or Keep!, because recipe counts saturate at 10 and common materials are used in 50–200 recipes.
 
@@ -208,6 +232,8 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 - [x] Forever bank layout: classic bank bags or retail-style bank tabs? Retail-style tabs (Enum.BagIndex 6-14 character, 15-23 warband) plus a reagent bag (5), per the Forever 1.60.1 API docs. Confirm in-game that the warband bank is enabled.
 - [x] Spell reagents: which classes and spells use reagents in Forever? Derived from DB2 (`SpellReagents` + `SpellClassOptions` + class skill lines): 23 items in 1.60.1. Gaps (e.g. Levitate) fixed in `tools/spell_reagents.csv`.
 - [ ] Vendor-sold reagents: `tools/vendor_reagents.csv` (58 items) is from Classic knowledge; verify against Forever vendors after launch.
+- [ ] Recipe sources: confirm Classic-era vendors and drops against Forever. New Forever recipes (most of the 987 unknown in 1.60.1, some possibly unused Season of Discovery leftovers) have no source yet; re-check QuestieDB as it fills in, or add merchant-window recording.
+- [ ] Licensing: `Data/Sources.lua` derives from QuestieDB, which allows copying under GPLv3 terms but cannot promise every historic contributor agreed. Decide the addon's licence before any public release.
 - [ ] Heuristic weights are guesses until the live economy settles after launch; plan a tuning pass a few weeks in.
 - [ ] Name for the addon: "Reagent Atlas" is a working title.
 

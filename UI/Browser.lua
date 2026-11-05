@@ -7,6 +7,8 @@ local WIDTH, HEIGHT = 860, 560
 local LIST_WIDTH = 380
 local ROW_HEIGHT = 30
 local RECIPE_ROW_HEIGHT = 22
+local RECIPE_ICON = 18
+local TRAINER_ICON = "Interface\\Icons\\INV_Misc_Book_09" -- recipes with no recipe item
 local TIER_COL, OWNED_COL = 70, 50
 local PAD = 12
 
@@ -44,6 +46,46 @@ function Browser:GetItemName(itemID)
 	return name
 end
 
+-- Modified clicks follow the player's bindings (by default Shift links to chat,
+-- Ctrl previews in the dressing room). Returns true if the click was used; the
+-- link is nil until the client has cached the item.
+function Browser:HandleItemClick(itemID)
+	if not (IsModifiedClick and IsModifiedClick() and HandleModifiedItemClick) then return false end
+	if not (C_Item and C_Item.GetItemInfo) then return false end
+	local _, link = C_Item.GetItemInfo(itemID)
+	return link ~= nil and HandleModifiedItemClick(link) and true or false
+end
+
+local function HandleSpellClick(spellID)
+	if not (IsModifiedClick and IsModifiedClick("CHATLINK") and ChatEdit_InsertLink) then return false end
+	local link = C_Spell and C_Spell.GetSpellLink and C_Spell.GetSpellLink(spellID)
+	return link ~= nil and link ~= false and ChatEdit_InsertLink(link) and true or false
+end
+
+-- The item that teaches a recipe (pattern, plans...), or nil for trainer recipes.
+function Browser:GetRecipeItem(recipeID)
+	local source = ns.RecipeSources and ns.RecipeSources[recipeID]
+	return source and source.i
+end
+
+-- A recipe row stands for what it crafts; enchants have only their spell.
+function Browser:HandleCraftedClick(recipeID)
+	local recipe = ns.Recipes[recipeID]
+	if recipe and recipe.out then
+		return self:HandleItemClick(recipe.out)
+	end
+	return HandleSpellClick(recipeID)
+end
+
+-- The recipe icon stands for the recipe: its item, or the craft spell.
+function Browser:HandleRecipeClick(recipeID)
+	local item = self:GetRecipeItem(recipeID)
+	if item then
+		return self:HandleItemClick(item)
+	end
+	return HandleSpellClick(recipeID)
+end
+
 -- Number of recipes using the item that any character knows, and whether the
 -- current character knows at least one.
 local function CraftableCount(itemID)
@@ -58,7 +100,7 @@ local function CraftableCount(itemID)
 	return count, mine
 end
 
--- Rows matching the filters, best tier first, then by name. filters:
+-- Rows matching the filters, best tier first, then by score and name. filters:
 --   search    substring of the item name, case-insensitive ("" = any)
 --   prof      skill line ID the item must be used in (0 = any)
 --   minTier   lowest tier shown (1 = all)
@@ -90,7 +132,7 @@ function Browser:BuildRows(filters)
 			end
 			if keep then
 				rows[#rows + 1] = {
-					itemID = itemID, name = name, quality = info.quality,
+					itemID = itemID, name = name, quality = info.quality, score = info.score,
 					tier = tier, owned = owned, craftable = craftable,
 				}
 			end
@@ -98,11 +140,20 @@ function Browser:BuildRows(filters)
 	end
 	table.sort(rows, function(a, b)
 		if a.tier ~= b.tier then return a.tier > b.tier end
+		if a.score ~= b.score then return a.score > b.score end
 		if (a.name ~= nil) ~= (b.name ~= nil) then return a.name ~= nil end
 		if a.name and a.name ~= b.name then return a.name < b.name end
 		return a.itemID < b.itemID
 	end)
 	return rows
+end
+
+-- Tooltips and links need the item in the client cache. Unlike GetItemName this
+-- doesn't refresh the window when it arrives: that would reset the recipe scroll.
+local function Preload(itemID)
+	if itemID and C_Item and C_Item.RequestLoadItemDataByID then
+		C_Item.RequestLoadItemDataByID(itemID)
+	end
 end
 
 -- Everything the detail pane shows for one item.
@@ -128,14 +179,19 @@ function Browser:GetDetail(itemID)
 	for _, recipeID in ipairs(ns.Reagents[itemID].r) do
 		local recipe = ns.Recipes[recipeID]
 		if recipe then
+			local recipeItem = self:GetRecipeItem(recipeID)
+			Preload(recipe.out)
+			Preload(recipeItem)
 			local isMe, alts = ns.Professions:GetKnownBy(recipeID)
+			local known = isMe or #alts > 0
 			recipes[#recipes + 1] = {
 				recipeID = recipeID,
+				recipeItem = recipeItem,
 				name = ns.Tooltip:GetRecipeName(recipeID),
 				prof = ns.Tooltip:GetProfessionName(recipe.prof),
 				skill = recipe.skill,
 				known = isMe and "me" or (#alts > 0 and "alt" or "none"),
-				who = (isMe or #alts > 0) and ns.Tooltip:FormatNames(isMe, alts) or "",
+				who = known and ns.Tooltip:FormatNames(isMe, alts) or (ns.Sources:GetTag(recipeID) or ""),
 			}
 		end
 	end
@@ -279,7 +335,9 @@ local function InitItemRow(button, row)
 		button.Name:SetPoint("RIGHT", button.Tier, "LEFT", -4, 0)
 		button.Name:SetJustifyH("LEFT")
 		button.Name:SetWordWrap(false)
-		button:SetScript("OnClick", function(self) Browser:Select(self.itemID) end)
+		button:SetScript("OnClick", function(self)
+			if not Browser:HandleItemClick(self.itemID) then Browser:Select(self.itemID) end
+		end)
 		button:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 			GameTooltip:SetItemByID(self.itemID)
@@ -297,6 +355,46 @@ end
 
 local KNOWN_COLOR = { me = COLOR_YOURS, alt = COLOR_ALT, none = COLOR_UNKNOWN }
 
+local function SetSpellTooltip(spellID, name)
+	if GameTooltip.SetSpellByID then
+		GameTooltip:SetSpellByID(spellID)
+	else
+		GameTooltip:AddLine(name)
+	end
+end
+
+-- Hovering a recipe row previews what it crafts.
+function Browser:ShowCrafted(owner, recipeID, name)
+	local recipe = ns.Recipes[recipeID]
+	GameTooltip:SetOwner(owner, "ANCHOR_RIGHT")
+	if recipe and recipe.out then
+		GameTooltip:SetItemByID(recipe.out)
+	else
+		SetSpellTooltip(recipeID, name)
+	end
+	GameTooltip:Show()
+end
+
+-- Hovering the recipe icon shows the recipe and where to get it.
+function Browser:ShowRecipe(owner, recipeID, name)
+	local item = self:GetRecipeItem(recipeID)
+	local lines, unconfirmed = ns.Sources:GetDetailLines(recipeID)
+	GameTooltip:SetOwner(owner, "ANCHOR_RIGHT")
+	if item then
+		GameTooltip:SetItemByID(item)
+	else
+		SetSpellTooltip(recipeID, name)
+	end
+	if #lines > 0 then GameTooltip:AddLine(" ") end
+	for _, line in ipairs(lines) do
+		GameTooltip:AddLine(Color(line, COLOR_TEXT))
+	end
+	if unconfirmed then
+		GameTooltip:AddLine(Color(ns.Sources.UNCONFIRMED_NOTE, COLOR_HINT))
+	end
+	GameTooltip:Show()
+end
+
 local function InitRecipeRow(row, recipe)
 	if not row.Name then
 		row.Who = CreateLabel(row, "GameFontHighlightSmall")
@@ -309,11 +407,25 @@ local function InitRecipeRow(row, recipe)
 		row.Prof:SetWidth(130)
 		row.Prof:SetJustifyH("LEFT")
 		row.Name = CreateLabel(row, "GameFontHighlight")
-		row.Name:SetPoint("LEFT", 6, 0)
+		row.Recipe = CreateFrame("Button", nil, row)
+		row.Recipe:SetSize(RECIPE_ICON, RECIPE_ICON)
+		row.Recipe:SetPoint("LEFT", 4, 0)
+		row.Recipe:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+		row.Recipe.Icon = row.Recipe:CreateTexture(nil, "ARTWORK")
+		row.Recipe.Icon:SetAllPoints()
+		row.Recipe:SetScript("OnClick", function() Browser:HandleRecipeClick(row.recipeID) end)
+		row.Recipe:SetScript("OnEnter", function(self) Browser:ShowRecipe(self, row.recipeID, row.recipeName) end)
+		row.Recipe:SetScript("OnLeave", function() GameTooltip:Hide() end)
+		row.Name:SetPoint("LEFT", row.Recipe, "RIGHT", 4, 0)
 		row.Name:SetPoint("RIGHT", row.Prof, "LEFT", -6, 0)
 		row.Name:SetJustifyH("LEFT")
 		row.Name:SetWordWrap(false)
+		row:SetScript("OnClick", function(self) Browser:HandleCraftedClick(self.recipeID) end)
+		row:SetScript("OnEnter", function(self) Browser:ShowCrafted(self, self.recipeID, self.recipeName) end)
+		row:SetScript("OnLeave", function() GameTooltip:Hide() end)
 	end
+	row.recipeID, row.recipeName = recipe.recipeID, recipe.name
+	row.Recipe.Icon:SetTexture(recipe.recipeItem and C_Item.GetItemIconByID(recipe.recipeItem) or TRAINER_ICON)
 	local color = KNOWN_COLOR[recipe.known]
 	local mark = recipe.known == "none" and "·" or CHECK
 	row.Name:SetText(Color(mark .. " " .. recipe.name, color))
@@ -329,6 +441,7 @@ function Browser:CreateList(parent, rowHeight, initializer)
 	bar:SetPoint("TOPLEFT", box, "TOPRIGHT", 4, 0)
 	bar:SetPoint("BOTTOMLEFT", box, "BOTTOMRIGHT", 4, 0)
 	local view = CreateScrollBoxListLinearView()
+	---@diagnostic disable-next-line: redundant-parameter -- the annotation omits the extent argument
 	view:SetElementExtent(rowHeight)
 	view:SetElementInitializer("Button", initializer)
 	ScrollUtil.InitScrollBoxListWithScrollBar(box, bar, view)
@@ -387,7 +500,8 @@ local function CreateDetail(parent)
 	d.Where:SetPoint("RIGHT", -PAD, 0)
 	d.Where:SetJustifyH("LEFT")
 
-	d.UsedIn = CreateLabel(parent, "GameFontNormal", "Used in")
+	d.UsedIn = CreateLabel(parent, "GameFontNormal",
+		"Used in  " .. Color("row: crafted item · icon: recipe · Shift-click to link", COLOR_HINT))
 	d.UsedIn:SetPoint("TOPLEFT", d.Where, "BOTTOMLEFT", 0, -12)
 
 	d.Legend = CreateLabel(parent, "GameFontHighlightSmall",

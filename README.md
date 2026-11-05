@@ -38,7 +38,7 @@ Pre-alpha, in development. Targets the WoW Forever client 1.60.x (modern addon A
 5. Offline tests with stubbed WoW APIs: `tools/tests/run.ps1` (uses the LuaLS binary from the VS Code extension as the interpreter).
 6. Regenerate `Data/` with Python 3.12+: `python tools/fetch_db2.py` (downloads the latest WoW Forever DB2 tables from wago.tools into `tools/db2/`), then `python tools/build_data.py`. `python tools/build_data.py --sample` builds from the small fixture in `tools/sample/` instead.
 
-Recipe data in `Data/` is generated from the game client's DB2 tables with `tools/build_data.py`; don't edit it by hand. See `SPEC.md` → *Data sourcing*.
+Recipe data in `Data/` is generated from the game client's DB2 tables with `tools/build_data.py`; don't edit it by hand. Recipe sources also use [QuestieDB](https://github.com/Questie/QuestieDB). See `SPEC.md` → *Data sourcing*.
 
 ## Optional dependencies
 

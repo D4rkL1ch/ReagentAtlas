@@ -12,6 +12,7 @@
 
 Data\Recipes.lua
 Data\Reagents.lua
+Data\Sources.lua
 
 Core.lua
 
@@ -19,6 +20,7 @@ Modules\Pricing.lua
 Modules\Valuation.lua
 Modules\Professions.lua
 Modules\Inventory.lua
+Modules\Sources.lua
 Modules\Tooltip.lua
 Modules\BagMarkers.lua
 

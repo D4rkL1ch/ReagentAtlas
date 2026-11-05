@@ -38,7 +38,9 @@
 			"NO",
 			"CreateSettingsButtonInitializer",
 			"StaticPopup_Show",
-			"AddonCompartmentFrame"
+			"AddonCompartmentFrame",
+			"HandleModifiedItemClick",
+			"ChatEdit_InsertLink"
 		]
 	}
 }

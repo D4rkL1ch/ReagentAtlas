@@ -1,4 +1,4 @@
-"""Generate Data/Recipes.lua and Data/Reagents.lua from exported DB2 CSVs.
+"""Generate Data/Recipes.lua, Reagents.lua and Sources.lua from exported DB2 CSVs.
 
 Usage:
     python tools/build_data.py                 # reads tools/db2/ (real client export)
@@ -26,6 +26,11 @@ tools/spell_reagents.csv): columns itemID, class, note; "-CLASS" removes.
 
 Vendor-sold reagents come from vendor_reagents.csv (source dir if present, else
 tools/vendor_reagents.csv), maintained by hand: columns itemID, name.
+
+Recipe sources need Item.csv, ItemEffect.csv, ItemXItemEffect.csv, Faction.csv
+and AreaTable.csv plus QuestieDB's Forever tables in <src>/questie/ (all fetched
+by fetch_db2.py). Without them Data/Sources.lua is written empty and the addon
+shows no sources.
 """
 
 from __future__ import annotations
@@ -34,6 +39,8 @@ import argparse
 import csv
 import re
 import sys
+from collections import Counter
+from collections.abc import Iterable
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -75,7 +82,25 @@ SKILL_CATEGORY_CLASS = 7
 EXCLUDED_CLASS_LINES = {2851}
 
 EFFECT_CREATE_ITEM = 24
+EFFECT_LEARN_SPELL = 36
+ITEM_CLASS_RECIPE = 9
+ITEM_LEATHER = (7, 6)   # Trade Goods: Leather (class, subclass)
+
+# Recipes from this skill up count as high-end in a reagent's crafting chain.
+HIGH_END_SKILL = 250
 TEST_SPELL = re.compile(r"\b(test|dnd|dnt|deprecated|unused|old)\b|\[ph\]|^copy of", re.IGNORECASE)
+
+# Drops from up to this many creatures name them; more are summarized by zone.
+MAX_NAMED_DROPS = 5
+MAX_DROP_ZONES = 3      # zones listed for a summarized drop
+REPUTATION_NAMES = {4: "Friendly", 5: "Honored", 6: "Revered", 7: "Exalted"}
+# QuestieDB zone IDs missing from AreaTable.
+ZONE_OVERRIDES = {1585: "Blackrock Depths"}
+
+# Positions in QuestieDB's records (their key tables count from 1).
+QITEM_NPC_DROPS, QITEM_OBJECT_DROPS, QITEM_ITEM_DROPS, QITEM_QUEST_REWARDS, QITEM_VENDORS = 1, 2, 3, 5, 13
+QNPC_NAME, QNPC_SPAWNS, QNPC_ZONE, QNPC_SIDES = 0, 6, 8, 12
+QQUEST_NAME = 0
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -200,6 +225,56 @@ def apply_spell_reagent_overrides(path: Path, classes_by_item: dict[int, set[str
             classes_by_item.setdefault(item, set()).add(cls)
 
 
+def conversion_recipes(src: Path, recipes: dict[int, dict], names: dict[int, str]) -> set[int]:
+    """Recipes that swap one material for an alternative to it.
+
+    Single-input transmutes (Fire to Earth) and leather up-conversions (Light
+    to Medium) don't make a reagent part of what the output builds: the output
+    also comes from elsewhere. Smelting and cloth bolts do count: they are the
+    route to their output.
+    """
+    item_types: dict[int, tuple[int, int]] = {}
+    path = src / "Item.csv"
+    if path.exists():
+        item_types = {to_int(r["ID"]): (to_int(col(r, "ClassID")), to_int(col(r, "SubclassID"))) for r in read_csv(path)}
+
+    result = set()
+    for spell, recipe in recipes.items():
+        if len(recipe["reagents"]) != 1:
+            continue
+        reagent = next(iter(recipe["reagents"]))
+        leather = item_types.get(reagent) == ITEM_LEATHER and item_types.get(recipe.get("out")) == ITEM_LEATHER
+        if leather or names.get(spell, "").startswith("Transmute:"):
+            result.add(spell)
+    return result
+
+
+def chain_counts(recipes: dict[int, dict], items: Iterable[int], conversions: set[int]) -> dict[int, int]:
+    """High-end recipes each item feeds, directly or through what it crafts."""
+    users: dict[int, list[int]] = {}
+    for spell, recipe in recipes.items():
+        if spell not in conversions:
+            for reagent in recipe["reagents"]:
+                users.setdefault(reagent, []).append(spell)
+
+    counts = {}
+    for item in items:
+        reached: set[int] = set()
+        visited = {item}
+        stack = [item]
+        while stack:
+            for spell in users.get(stack.pop(), ()):
+                if spell in reached:
+                    continue
+                reached.add(spell)
+                out = recipes[spell].get("out")
+                if out and out not in visited:
+                    visited.add(out)
+                    stack.append(out)
+        counts[item] = sum(1 for spell in reached if recipes[spell]["skill"] >= HIGH_END_SKILL)
+    return counts
+
+
 def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
     prof_of = load_professions(src)
     names = load_spell_names(src)
@@ -278,10 +353,184 @@ def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
             if entry is not None:
                 entry["vendor"] = True
 
+    chains = chain_counts(recipes, index, conversion_recipes(src, recipes, names))
     for item, entry in index.items():
         entry["q"], entry["sell"] = items.get(item, (1, 0))
+        entry["deep"] = chains[item]
 
     return recipes, index
+
+
+# Recipe sources ------------------------------------------------------------
+
+def parse_lua_value(text: str, pos: int):
+    """Parse the Lua literal at pos; returns (value, next position).
+
+    QuestieDB's tables are read as text, never executed. Tables with [key] =
+    entries become dicts, plain ones lists.
+    """
+    while text[pos] in " \t,":
+        pos += 1
+    char = text[pos]
+    if char == "{":
+        pos += 1
+        items: list = []
+        keyed: dict = {}
+        while True:
+            while text[pos] in " \t,":
+                pos += 1
+            if text[pos] == "}":
+                return (keyed or items), pos + 1
+            if text[pos] == "[":
+                end = text.index("]", pos)
+                key = int(text[pos + 1:end])
+                value, pos = parse_lua_value(text, text.index("=", end) + 1)
+                keyed[key] = value
+            else:
+                value, pos = parse_lua_value(text, pos)
+                items.append(value)
+    if char in "'\"":
+        out = []
+        pos += 1
+        while text[pos] != char:
+            if text[pos] == "\\":
+                pos += 1
+            out.append(text[pos])
+            pos += 1
+        return "".join(out), pos + 1
+    match = re.compile(r"[^,}\s]+").match(text, pos)
+    token = match.group(0)
+    if token == "nil":
+        return None, match.end()
+    return float(token) if "." in token else int(token), match.end()
+
+
+def load_questie_table(path: Path) -> dict[int, list]:
+    """Records of a QuestieDB data file; each is one `[id] = {...},` line."""
+    result = {}
+    with path.open(encoding="utf-8") as f:
+        for line in f:
+            match = re.match(r"\[(\d+)\] = \{", line)
+            if match:
+                result[int(match.group(1))], _ = parse_lua_value(line, match.end() - 1)
+    return result
+
+
+def field(record: list, index: int):
+    """QuestieDB records stop at their last non-nil field."""
+    return record[index] if index < len(record) else None
+
+
+def recipe_items(src: Path, recipes: dict[int, dict], item_names: dict[int, str]) -> dict[int, set[int]]:
+    """Recipe spell -> items that teach it, ignoring deprecated items."""
+    learned_by: dict[int, set[int]] = {}
+    for row in read_csv(src / "SpellEffect.csv"):
+        if to_int(col(row, "Effect")) == EFFECT_LEARN_SPELL:
+            learned = to_int(col(row, "EffectTriggerSpell"))
+            if learned in recipes:
+                learned_by.setdefault(to_int(col(row, "SpellID")), set()).add(learned)
+    effect_spell = {to_int(r["ID"]): to_int(col(r, "SpellID")) for r in read_csv(src / "ItemEffect.csv")}
+    item_class = {to_int(r["ID"]): to_int(col(r, "ClassID")) for r in read_csv(src / "Item.csv")}
+
+    result: dict[int, set[int]] = {}
+    for row in read_csv(src / "ItemXItemEffect.csv"):
+        item = to_int(col(row, "ItemID"))
+        name = item_names.get(item)
+        if item_class.get(item) != ITEM_CLASS_RECIPE or name is None or TEST_SPELL.search(name):
+            continue
+        spell = effect_spell.get(to_int(col(row, "ItemEffectID")), 0)
+        for recipe in learned_by.get(spell, set()) | ({spell} if spell in recipes else set()):
+            result.setdefault(recipe, set()).add(item)
+    return result
+
+
+def npc_zone(npc: list, zones: dict[int, str]) -> str:
+    """Zone name of an NPC: its main zone, else the first zone it spawns in."""
+    candidates = [field(npc, QNPC_ZONE)]
+    spawns = field(npc, QNPC_SPAWNS)
+    if isinstance(spawns, dict):
+        candidates += sorted(spawns)
+    for zone in candidates:
+        if zone and zone in zones:
+            return zones[zone]
+    return ""
+
+
+def summarize_drops(npc_ids: set[int], npcs: dict[int, list], zones: dict[int, str]) -> dict:
+    """Name a few droppers; for long lists give the count and busiest zones."""
+    known = sorted(n for n in npc_ids if n in npcs)
+    if len(known) <= MAX_NAMED_DROPS:
+        return {"d": known} if known else {}
+    counts = Counter(z for z in (npc_zone(npcs[n], zones) for n in known) if z)
+    top = sorted(counts, key=lambda z: (-counts[z], z))[:MAX_DROP_ZONES]
+    return {"dn": len(known), "dz": top, "dzn": len(counts)}
+
+
+def build_sources(src: Path, recipes: dict[int, dict]) -> tuple[dict[int, dict], dict[int, tuple], str] | None:
+    """Sources per recipe spell, the NPCs they name, and the QuestieDB commit.
+
+    Recipes without a recipe item are left out: the addon reads that as
+    "probably a trainer". Returns None when the input files are missing.
+    """
+    questie = src / "questie"
+    needed = [src / f"{t}.csv" for t in ("Item", "ItemEffect", "ItemXItemEffect", "Faction", "AreaTable")]
+    needed += [questie / f for f in ("foreverItemDB.lua", "foreverNpcDB.lua", "foreverQuestDB.lua", "commit.txt")]
+    if not all(path.exists() for path in needed):
+        return None
+
+    sparse = read_csv(src / "ItemSparse.csv")
+    item_names = {to_int(r["ID"]): col(r, "Display_lang") for r in sparse}
+    requirements = {to_int(r["ID"]): (to_int(col(r, "MinFactionID")), to_int(col(r, "MinReputation"))) for r in sparse}
+    factions = {to_int(r["ID"]): col(r, "Name_lang") for r in read_csv(src / "Faction.csv")}
+    zones = {to_int(r["ID"]): col(r, "AreaName_lang") for r in read_csv(src / "AreaTable.csv")}
+    zones.update(ZONE_OVERRIDES)
+    q_items = load_questie_table(questie / "foreverItemDB.lua")
+    q_npcs = load_questie_table(questie / "foreverNpcDB.lua")
+    q_quests = load_questie_table(questie / "foreverQuestDB.lua")
+
+    sources: dict[int, dict] = {}
+    named_npcs: set[int] = set()
+    for recipe, items in recipe_items(src, recipes, item_names).items():
+        vendors: set[int] = set()
+        drops: set[int] = set()
+        quests: set[int] = set()
+        container = False
+        entry: dict = {"i": min(items)}
+        for item in sorted(items):
+            record = q_items.get(item)
+            if record:
+                vendors.update(field(record, QITEM_VENDORS) or ())
+                drops.update(field(record, QITEM_NPC_DROPS) or ())
+                quests.update(field(record, QITEM_QUEST_REWARDS) or ())
+                container = container or bool(field(record, QITEM_OBJECT_DROPS) or field(record, QITEM_ITEM_DROPS))
+            faction, standing = requirements.get(item, (0, 0))
+            if faction in factions and "fac" not in entry:
+                entry["fac"] = factions[faction]
+                if standing in REPUTATION_NAMES:
+                    entry["rep"] = REPUTATION_NAMES[standing]
+        known_vendors = sorted(n for n in vendors if n in q_npcs)
+        if known_vendors:
+            entry["v"] = known_vendors
+            named_npcs.update(known_vendors)
+        names = sorted({str(field(q_quests[q], QQUEST_NAME)) for q in quests if q in q_quests})
+        if names:
+            entry["q"] = names
+        entry.update(summarize_drops(drops, q_npcs, zones))
+        named_npcs.update(entry.get("d", ()))
+        if container:
+            entry["o"] = True
+        sources[recipe] = entry
+
+    npcs = {
+        n: (str(field(q_npcs[n], QNPC_NAME)), npc_zone(q_npcs[n], zones), field(q_npcs[n], QNPC_SIDES) or "")
+        for n in named_npcs
+    }
+    commit = (questie / "commit.txt").read_text(encoding="utf-8").strip()
+    return sources, npcs, commit
+
+
+def lua_str(text: str) -> str:
+    return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
 def lua_map(d: dict[int, int]) -> str:
@@ -289,7 +538,11 @@ def lua_map(d: dict[int, int]) -> str:
 
 
 def lua_str_list(items: list[str]) -> str:
-    return "{ " + ", ".join(f'"{s}"' for s in items) + " }"
+    return "{ " + ", ".join(lua_str(s) for s in items) + " }"
+
+
+def lua_int_list(items: list[int]) -> str:
+    return "{ " + ", ".join(str(i) for i in items) + " }"
 
 
 def header(version: str) -> list[str]:
@@ -331,6 +584,8 @@ def write_reagents(index: dict[int, dict], version: str) -> None:
         e = index[item]
         fields = ["r = { " + ", ".join(str(s) for s in e["r"]) + " }" if e["r"] else "r = {}"]
         fields += [f"q = {e['q']}", f"sell = {e['sell']}"]
+        if e["deep"]:
+            fields.append(f"deep = {e['deep']}")
         if "spell" in e:
             fields.append(f"spell = {lua_str_list(e['spell'])}")
         if e.get("vendor"):
@@ -339,8 +594,41 @@ def write_reagents(index: dict[int, dict], version: str) -> None:
     (OUT_DIR / "Reagents.lua").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
+def write_sources(result: tuple[dict[int, dict], dict[int, tuple], str] | None, version: str) -> None:
+    lines = header(version)
+    if result:
+        sources, npcs, commit = result
+        lines.insert(2, f"-- Recipe sources: QuestieDB {commit} (github.com/Questie/QuestieDB, GPLv3 terms).")
+        lines.append("local N = {}")
+        lines.append("ns.SourceNPCs = N")
+        for npc in sorted(npcs):
+            name, zone, sides = npcs[npc]
+            lines.append(f"N[{npc}] = {{ {lua_str(name)}, {lua_str(zone)}, {lua_str(sides)} }}")
+        lines.append("")
+        lines.append("local S = {}")
+        lines.append("ns.RecipeSources = S")
+        for recipe in sorted(sources):
+            e = sources[recipe]
+            fields = [f"i = {e['i']}"]
+            for key in ("v", "d"):
+                if key in e:
+                    fields.append(f"{key} = {lua_int_list(e[key])}")
+            if "q" in e:
+                fields.append(f"q = {lua_str_list(e['q'])}")
+            if "dn" in e:
+                fields += [f"dn = {e['dn']}", f"dz = {lua_str_list(e['dz'])}", f"dzn = {e['dzn']}"]
+            if e.get("o"):
+                fields.append("o = true")
+            if "fac" in e:
+                fields.append(f"fac = {lua_str(e['fac'])}")
+            if "rep" in e:
+                fields.append(f"rep = {lua_str(e['rep'])}")
+            lines.append(f"S[{recipe}] = {{ {', '.join(fields)} }}")
+    (OUT_DIR / "Sources.lua").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser =argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--sample", action="store_true", help="use the tools/sample fixture")
     parser.add_argument("--src", type=Path, help="directory with the DB2 CSVs (default tools/db2)")
     parser.add_argument("--build", help="client version or build, e.g. 1.60.1.70707")
@@ -366,7 +654,14 @@ def main() -> int:
     OUT_DIR.mkdir(exist_ok=True)
     write_recipes(recipes, build_id, version)
     write_reagents(index, version)
+    sources = build_sources(src, recipes)
+    write_sources(sources, version)
     print(f"build {version}: {len(recipes)} recipes, {len(index)} reagents -> {OUT_DIR}")
+    if sources:
+        named = sum(1 for e in sources[0].values() if {"v", "q", "d", "dn", "o"} & e.keys())
+        print(f"sources: {len(sources[0])} recipes with a recipe item, {named} with a named source")
+    else:
+        print("sources: input files missing, Data/Sources.lua left empty (run tools/fetch_db2.py)")
     return 0
 
 

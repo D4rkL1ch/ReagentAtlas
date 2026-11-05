@@ -16,11 +16,34 @@ test("tier boundaries", function()
 	eq(V:TierForScore(0), 1, "0")
 	eq(V:TierForScore(14.99), 1, "14.99")
 	eq(V:TierForScore(15), 2, "15")
-	eq(V:TierForScore(39.99), 2, "39.99")
-	eq(V:TierForScore(40), 3, "40")
-	eq(V:TierForScore(69.99), 3, "69.99")
-	eq(V:TierForScore(70), 4, "70")
+	eq(V:TierForScore(44.99), 2, "44.99")
+	eq(V:TierForScore(45), 3, "45")
+	eq(V:TierForScore(77.99), 3, "77.99")
+	eq(V:TierForScore(78), 4, "78")
 	eq(V:TierForScore(250), 4, "250")
+end)
+
+test("the crafting chain adds points on a log scale, capped", function()
+	local ns = T.boot(nil, function(ns)
+		T.useFixture(ns)
+		ns.Reagents[12359].deep = 9
+		ns.Reagents[12360].deep = 500
+	end)
+	local V = ns.Valuation
+	local plain = T.boot(nil, T.useFixture).Valuation
+	-- Both have 1 direct recipe; the chain replaces that count in demand too.
+	near(V:GetInfo(12359).score - plain:GetInfo(12359).score,
+		demand(9) - demand(1) + math.log(10) / math.log(101) * 20, "partial")
+	near(V:GetInfo(12360).score - plain:GetInfo(12360).score, 15 - demand(1) + 20, "capped")
+end)
+
+test("a chain shorter than the direct recipe count leaves demand alone", function()
+	local ns = T.boot(nil, function(ns)
+		T.useFixture(ns)
+		ns.Reagents[17056].deep = 3
+	end)
+	near(ns.Valuation:GetInfo(17056).score,
+		285 / 300 * 35 + demand(7) + math.log(4) / math.log(101) * 20 + 5, "score")
 end)
 
 test("Light Feather scores per the heuristic", function()

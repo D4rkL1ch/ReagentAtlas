@@ -17,7 +17,7 @@ for _, name in ipairs({
 	"SetSize", "SetWidth", "SetHeight", "SetAllPoints", "SetToplevel", "SetFrameStrata",
 	"SetClampedToScreen", "SetMovable", "EnableMouse", "RegisterForDrag", "StartMoving",
 	"StopMovingOrSizing", "SetJustifyH", "SetWordWrap", "SetRotation", "SetHighlightTexture",
-	"SetOwner", "SetItemByID", "SetElementExtent", "SetFrameLevel", "RegisterForClicks",
+	"SetOwner", "SetItemByID", "SetSpellByID", "SetElementExtent", "SetFrameLevel", "RegisterForClicks",
 	"SetNormalTexture", "Raise", "AddLine",
 }) do W[name] = noop end
 
@@ -179,6 +179,9 @@ function M.reset()
 	AddonCompartmentFrame = { RegisterAddon = function(_, data) M.compartment[#M.compartment + 1] = data end }
 	M.noDropdown = false
 	M.itemLoads = {}
+	M.modifier = nil
+	M.linked = {}
+	M.uncachedItems = {}
 	SlashCmdList = {}
 	Settings = M.newSettings()
 	ContainerFrameCombinedBags = nil
@@ -335,7 +338,23 @@ C_AddOns = {
 }
 
 M.spellNames = { [2963] = "Bolt of Linen Cloth", [990001] = "Feathered Jerkin" }
-C_Spell = { GetSpellName = function(id) return M.spellNames[id] end }
+C_Spell = {
+	GetSpellName = function(id) return M.spellNames[id] end,
+	GetSpellLink = function(id) return "spell:" .. id end,
+}
+-- Modified clicks: M.modifier is nil, "CHATLINK" or "DRESSUP"; links land in M.linked.
+function IsModifiedClick(action)
+	if action then return M.modifier == action end
+	return M.modifier ~= nil
+end
+function HandleModifiedItemClick(link)
+	M.linked[#M.linked + 1] = link
+	return true
+end
+function ChatEdit_InsertLink(link)
+	M.linked[#M.linked + 1] = link
+	return true
+end
 -- Item names: a few fixed ones plus M.itemNames set by tests.
 M.itemNames = {}
 C_Item = {
@@ -344,6 +363,10 @@ C_Item = {
 		return M.itemNames[id]
 	end,
 	GetItemIconByID = function(id) return 100000 + id end,
+	GetItemInfo = function(id)
+		if M.uncachedItems[id] then return nil end
+		return "item", "item:" .. id
+	end,
 	RequestLoadItemDataByID = function(id) M.itemLoads[#M.itemLoads + 1] = id end,
 }
 

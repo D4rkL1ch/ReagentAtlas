@@ -183,7 +183,8 @@ local function AddCollapsed(tooltip, info)
 end
 
 -- Green with a check if you know the recipe, blue with the alt's name if an
--- alt does, grey otherwise.
+-- alt does, grey with where to get it otherwise. Returns true if that source
+-- is unconfirmed.
 local function AddRecipeLine(tooltip, recipeID)
 	local label = ("%s (%d)"):format(Tooltip:GetRecipeName(recipeID), ns.Recipes[recipeID].skill)
 	local isMe, alts = ns.Professions:GetKnownBy(recipeID)
@@ -192,8 +193,14 @@ local function AddRecipeLine(tooltip, recipeID)
 	elseif #alts > 0 then
 		tooltip:AddDoubleLine(Color(CHECK .. label, COLOR_ALT), Color(NameList(false, alts), COLOR_ALT))
 	else
+		local tag, unconfirmed = ns.Sources:GetTag(recipeID)
+		if tag then
+			tooltip:AddDoubleLine(Color("· " .. label, COLOR_UNKNOWN), Color(tag, COLOR_HINT))
+			return unconfirmed
+		end
 		tooltip:AddLine(Color("· " .. label, COLOR_UNKNOWN))
 	end
+	return false
 end
 
 -- Per-character owned counts, as in the mockup: "Brewdin    Bags 27 · Bank 20".
@@ -230,18 +237,21 @@ local function AddExpanded(tooltip, info)
 		end
 	end
 
-	local shown = 0
+	local shown, anyUnconfirmed = 0, false
 	for _, prof in ipairs(info.professions) do
 		if shown >= MAX_EXPANDED_RECIPES then break end
 		tooltip:AddLine(Color(Tooltip:GetProfessionName(prof), COLOR_HEADER))
 		for _, recipeID in ipairs(byProf[prof]) do
 			if shown >= MAX_EXPANDED_RECIPES then break end
-			AddRecipeLine(tooltip, recipeID)
+			anyUnconfirmed = AddRecipeLine(tooltip, recipeID) or anyUnconfirmed
 			shown = shown + 1
 		end
 	end
 	if info.recipeCount > shown then
 		tooltip:AddLine(Color(("...and %d more"):format(info.recipeCount - shown), COLOR_HINT))
+	end
+	if anyUnconfirmed then
+		tooltip:AddLine(Color(ns.Sources.UNCONFIRMED_NOTE, COLOR_HINT))
 	end
 
 	AddSpellLine(tooltip, info)

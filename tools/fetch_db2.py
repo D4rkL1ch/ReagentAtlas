@@ -1,4 +1,8 @@
-"""Download the DB2 tables build_data.py needs from wago.tools into tools/db2/.
+"""Download the data build_data.py needs into tools/db2/.
+
+DB2 tables come from wago.tools. Recipe sources come from QuestieDB at the
+pinned QUESTIEDB_COMMIT; bump it on purpose and review the Data/Sources.lua
+diff, because QuestieDB changes independently of client builds.
 
 Usage:
     python tools/fetch_db2.py                 # latest WoW Forever build (product "wowf")
@@ -13,8 +17,13 @@ import urllib.request
 from pathlib import Path
 
 PRODUCT = "wowf"
-TABLES = ["SkillLine", "SkillLineAbility", "SpellReagents", "SpellEffect", "ItemSparse", "SpellName", "SpellClassOptions"]
+TABLES = [
+    "SkillLine", "SkillLineAbility", "SpellReagents", "SpellEffect", "ItemSparse", "SpellName", "SpellClassOptions",
+    "Item", "ItemEffect", "ItemXItemEffect", "Faction", "AreaTable",
+]
 OUT_DIR = Path(__file__).resolve().parent / "db2"
+QUESTIEDB_COMMIT = "80866960788084ae1592abf66a08f0d306458a95"
+QUESTIEDB_FILES = ["foreverItemDB.lua", "foreverNpcDB.lua", "foreverQuestDB.lua"]
 
 
 def fetch(url: str) -> bytes:
@@ -36,6 +45,14 @@ def main() -> int:
         (OUT_DIR / f"{table}.csv").write_bytes(data)
         print(f"{table}: {len(data) // 1024} KB")
     (OUT_DIR / "build.txt").write_text(version + "\n", encoding="utf-8")
+
+    questie_dir = OUT_DIR / "questie"
+    questie_dir.mkdir(exist_ok=True)
+    for name in QUESTIEDB_FILES:
+        data = fetch(f"https://raw.githubusercontent.com/Questie/QuestieDB/{QUESTIEDB_COMMIT}/data/Forever/{name}")
+        (questie_dir / name).write_bytes(data)
+        print(f"{name}: {len(data) // 1024} KB")
+    (questie_dir / "commit.txt").write_text(QUESTIEDB_COMMIT + "\n", encoding="utf-8")
     print(f"build {version} -> {OUT_DIR}")
     return 0
 

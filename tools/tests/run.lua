@@ -72,9 +72,11 @@ function T.useFixture(ns)
 	ns.Recipes, ns.Reagents, ns.ProfessionNames = fx.Recipes, fx.Reagents, fx.ProfessionNames
 	ns.MAX_SKILL = fx.MAX_SKILL
 	ns.DATA_BUILD = "99999"
+	-- No sources by default, so layout tests stay independent of them.
+	ns.RecipeSources, ns.SourceNPCs = nil, nil
 end
 
-for _, file in ipairs({ "test_core.lua", "test_valuation.lua", "test_tooltip.lua", "test_characters.lua", "test_pricing.lua", "test_ui.lua", "test_data.lua" }) do
+for _, file in ipairs({ "test_core.lua", "test_valuation.lua", "test_tooltip.lua", "test_characters.lua", "test_pricing.lua", "test_ui.lua", "test_sources.lua", "test_data.lua" }) do
 	assert(loadfile(testDir .. file))(T)
 end
 
