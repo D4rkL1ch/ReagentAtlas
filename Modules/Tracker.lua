@@ -113,8 +113,9 @@ end
 
 -- Rows ----------------------------------------------------------------------
 
--- Who knows the recipe, or else where to get it.
-local function AddRecipeInfo(rows, recipeID)
+-- Appends who knows the recipe, or else where to get it. Returns true if any
+-- of that is unconfirmed source data.
+function Tracker:AddRecipeInfo(rows, recipeID)
 	local isMe, alts = ns.Professions:GetKnownBy(recipeID)
 	if isMe or #alts > 0 then
 		rows[#rows + 1] = {
@@ -154,7 +155,7 @@ function Tracker:GetRows()
 					}
 				end
 				if recipe then
-					unconfirmed = AddRecipeInfo(rows, entry.id) or unconfirmed
+					unconfirmed = self:AddRecipeInfo(rows, entry.id) or unconfirmed
 				end
 			end
 		end

@@ -135,13 +135,14 @@ end
 function SettingsUI:RefreshPanel()
 	if not (status and panel:IsShown()) then return end
 	status:SetText(table.concat(ns:GetStatusLines(), "\n"))
-	charList:SetDataProvider(CreateDataProvider(self:GetCharacterRows()))
+	local retain = ScrollBoxConstants and ScrollBoxConstants.RetainScrollPosition
+	charList:SetDataProvider(CreateDataProvider(self:GetCharacterRows()), retain)
 	local missing = {}
 	for i, text in ipairs(ns.Professions:GetMissingRecipes()) do
 		missing[i] = { text = text }
 	end
 	missingText:SetText(("Learned recipes missing from the data: %d. Only profession windows opened this session are checked."):format(#missing))
-	missingList:SetDataProvider(CreateDataProvider(missing))
+	missingList:SetDataProvider(CreateDataProvider(missing), retain)
 	missingList:SetShown(#missing > 0)
 end
 

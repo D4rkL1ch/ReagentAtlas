@@ -29,6 +29,7 @@ Reagent Atlas is a WoW Forever (client 1.60.x, modern addon API) addon that tell
 | Alt-aware highlighting | Recipes known by the current character are green; known by an alt are blue with the alt's name; unknown are grey. | P0 |
 | Account-wide inventory | Counts per character for bags + bank; tooltip shows total and a per-character breakdown on Shift. | P1 |
 | Browser window | `/ratlas` opens a two-pane window: filterable reagent list (left: search, profession, min tier, owned, craftable; filters are saved, the search is not), detail pane (right: tier, AH and vendor price, owned/recipes/craftable, where the items are, recipe list marked by who knows each, with the source of unknown recipes). Movable, position saved. Hovering a reagent row shows its item tooltip. A recipe row stands for the crafted item (the spell for enchants); its icon stands for the recipe (the recipe item, or the craft spell for trainer recipes) and its tooltip adds the full source. Modified clicks on any of these work as on an item link (Shift links to chat, Ctrl previews in the dressing room). | P1 |
+| Crafting tab | The browser's second tab, the reverse of the first: every recipe and what it crafts, 2,518 rows in 1.60.1. Rows and crafted items are the same list because only 7 items have more than one recipe. Search matches the crafted item or the recipe name (Copper Bar and Smelt Copper find the same row); filters are profession, known by any character, and reagents in hand for one craft (account-wide). Sorted by skill, highest first. The detail pane shows the reagents with have / need, then who knows the recipe or where to get it, and a Track button. Clicking a reagent opens it on the Reagents tab, a crafted item that is also a reagent has a "Used as reagent" button, and clicking a recipe row on the Reagents tab opens it here. The tab is remembered; its filters are saved in `ui.craftFilters`, the search is not. Built on first open, since listing it asks the client for every crafted item. | P1 |
 | Tracking list | A small movable window (browser button, Shift-click on the minimap entries, Settings, `/ratlas track`) listing tracked recipes and reagents; it stays open across reloads and can be left open in combat. Add with Track in the browser's detail pane or + on a recipe row; a recipe is reachable from any of its reagents. A recipe shows have / need per reagent, then who knows it, or where to get it (`Sources:GetDetailLines`, with the unconfirmed note). A plain click folds it. A reagent shows the owned count, optionally against a goal. Clicking a count sets the goal in the footer box: how many of a reagent (empty clears it), or how many crafts of a recipe (needs multiply; empty means one). Reaching a goal alerts: raid-warning text, a chat line and a sound (Settings toggle, Master channel). See "Tracking list" below. | P1 |
 | Bag markers | Small tier-colored diamond pip in the top-left corner of default bag slots at or above the minimum tier (default Valuable). Toggleable. Hooks each bag window's `UpdateItems` (retail container frames in Forever); the bank window is not marked. | P2 |
 | Settings | Toggles for tooltip, markers, minimap icon, Auctionator use, minimum tier for markers, and an Open button for the browser. A "Status & characters" subpage shows version, data build and price source, lists tracked characters with a confirmed Forget button, and lists learned recipes missing from the data. Uses the modern Settings panel (Esc → Options → AddOns, the gear in the browser, right-click on the minimap icon, or `/ratlas config`; not in combat). | P2 |
@@ -70,7 +71,8 @@ ReagentAtlas/
     Tooltip.lua             -- TooltipDataProcessor hook, collapsed/expanded render
     BagMarkers.lua          -- tier pips on bag item buttons
   UI/
-    Browser.lua             -- main window, list (ScrollBox), filters, detail pane
+    Browser.lua             -- main window, tabs, reagent list (ScrollBox), filters, detail pane
+    Crafting.lua            -- Crafting tab: recipe and crafted item list, detail pane
     TrackerWindow.lua       -- tracking list window
     Settings.lua            -- Settings panel, status & characters subpage
     MinimapButton.lua       -- minimap icon and AddOns button entry
@@ -123,7 +125,7 @@ ns.SourceNPCs[npcID] = { "Name", "Zone", "AH" } -- sides: "A", "H", "AH" or "" (
 ReagentAtlasDB = {
   version = 1,
   settings = { tooltip = true, markers = true, useAuctionator = true, markerMinTier = 3, minimapIcon = true, trackerSound = true },
-  ui = { point = {...}, filters = {...}, minimapAngle = 225, trackerPoint = {...}, trackerShown = true },
+  ui = { point = {...}, filters = {...}, craftFilters = {...}, browserTab = "reagents", minimapAngle = 225, trackerPoint = {...}, trackerShown = true },
   tracked = {  -- in the order added
     { kind = "item", id = itemID, need = 20, done = true },            -- need optional
     { kind = "recipe", id = recipeSpellID, need = 1, collapsed = true }, -- need = crafts

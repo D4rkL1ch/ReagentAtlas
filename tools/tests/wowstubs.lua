@@ -59,6 +59,7 @@ function W:GetPoint(i)
 	-- point, relativeTo, relativePoint, x, y as SetPoint(point, rel, relPoint, x, y)
 	return p[1], p[2], p[3], p[4], p[5]
 end
+function W:SetEnabled(enabled) self.enabled = enabled end
 function W:SetText(text) self.text = text end
 function W:GetText() return self.text end
 function W:SetChecked(v) self.checked = v end
@@ -70,10 +71,12 @@ function W:CreateFontString() return newWidget("FontString", self) end
 function W:SetTitle(text) self.title = text end
 
 -- WowScrollBoxList: SetDataProvider "renders" up to 40 elements through the
--- view's initializer, reusing row frames like the real ScrollBox.
+-- view's initializer, reusing row frames like the real ScrollBox. `scroll`
+-- stands in for its position: back to the top unless told to retain it.
 local SCROLLBOX_VISIBLE = 40
-function W:SetDataProvider(provider)
+function W:SetDataProvider(provider, retainScrollPosition)
 	self.provider = provider
+	if not retainScrollPosition then self.scroll = 0 end
 	self.rows = self.rows or {}
 	local view = self.view
 	for i = 1, math.min(#provider.list, SCROLLBOX_VISIBLE) do

@@ -12,7 +12,9 @@ local TRAINER_ICON = "Interface\\Icons\\INV_Misc_Book_09" -- recipes with no rec
 local TRACK_ICON = "Interface\\Buttons\\UI-PlusButton-Up"
 local UNTRACK_ICON = "Interface\\Buttons\\UI-MinusButton-Up"
 local TIER_COL, OWNED_COL = 70, 50
+local TAB_WIDTH, TAB_HEIGHT = 84, 20
 local PAD = 12
+local TAB_REAGENTS, TAB_CRAFTING = "reagents", "crafting"
 
 local COLOR_TEXT = "ffe8e2d0"
 local COLOR_HINT = "ffa39a85"
@@ -156,7 +158,7 @@ function Browser:BuildRows(filters)
 end
 
 -- Tooltips and links need the item in the client cache. Unlike GetItemName this
--- doesn't refresh the window when it arrives: that would reset the recipe scroll.
+-- doesn't refresh the window when it arrives: nothing on screen depends on it.
 local function Preload(itemID)
 	if itemID and C_Item and C_Item.RequestLoadItemDataByID then
 		C_Item.RequestLoadItemDataByID(itemID)
@@ -290,19 +292,28 @@ local function CreateChoice(parent, width, getOptions, get, set)
 	return button
 end
 
-local function CreateCheck(parent, label, key)
+-- A saved filter toggle. owner has GetFilters() and Refresh().
+local function CreateCheck(parent, label, key, owner)
 	local check = CreateFrame("CheckButton", nil, parent, "UICheckButtonTemplate")
 	check:SetSize(24, 24)
 	local text = check.Text or CreateLabel(check, "GameFontHighlight")
 	if not check.Text then text:SetPoint("LEFT", check, "RIGHT", 2, 0) end
 	text:SetText(label)
-	check:SetChecked(Browser:GetFilters()[key])
+	check:SetChecked(owner:GetFilters()[key])
 	check:SetScript("OnClick", function(self)
-		Browser:GetFilters()[key] = self:GetChecked() and true or false
-		Browser:Refresh()
+		owner:GetFilters()[key] = self:GetChecked() and true or false
+		owner:Refresh()
 	end)
 	return check
 end
+
+-- Shared with the Crafting tab.
+Browser.Color = Color
+Browser.QualityColor = QualityColor
+Browser.CreateLabel = CreateLabel
+Browser.CreateChoice = CreateChoice
+Browser.CreateCheck = CreateCheck
+Browser.LIST_WIDTH = LIST_WIDTH
 
 -- Icon with a tier-colored edge, as in the mockup.
 local function CreateIcon(parent, size)
@@ -366,6 +377,7 @@ local KNOWN_COLOR = { me = COLOR_YOURS, alt = COLOR_ALT, none = COLOR_UNKNOWN }
 local function ToggleTracked(kind, id)
 	if ns.Tracker:Toggle(kind, id) then ns.TrackerUI:Open() end
 end
+Browser.ToggleTracked = ToggleTracked
 
 local function SetSpellTooltip(spellID, name)
 	if GameTooltip.SetSpellByID then
@@ -444,7 +456,11 @@ local function InitRecipeRow(row, recipe)
 		row.Name:SetPoint("RIGHT", row.Prof, "LEFT", -6, 0)
 		row.Name:SetJustifyH("LEFT")
 		row.Name:SetWordWrap(false)
-		row:SetScript("OnClick", function(self) Browser:HandleCraftedClick(self.recipeID) end)
+		row:SetScript("OnClick", function(self)
+			if not Browser:HandleCraftedClick(self.recipeID) and not IsModifiedClick() then
+				Browser:OpenRecipe(self.recipeID)
+			end
+		end)
 		row:SetScript("OnEnter", function(self) Browser:ShowCrafted(self, self.recipeID, self.recipeName) end)
 		row:SetScript("OnLeave", function() GameTooltip:Hide() end)
 	end
@@ -565,6 +581,9 @@ end
 
 local function UpdateDetail()
 	local d = frame.Detail
+	-- Refreshes of the same item keep the recipe scroll; a new item starts at the top.
+	local sameItem = d.ShownItem == selected
+	d.ShownItem = selected
 	local detail = selected and Browser:GetDetail(selected)
 	local show = detail ~= nil
 	for _, region in ipairs({ d.Edge, d.Icon, d.Name, d.Tier, d.Price, d.Where, d.UsedIn, d.Legend, d.Recipes, d.Track }) do
@@ -587,11 +606,11 @@ local function UpdateDetail()
 	d.Where:SetText(Color("Where it is: ", COLOR_HINT) .. Color(where, COLOR_TEXT))
 	d.UsedIn:SetShown(#detail.recipes > 0)
 	d.Track:SetText(ns.Tracker:Find("item", detail.itemID) and "Untrack" or "Track")
-	d.Recipes:SetDataProvider(CreateDataProvider(detail.recipes))
+	d.Recipes:SetDataProvider(CreateDataProvider(detail.recipes),
+		sameItem and ScrollBoxConstants and ScrollBoxConstants.RetainScrollPosition)
 end
 
--- Only the track buttons: rebuilding the recipe list would reset its scroll
--- under someone working down it.
+-- Only the track buttons: nothing else changes, so no need to rebuild the lists.
 local function UpdateTrackButtons()
 	if not (frame and frame:IsShown()) then return end
 	local d = frame.Detail
@@ -607,14 +626,46 @@ local function CountChars()
 	return n
 end
 
+-- noun: what the list holds, plural ("reagents").
+function Browser:SetSubtitle(shown, total, noun)
+	local chars = CountChars()
+	frame.Subtitle:SetText(Color(("%d of %d %s · %d character%s tracked"):format(
+		shown, total, noun, chars, chars == 1 and "" or "s"), COLOR_HINT))
+end
+
 local function UpdateSubtitle(shown)
 	local total = 0
 	for itemID in pairs(ns.Reagents) do
 		if ns.Valuation:GetInfo(itemID) then total = total + 1 end
 	end
-	local chars = CountChars()
-	frame.Subtitle:SetText(Color(("%d of %d reagents · %d character%s tracked"):format(
-		shown, total, chars, chars == 1 and "" or "s"), COLOR_HINT))
+	Browser:SetSubtitle(shown, total, "reagents")
+end
+
+-- The two panes of a tab: a shaded list on the left, the detail on the right.
+function Browser:CreatePanes()
+	local content = frame.Content
+	local left = CreateFrame("Frame", nil, content)
+	left:SetPoint("TOPLEFT")
+	left:SetPoint("BOTTOMLEFT")
+	left:SetWidth(LIST_WIDTH)
+	local leftBg = left:CreateTexture(nil, "BACKGROUND")
+	leftBg:SetAllPoints()
+	leftBg:SetColorTexture(0, 0, 0, 0.3)
+
+	local right = CreateFrame("Frame", nil, content)
+	right:SetPoint("TOPLEFT", left, "TOPRIGHT", PAD, -TAB_HEIGHT)
+	right:SetPoint("BOTTOMRIGHT")
+	return left, right
+end
+
+local function CreateTab(index, label, tab)
+	local button = CreateFrame("Button", nil, frame.Content, "UIPanelButtonTemplate")
+	button:SetSize(TAB_WIDTH, TAB_HEIGHT)
+	button:SetPoint("TOPLEFT", LIST_WIDTH + PAD + (index - 1) * TAB_WIDTH, 0)
+	button:SetText(label)
+	if button.SetDisabledFontObject then button:SetDisabledFontObject("GameFontHighlight") end
+	button:SetScript("OnClick", function() Browser:ShowTab(tab) end)
+	frame.Tabs[tab] = button
 end
 
 local function CreateBrowser()
@@ -644,18 +695,18 @@ local function CreateBrowser()
 	local content = CreateFrame("Frame", nil, frame)
 	content:SetPoint("TOPLEFT", 8, -26)
 	content:SetPoint("BOTTOMRIGHT", -8, 8)
+	frame.Content = content
 
 	frame.Subtitle = CreateLabel(content, "GameFontHighlightSmall")
 	frame.Subtitle:SetPoint("TOPRIGHT", -PAD, -6)
 
+	frame.Tabs = {}
+	CreateTab(1, "Reagents", TAB_REAGENTS)
+	CreateTab(2, "Crafting", TAB_CRAFTING)
+
 	-- Left pane: filters, column headers, reagent list.
-	local left = CreateFrame("Frame", nil, content)
-	left:SetPoint("TOPLEFT")
-	left:SetPoint("BOTTOMLEFT")
-	left:SetWidth(LIST_WIDTH)
-	local leftBg = left:CreateTexture(nil, "BACKGROUND")
-	leftBg:SetAllPoints()
-	leftBg:SetColorTexture(0, 0, 0, 0.3)
+	local left, right = Browser:CreatePanes()
+	frame.ReagentPanes = { left, right }
 
 	local searchBox = CreateFrame("EditBox", nil, left, "SearchBoxTemplate")
 	searchBox:SetSize(LIST_WIDTH - 2 * PAD - 4, 22)
@@ -685,9 +736,9 @@ local function CreateBrowser()
 		function(value) filters.minTier = value; Browser:Refresh() end)
 	tierChoice:SetPoint("TOPLEFT", tierLabel, "BOTTOMLEFT", 0, -2)
 
-	local ownedCheck = CreateCheck(left, "Owned", "owned")
+	local ownedCheck = CreateCheck(left, "Owned", "owned", Browser)
 	ownedCheck:SetPoint("TOPLEFT", profChoice, "BOTTOMLEFT", -2, -6)
-	local craftCheck = CreateCheck(left, "Craftable", "craftable")
+	local craftCheck = CreateCheck(left, "Craftable", "craftable", Browser)
 	craftCheck:SetPoint("LEFT", ownedCheck, "LEFT", 100, 0)
 
 	local trackerButton = CreateFrame("Button", nil, left, "UIPanelButtonTemplate")
@@ -713,18 +764,28 @@ local function CreateBrowser()
 	frame.Empty:SetPoint("CENTER", frame.List, "CENTER")
 
 	-- Right pane: detail.
-	local right = CreateFrame("Frame", nil, content)
-	right:SetPoint("TOPLEFT", left, "TOPRIGHT", PAD, -20)
-	right:SetPoint("BOTTOMRIGHT")
 	frame.Detail = CreateDetail(right)
 
 	frame:SetScript("OnShow", function() Browser:Refresh() end)
 	frame:Hide()
+	Browser:ShowTab(ns.db.ui.browserTab == TAB_CRAFTING and TAB_CRAFTING or TAB_REAGENTS)
 end
 
--- Rebuilds the list and detail pane if the window is open.
+function Browser:ShowTab(tab)
+	ns.db.ui.browserTab = tab
+	for _, pane in ipairs(frame.ReagentPanes) do pane:SetShown(tab == TAB_REAGENTS) end
+	ns.CraftingUI:SetShown(tab == TAB_CRAFTING)
+	for name, button in pairs(frame.Tabs) do button:SetEnabled(name ~= tab) end
+	self:Refresh()
+end
+
+-- Rebuilds the current tab if the window is open.
 function Browser:Refresh()
 	if not frame or not frame:IsShown() then return end
+	if ns.db.ui.browserTab == TAB_CRAFTING then
+		ns.CraftingUI:Refresh()
+		return
+	end
 	local filters = self:GetFilters()
 	local rows = self:BuildRows({
 		search = search, prof = filters.prof, minTier = filters.minTier,
@@ -745,6 +806,17 @@ function Browser:Select(itemID)
 		end)
 		UpdateDetail()
 	end
+end
+
+-- Jumps between the tabs: a reagent from a recipe, a recipe from a reagent.
+function Browser:OpenReagent(itemID)
+	self:ShowTab(TAB_REAGENTS)
+	self:Select(itemID)
+end
+
+function Browser:OpenRecipe(recipeID)
+	self:ShowTab(TAB_CRAFTING)
+	ns.CraftingUI:Select(recipeID)
 end
 
 function Browser:IsShown()

@@ -27,5 +27,6 @@ Modules\BagMarkers.lua
 
 UI\Settings.lua
 UI\Browser.lua
+UI\Crafting.lua
 UI\TrackerWindow.lua
 UI\MinimapButton.lua

@@ -321,7 +321,7 @@ test("dropdowns set filters; a missing dropdown template falls back to a button"
 	stubs.noDropdown = true
 	ns = boot()
 	open(ns)
-	local button = findWidget(function(w) return w.template == "UIPanelButtonTemplate" end)
+	local button = findWidget(function(w) return w.template == "UIPanelButtonTemplate" and w.text == "All" end)
 	eq(button.text, "All", "fallback shows the current choice")
 	button.scripts.OnClick(button)
 	eq(ns.db.ui.filters.prof, 164, "cycles to the next profession")
@@ -355,6 +355,22 @@ test("character data changes refresh an open browser", function()
 	ns:Fire("CHAR_DATA_CHANGED")
 	stubs.runTimers()
 	assert(list.provider ~= before, "rebuilt")
+end)
+
+test("background refreshes keep the recipe list's scroll; a new item starts at the top", function()
+	local ns = boot()
+	open(ns)
+	ns.Browser:Select(17056)
+	local list = findWidget(function(w) return w.template == "WowScrollBoxList" and w.rows and w.rows[1] and w.rows[1].Recipe end)
+	list.scroll = 120
+	local before = list.provider
+	ns:Fire("CHAR_DATA_CHANGED")
+	stubs.runTimers()
+	assert(list.provider ~= before, "rebuilt")
+	eq(list.scroll, 120, "scroll kept")
+
+	ns.Browser:Select(2589)
+	eq(list.scroll, 0, "new item from the top")
 end)
 
 -- Bag markers ---------------------------------------------------------------
@@ -573,6 +589,17 @@ test("character list: you first, Forget asks first and removes the alt", functio
 	stubs.popup.dialog.OnAccept()
 	eq(saved.chars["Brewdin-StubRealm"], nil, "removed")
 	eq(#list.provider.list, 2, "list refreshed")
+end)
+
+test("character data changes keep the settings lists' scroll", function()
+	local ns = boot(altData())
+	showPanel()
+	local chars = panelList(function(w) return w.provider and w.provider.list[1] and w.provider.list[1].key end)
+	local missing = panelList(function(w) return w ~= chars end)
+	chars.scroll, missing.scroll = 30, 40
+	ns:Fire("CHAR_DATA_CHANGED")
+	eq(chars.scroll, 30, "characters")
+	eq(missing.scroll, 40, "missing recipes")
 end)
 
 test("recipe data check lists missing recipes; empty list hidden", function()
