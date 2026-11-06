@@ -216,7 +216,7 @@ The first draft (skill / 300 × 40, min(count, 10) × 2, +10/+20 for output qual
 - Freshness: `Auctionator.API.v1.GetAuctionAgeByItemID("ReagentAtlas", itemID)` → days or nil; ignore prices older than 7 days.
 - Price age 0 means seen today. If Auctionator has no age function, the price is used without one.
 - Wrap every call in `pcall`; on any error disable the bridge for the session (one chat notice; `/ratlas version` shows the reason).
-- Optional: `Auctionator.API.v1.RegisterForDBUpdate("ReagentAtlas", fn)` fires the internal `PRICES_CHANGED` message after a scan, for UI that needs to redraw. Prices are not cached.
+- Optional: `Auctionator.API.v1.RegisterForDBUpdate("ReagentAtlas", fn)` fires the internal `PRICES_CHANGED` message after a scan, for UI that needs to redraw. Prices are not cached; ages are, for 60 seconds or until that message, because Auctionator sorts the item's whole price history to answer.
 - When a fresh price exists: if price ≥ 5 × vendor price **and** ≥ 1g, raise the tier one step (max Keep!); if price < vendor price, cap at Useful. Vendor-sold reagents stay capped at Useful (their AH price is just the vendor markup). Items without a vendor sell price are not adjusted. The 1g floor keeps cheap commons (Linen, Copper Ore at 20× vendor) from rising; it is in `Valuation.WEIGHTS` with the other knobs.
 - Tooltip shows the price beside the tier, as in the mockup: "Reagent Atlas: Valuable · AH 1s 20c", plus "(N days old)" from 1 day on.
 - Verify in-game during Phase 1 that the Forever build of Auctionator keeps API v1.

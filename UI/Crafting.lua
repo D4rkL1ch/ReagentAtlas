@@ -82,7 +82,7 @@ function CraftingUI:BuildRows(filters)
 			local recipeName = ns.Tooltip:GetRecipeName(recipeID)
 			local keep = (not filters.known or known ~= "none")
 				and (search == "" or Matches(search, itemName) or Matches(search, recipeName))
-				and (not filters.ready or Status(recipeID).met)
+				and (not filters.ready or ns.Tracker:HasReagents(recipeID))
 				and (not filters.learnable or CanLearn(recipeID))
 			if keep then
 				rows[#rows + 1] = {
@@ -432,10 +432,14 @@ function CraftingUI:SetShown(show)
 	end
 end
 
+local recipeCount -- static data: counted once
+
 local function CountRecipes()
-	local total = 0
-	for _ in pairs(ns.Recipes) do total = total + 1 end
-	return total
+	if not recipeCount then
+		recipeCount = 0
+		for _ in pairs(ns.Recipes) do recipeCount = recipeCount + 1 end
+	end
+	return recipeCount
 end
 
 function CraftingUI:Refresh()

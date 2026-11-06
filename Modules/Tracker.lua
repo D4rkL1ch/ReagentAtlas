@@ -19,25 +19,40 @@ local function ItemName(itemID)
 	return ns.Browser:GetItemName(itemID) or ("Item #" .. itemID)
 end
 
+local function ByItemID(a, b)
+	return a.itemID < b.itemID
+end
+
 -- Counts for an entry:
 --   item    { have, need (nil = no goal), met }
 --   recipe  { reagents = array of { itemID, have, need }, met }; need is
 --           multiplied by the entry's number of crafts
 function Tracker:GetStatus(entry)
 	if entry.kind == "item" then
-		local have = ns.Inventory:GetCounts(entry.id)
+		local have = ns.Inventory:GetTotal(entry.id)
 		return { have = have, need = entry.need, met = entry.need ~= nil and have >= entry.need }
 	end
 	local recipe = ns.Recipes[entry.id]
 	local reagents, met = {}, recipe ~= nil
 	for itemID, count in pairs(recipe and recipe.reagents or {}) do
 		local need = count * entry.need
-		local have = ns.Inventory:GetCounts(itemID)
+		local have = ns.Inventory:GetTotal(itemID)
 		reagents[#reagents + 1] = { itemID = itemID, have = have, need = need }
 		met = met and have >= need
 	end
-	table.sort(reagents, function(a, b) return a.itemID < b.itemID end)
+	table.sort(reagents, ByItemID)
 	return { reagents = reagents, met = met }
+end
+
+-- Whether you own enough for one craft: GetStatus().met without building its
+-- rows, for filtering whole lists.
+function Tracker:HasReagents(recipeID)
+	local recipe = ns.Recipes[recipeID]
+	if not recipe then return false end
+	for itemID, count in pairs(recipe.reagents) do
+		if ns.Inventory:GetTotal(itemID) < count then return false end
+	end
+	return true
 end
 
 -- Marks an entry met or not without alerting: changing the list yourself is
@@ -213,7 +228,7 @@ end
 local function Allocate(plan, itemID, count, path)
 	local stock = plan.stock[itemID]
 	if not stock then
-		stock = ns.Inventory:GetCounts(itemID)
+		stock = ns.Inventory:GetTotal(itemID)
 	end
 	local used = math.min(stock, count)
 	plan.stock[itemID] = stock - used
@@ -307,7 +322,7 @@ function Tracker:GetShoppingRows()
 	for _, itemID in ipairs(totals) do
 		rows[#rows + 1] = {
 			type = "reagent", itemID = itemID, name = ItemName(itemID),
-			have = (ns.Inventory:GetCounts(itemID)), need = plan.totals[itemID],
+			have = ns.Inventory:GetTotal(itemID), need = plan.totals[itemID],
 		}
 	end
 	return rows
@@ -363,8 +378,10 @@ end
 local settled = false -- false until LOGIN_DELAY has passed
 local generation = 0
 
--- Runs once, SETTLE_DELAY after the last change.
+-- Runs once, SETTLE_DELAY after the last change. With nothing tracked there is
+-- nothing to check or redraw.
 local function QueueUpdate()
+	if #ns.db.tracked == 0 then return end
 	generation = generation + 1
 	local mine = generation
 	C_Timer.After(SETTLE_DELAY, function()

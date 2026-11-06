@@ -51,6 +51,12 @@ function Browser:GetItemName(itemID)
 	return name
 end
 
+-- True for items GetItemName asked the client for, so a window can tell its own
+-- item data from everything else loading (auction house addons load thousands).
+function Browser:WasRequested(itemID)
+	return requested[itemID] == true
+end
+
 -- Modified clicks follow the player's bindings (by default Shift links to chat,
 -- Ctrl previews in the dressing room). Returns true if the click was used; the
 -- link is nil until the client has cached the item.
@@ -158,7 +164,7 @@ function Browser:BuildRows(filters)
 				keep = filters.sell or tier >= filters.minTier
 			end
 			if keep then
-				owned = ns.Inventory:GetCounts(itemID)
+				owned = ns.Inventory:GetTotal(itemID)
 				keep = not (filters.owned or filters.sell) or owned > 0
 			end
 			if keep then
@@ -189,8 +195,12 @@ end
 
 -- Tooltips and links need the item in the client cache. Unlike GetItemName this
 -- doesn't refresh the window when it arrives: nothing on screen depends on it.
+-- Once per item: the detail pane asks again on every refresh.
+local preloaded = {}
+
 local function Preload(itemID)
-	if itemID and C_Item and C_Item.RequestLoadItemDataByID then
+	if itemID and not preloaded[itemID] and C_Item and C_Item.RequestLoadItemDataByID then
+		preloaded[itemID] = true
 		C_Item.RequestLoadItemDataByID(itemID)
 	end
 end
@@ -251,8 +261,12 @@ function Browser:GetDetail(itemID)
 	}
 end
 
--- Professions that have at least one recipe, sorted by display name.
+-- Professions that have at least one recipe, sorted by display name. Built
+-- once, as dropdowns ask each time they open: treat the result as read-only.
+local professionChoices
+
 function Browser:GetProfessionChoices()
+	if professionChoices then return professionChoices end
 	local seen, list = {}, {}
 	for _, recipe in pairs(ns.Recipes) do
 		if not seen[recipe.prof] then
@@ -262,6 +276,7 @@ function Browser:GetProfessionChoices()
 	end
 	table.sort(list, function(a, b) return a.label < b.label end)
 	table.insert(list, 1, { value = 0, label = "All" })
+	professionChoices = list
 	return list
 end
 
@@ -655,12 +670,16 @@ function Browser:SetSubtitle(shown, total, noun)
 	frame.Subtitle:SetText(Color(("%d of %d %s"):format(shown, total, noun), COLOR_HINT))
 end
 
+local reagentCount -- static data: counted once
+
 local function UpdateSubtitle(shown)
-	local total = 0
-	for itemID in pairs(ns.Reagents) do
-		if ns.Valuation:GetInfo(itemID) then total = total + 1 end
+	if not reagentCount then
+		reagentCount = 0
+		for itemID in pairs(ns.Reagents) do
+			if ns.Valuation:GetInfo(itemID) then reagentCount = reagentCount + 1 end
+		end
 	end
-	Browser:SetSubtitle(shown, total, "reagents")
+	Browser:SetSubtitle(shown, reagentCount, "reagents")
 end
 
 -- The two panes of a tab: a shaded list on the left, the detail on the right.
@@ -862,23 +881,31 @@ function Browser:Open()
 	frame:Raise()
 end
 
--- Item names arrive in bursts after RequestLoadItemDataByID; refresh once.
+local REFRESH_DELAY = 0.2
+-- Item names arrive in bursts after RequestLoadItemDataByID, thousands of them
+-- the first time the Crafting tab opens, and each refresh rebuilds a whole list.
+local ITEM_REFRESH_DELAY = 1
+
 local refreshQueued = false
-local function QueueRefresh()
+local function QueueRefresh(delay)
 	if refreshQueued or not Browser:IsShown() then return end
 	refreshQueued = true
-	C_Timer.After(0.2, function()
+	C_Timer.After(delay, function()
 		refreshQueued = false
 		Browser:Refresh()
 	end)
 end
 
+local function QueueDataRefresh()
+	QueueRefresh(REFRESH_DELAY)
+end
+
 function Browser:OnInit()
-	ns:RegisterMessage("CHAR_DATA_CHANGED", QueueRefresh)
-	ns:RegisterMessage("PRICES_CHANGED", QueueRefresh)
-	ns:RegisterMessage("SETTINGS_CHANGED", QueueRefresh)
+	ns:RegisterMessage("CHAR_DATA_CHANGED", QueueDataRefresh)
+	ns:RegisterMessage("PRICES_CHANGED", QueueDataRefresh)
+	ns:RegisterMessage("SETTINGS_CHANGED", QueueDataRefresh)
 	ns:RegisterMessage("TRACKER_CHANGED", UpdateTrackButtons)
 	ns:RegisterEvent("ITEM_DATA_LOAD_RESULT", function(_, itemID)
-		if requested[itemID] then QueueRefresh() end
+		if requested[itemID] then QueueRefresh(ITEM_REFRESH_DELAY) end
 	end)
 end

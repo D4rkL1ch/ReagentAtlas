@@ -4,6 +4,7 @@ local Pricing = ns:RegisterModule("Pricing", {})
 
 local MAX_AGE_DAYS = 7 -- older Auctionator prices are ignored (SPEC.md > Auctionator bridge)
 local AH_CUT = 0.05    -- share of a sale the auction house keeps
+local AGE_CACHE_SECONDS = 60
 
 -- Set when an Auctionator call errors; the bridge stays off for the session.
 local brokenReason
@@ -36,20 +37,36 @@ function Pricing:IsEnabled()
 	return not brokenReason and ns.db.settings.useAuctionator and API() ~= nil
 end
 
+-- Days since an item was last seen on the AH, or nil. Auctionator sorts the
+-- item's whole price history to work this out, and a list asks about hundreds
+-- of items on every refresh, so answers are kept for a while. Age counts in
+-- days: only a scan changes it sooner, and a scan clears these.
+local ages = {} -- itemID -> days, false if Auctionator has no answer
+local agesSince = 0
+
+local function GetAge(itemID)
+	local now = GetTime()
+	if now - agesSince > AGE_CACHE_SECONDS then
+		wipe(ages)
+		agesSince = now
+	end
+	local age = ages[itemID]
+	if age == nil then
+		local _, result = Call("GetAuctionAgeByItemID", itemID)
+		age = type(result) == "number" and result or false
+		ages[itemID] = age
+	end
+	return age or nil
+end
+
 -- Auction price in copper and its age in days (nil if Auctionator doesn't
 -- say), or nil when there is no fresh price.
 function Pricing:GetPrice(itemID)
 	if not itemID or not self:IsEnabled() then return nil end
 	local ok, price = Call("GetAuctionPriceByItemID", itemID)
 	if not ok or type(price) ~= "number" or price <= 0 then return nil end
-	local age
-	ok, age = Call("GetAuctionAgeByItemID", itemID)
-	if brokenReason then return nil end
-	if type(age) ~= "number" then
-		age = nil
-	elseif age > MAX_AGE_DAYS then
-		return nil
-	end
+	local age = GetAge(itemID)
+	if brokenReason or (age and age > MAX_AGE_DAYS) then return nil end
 	return price, age
 end
 
@@ -130,9 +147,10 @@ function Pricing:StatusText()
 end
 
 function Pricing:OnLogin()
-	-- Optional: newer Auctionator versions notify after a scan. Nothing is
-	-- cached here; the message lets UI refresh (bag markers, browser).
+	-- Optional: newer Auctionator versions notify after a scan. The message
+	-- lets UI refresh (bag markers, browser).
 	Call("RegisterForDBUpdate", function()
+		wipe(ages)
 		ns:Fire("PRICES_CHANGED")
 	end)
 end

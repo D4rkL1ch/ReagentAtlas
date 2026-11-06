@@ -360,7 +360,9 @@ end
 
 function TrackerUI:OnInit()
 	ns:RegisterMessage("TRACKER_CHANGED", function() TrackerUI:Refresh() end)
-	ns:RegisterEvent("ITEM_DATA_LOAD_RESULT", QueueRefresh)
+	ns:RegisterEvent("ITEM_DATA_LOAD_RESULT", function(_, itemID)
+		if ns.Browser:WasRequested(itemID) then QueueRefresh() end
+	end)
 end
 
 function TrackerUI:OnLogin()

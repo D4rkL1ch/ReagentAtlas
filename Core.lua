@@ -74,6 +74,22 @@ function ns:Fire(message, ...)
 	end
 end
 
+-- CHAR_DATA_CHANGED carries this when only item counts changed, so listeners
+-- that depend on recipes can skip the work. Without it, anything may have.
+ns.INVENTORY_ONLY = "inventory"
+
+-- True if two flat tables hold the same keys and values. Scans use it to stay
+-- quiet when nothing changed: most events that trigger one change nothing.
+function ns.SameTable(a, b)
+	for k, v in pairs(a) do
+		if b[k] ~= v then return false end
+	end
+	for k in pairs(b) do
+		if a[k] == nil then return false end
+	end
+	return true
+end
+
 -- Module registry -----------------------------------------------------------
 -- Modules call ns:RegisterModule("Name", mod) at file load. OnInit runs after
 -- ADDON_LOADED (SavedVariables ready), OnLogin after PLAYER_LOGIN.
@@ -162,12 +178,17 @@ end
 -- Characters ----------------------------------------------------------------
 
 -- "Name-Realm" key used in ReagentAtlasDB.chars. Realm may be nil very early
--- in the loading process, so only call this from PLAYER_LOGIN onwards.
+-- in the loading process, so only call this from PLAYER_LOGIN onwards. Cached
+-- once known: lookups ask for it for every recipe in a list.
+local charKey
+
 function ns:GetCharKey()
+	if charKey then return charKey end
 	local name = UnitName("player")
 	local realm = GetNormalizedRealmName()
 	if not name or not realm then return nil end
-	return name .. "-" .. realm
+	charKey = name .. "-" .. realm
+	return charKey
 end
 
 -- The current character's record in ReagentAtlasDB.chars, created on first

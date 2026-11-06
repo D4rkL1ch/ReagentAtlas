@@ -10,16 +10,26 @@ local BAG_IDS = { 0, 1, 2, 3, 4, 5 }
 local CHARACTER_BANK_TABS = { 6, 7, 8, 9, 10, 11, 12, 13, 14 }
 local ACCOUNT_BANK_TABS = { 15, 16, 17, 18, 19, 20, 21, 22, 23 }
 
+-- The item in a slot, or nil. GetContainerItemInfo builds a table per call, so
+-- it's only used where the client lacks the ID-only call.
+function Inventory:GetSlotItem(bag, slot)
+	if C_Container.GetContainerItemID then
+		return C_Container.GetContainerItemID(bag, slot)
+	end
+	local info = C_Container.GetContainerItemInfo(bag, slot)
+	return info and info.itemID
+end
+
 -- Counts of reagents (items in ns.Reagents) in the given containers. Other
 -- items are skipped to keep the saved file small.
 local function CountContainers(bagIDs)
 	local counts = {}
 	for _, bag in ipairs(bagIDs) do
 		for slot = 1, C_Container.GetContainerNumSlots(bag) or 0 do
-			local info = C_Container.GetContainerItemInfo(bag, slot)
-			local itemID = info and info.itemID
+			local itemID = Inventory:GetSlotItem(bag, slot)
 			if itemID and ns.Reagents[itemID] then
-				counts[itemID] = (counts[itemID] or 0) + (info.stackCount or 1)
+				local info = C_Container.GetContainerItemInfo(bag, slot)
+				counts[itemID] = (counts[itemID] or 0) + (info and info.stackCount or 1)
 			end
 		end
 	end
@@ -43,11 +53,20 @@ end
 
 -- Scanning ------------------------------------------------------------------
 
+-- Stores a scan and returns whether it differs: moving items around or looting
+-- something that isn't a reagent shouldn't rebuild every open list.
+local function Store(owner, field, counts)
+	if owner[field] and ns.SameTable(owner[field], counts) then return false end
+	owner[field] = counts
+	return true
+end
+
 function Inventory:ScanBags()
 	local char = ns:GetCharData()
 	if not char then return end
-	char.bags = CountContainers(BAG_IDS)
-	ns:Fire("CHAR_DATA_CHANGED")
+	if Store(char, "bags", CountContainers(BAG_IDS)) then
+		ns:Fire("CHAR_DATA_CHANGED", ns.INVENTORY_ONLY)
+	end
 end
 
 local bankOpen = false
@@ -58,11 +77,11 @@ function Inventory:ScanBank()
 	if not bankOpen then return end
 	local char = ns:GetCharData()
 	if not char then return end
-	char.bank = CountContainers(BankTabIDs("Character", CHARACTER_BANK_TABS))
+	local changed = Store(char, "bank", CountContainers(BankTabIDs("Character", CHARACTER_BANK_TABS)))
 	if CanViewAccountBank() then
-		ns.db.account.bank = CountContainers(BankTabIDs("Account", ACCOUNT_BANK_TABS))
+		changed = Store(ns.db.account, "bank", CountContainers(BankTabIDs("Account", ACCOUNT_BANK_TABS))) or changed
 	end
-	ns:Fire("CHAR_DATA_CHANGED")
+	if changed then ns:Fire("CHAR_DATA_CHANGED", ns.INVENTORY_ONLY) end
 end
 
 local bankScanQueued = false
@@ -77,7 +96,18 @@ end
 
 -- Lookup --------------------------------------------------------------------
 
--- Owned counts of an item across the account. Returns:
+-- Owned count of an item across the account, warband bank included. For lists
+-- and goals, which ask about many items and need nothing else.
+function Inventory:GetTotal(itemID)
+	local bank = ns.db.account.bank
+	local total = bank and bank[itemID] or 0
+	for _, char in pairs(ns.db.chars) do
+		total = total + (char.bags and char.bags[itemID] or 0) + (char.bank and char.bank[itemID] or 0)
+	end
+	return total
+end
+
+-- Owned counts of an item across the account, with who holds them. Returns:
 --   total     number including the warband bank
 --   holders   array of { key, bags, bank, total, isMe }, current character
 --             first, then by total descending

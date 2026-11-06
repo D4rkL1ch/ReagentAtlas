@@ -415,6 +415,7 @@ TooltipDataProcessor = {
 
 
 C_Timer = { After = function(delay, fn) M.timers[#M.timers + 1] = { at = M.now + delay, fn = fn } end }
+function GetTime() return M.now end
 
 SOUNDKIT = { IG_QUEST_LIST_COMPLETE = 878 }
 function PlaySound(kit, channel) M.sounds[#M.sounds + 1] = { kit = kit, channel = channel } end
@@ -463,6 +464,10 @@ C_TradeSkillUI.GetAllRecipeIDs = C_TradeSkillUI.GetFilteredRecipeIDs
 
 C_Container = {
 	GetContainerNumSlots = function(bag) return M.containers[bag] and 16 or 0 end,
+	GetContainerItemID = function(bag, slot)
+		local item = M.containers[bag] and M.containers[bag][slot]
+		return item and item[1]
+	end,
 	GetContainerItemInfo = function(bag, slot)
 		local item = M.containers[bag] and M.containers[bag][slot]
 		if not item then return nil end

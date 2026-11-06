@@ -40,7 +40,7 @@ function Professions:ScanRanks()
 
 	-- prof1, prof2, first aid, fishing, cooking; unlearned slots are nil
 	local indices = { n = 5, GetProfessions() }
-	local seen, any = {}, false
+	local seen, any, changed = {}, false, false
 	for i = 1, indices.n do
 		local index = indices[i]
 		if index then
@@ -48,6 +48,7 @@ function Professions:ScanRanks()
 			local profID = NormalizeProf(skillLine)
 			if profID then
 				local prof = GetProf(char, profID)
+				changed = changed or prof.rank ~= rank or prof.maxRank ~= maxRank
 				prof.rank, prof.maxRank = rank, maxRank
 				seen[profID] = true
 				any = true
@@ -60,10 +61,12 @@ function Professions:ScanRanks()
 		for profID in pairs(char.profs) do
 			if not seen[profID] then
 				char.profs[profID] = nil
+				changed = true
 			end
 		end
 	end
-	ns:Fire("CHAR_DATA_CHANGED")
+	-- SKILL_LINES_CHANGED also fires for weapon skills, which rise in combat.
+	if changed then ns:Fire("CHAR_DATA_CHANGED") end
 end
 
 -- Known recipes -------------------------------------------------------------
@@ -100,7 +103,10 @@ function Professions:ScanRecipes()
 	if not ids or #ids == 0 then return end
 
 	local prof = GetProf(char, profID)
-	local known = complete and {} or prof.known
+	local known = {}
+	if not complete then
+		for recipeID in pairs(prof.known) do known[recipeID] = true end
+	end
 	for _, recipeID in ipairs(ids) do
 		local info = T.GetRecipeInfo(recipeID)
 		if info and info.learned then
@@ -110,11 +116,14 @@ function Professions:ScanRecipes()
 			end
 		end
 	end
+	local changed = not ns.SameTable(prof.known, known)
 	prof.known = known
 	if base.skillLevel and base.skillLevel > 0 then
+		changed = changed or prof.rank ~= base.skillLevel or prof.maxRank ~= base.maxSkillLevel
 		prof.rank, prof.maxRank = base.skillLevel, base.maxSkillLevel
 	end
-	ns:Fire("CHAR_DATA_CHANGED")
+	-- TRADE_SKILL_LIST_UPDATE also fires after crafts and filter changes.
+	if changed then ns:Fire("CHAR_DATA_CHANGED") end
 end
 
 local scanQueued = false
@@ -138,43 +147,39 @@ end
 
 -- Lookup --------------------------------------------------------------------
 
--- recipeID -> array of character keys that know it; rebuilt lazily.
-local knownIndex
+-- Rebuilt lazily: recipeID -> true if the current character knows it, and
+-- recipeID -> sorted array of the other characters that do.
+local knownByMe, knownByAlts
+local NO_ALTS = {}
 
 local function BuildIndex()
-	knownIndex = {}
+	knownByMe, knownByAlts = {}, {}
+	local me = ns:GetCharKey()
 	for key, char in pairs(ns.db.chars) do
 		for _, prof in pairs(char.profs or {}) do
 			for recipeID in pairs(prof.known or {}) do
-				local list = knownIndex[recipeID]
-				if not list then
-					list = {}
-					knownIndex[recipeID] = list
+				if key == me then
+					knownByMe[recipeID] = true
+				else
+					local list = knownByAlts[recipeID]
+					if not list then
+						list = {}
+						knownByAlts[recipeID] = list
+					end
+					list[#list + 1] = key
 				end
-				list[#list + 1] = key
 			end
 		end
 	end
+	for _, list in pairs(knownByAlts) do table.sort(list) end
 end
 
 -- Who can craft a recipe: (true if the current character knows it, sorted
--- array of other character keys that know it).
+-- array of other character keys that know it). Lists call this for every
+-- recipe, so the array is shared: treat it as read-only.
 function Professions:GetKnownBy(recipeID)
-	if not knownIndex then BuildIndex() end
-	local list = knownIndex[recipeID]
-	local alts = {}
-	if not list then return false, alts end
-	local me = ns:GetCharKey()
-	local isMe = false
-	for _, key in ipairs(list) do
-		if key == me then
-			isMe = true
-		else
-			alts[#alts + 1] = key
-		end
-	end
-	table.sort(alts)
-	return isMe, alts
+	if not knownByMe then BuildIndex() end
+	return knownByMe[recipeID] == true, knownByAlts[recipeID] or NO_ALTS
 end
 
 -- Characters with the recipe's profession who don't know it: array of
@@ -219,7 +224,9 @@ end
 -- Lifecycle -----------------------------------------------------------------
 
 function Professions:OnInit()
-	ns:RegisterMessage("CHAR_DATA_CHANGED", function() knownIndex = nil end)
+	ns:RegisterMessage("CHAR_DATA_CHANGED", function(_, what)
+		if what ~= ns.INVENTORY_ONLY then knownByMe = nil end
+	end)
 	ns:RegisterCommand("diff", "diff - learned recipes missing from the recipe data", function()
 		local names = Professions:GetMissingRecipes()
 		if #names == 0 then
@@ -234,6 +241,7 @@ function Professions:OnInit()
 end
 
 function Professions:OnLogin()
+	knownByMe = nil -- built any earlier, it couldn't tell which character is you
 	self:ScanRanks()
 	ns:RegisterEvent("SKILL_LINES_CHANGED", function() Professions:ScanRanks() end)
 	ns:RegisterEvent("TRADE_SKILL_SHOW", QueueRecipeScan)

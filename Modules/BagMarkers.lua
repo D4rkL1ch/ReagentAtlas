@@ -40,7 +40,10 @@ local function SetPip(button, tier)
 		return
 	end
 	local pip = GetPip(button)
-	pip.fill:SetColorTexture(HexToRGB(ns.Valuation.TIERS[tier].color))
+	if pip.tier ~= tier then
+		pip.tier = tier
+		pip.fill:SetColorTexture(HexToRGB(ns.Valuation.TIERS[tier].color))
+	end
 	pip.border:Show()
 	pip.fill:Show()
 end
@@ -59,8 +62,7 @@ end
 function BagMarkers:UpdateFrame(frame)
 	if not frame.EnumerateValidItems then return end
 	for _, button in frame:EnumerateValidItems() do
-		local info = C_Container.GetContainerItemInfo(button:GetBagID(), button:GetID())
-		SetPip(button, self:TierFor(info and info.itemID))
+		SetPip(button, self:TierFor(ns.Inventory:GetSlotItem(button:GetBagID(), button:GetID())))
 	end
 end
 
