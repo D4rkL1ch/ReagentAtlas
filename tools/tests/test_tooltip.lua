@@ -160,3 +160,131 @@ test("Shift view caps long recipe lists", function()
 	contains(tt:Text(), "...and 15 more", "overflow line")
 	eq(#tt.lines, 1 + 1 + 1 + 30 + 1, "spacer, tier, header, 30 recipes, overflow")
 end)
+
+-- Crafted items and recipe items --------------------------------------------
+
+-- The player has Tailoring 200 and knows nothing; Brewdin has Tailoring 225 and
+-- knows 990004; Frostia has Leatherworking 290.
+local PATTERN = 9004 -- teaches 990004 (Tailoring)
+local LW_PATTERN = 9001 -- teaches 990001 (Leatherworking)
+local BS_PATTERN = 9002 -- teaches 880002 (Blacksmithing)
+
+local function craftingChars()
+	return {
+		version = 1,
+		chars = {
+			["Tester-StubRealm"] = { class = "MAGE", profs = { [197] = { rank = 200, known = {} } }, bags = {}, bank = {} },
+			["Brewdin-StubRealm"] = { class = "PRIEST", profs = { [197] = { rank = 225, known = { [990004] = true } } }, bags = { [17056] = 2 }, bank = {} },
+			["Frostia-StubRealm"] = { class = "MAGE", profs = { [165] = { rank = 290, known = {} } }, bags = {}, bank = {} },
+		},
+	}
+end
+
+local function bootCrafting()
+	local ns = boot(craftingChars())
+	ns.RecipeSources = {
+		[990004] = { i = PATTERN },
+		[990001] = { i = LW_PATTERN, v = { 1 } },
+		[880002] = { i = BS_PATTERN },
+	}
+	ns.SourceNPCs = { [1] = { "Some Vendor", "Elwynn Forest", "AH" } }
+	return ns
+end
+
+local function tooltipFor(itemID)
+	local tt = stubs.newTooltip()
+	tt:SetItem(itemID)
+	return tt
+end
+
+test("a recipe item says what it teaches, who knows it and who could learn it", function()
+	bootCrafting()
+	eq(tooltipFor(PATTERN):Text(), table.concat({
+		" ",
+		"Reagent Atlas: Teaches Recipe #990004",
+		"Known by Brewdin",
+		"Could learn: you (200/225)",
+		"Hold Shift for reagents",
+	}, "\n"))
+end)
+
+test("a recipe item nobody can use says so", function()
+	bootCrafting()
+	local text = tooltipFor(BS_PATTERN):Text()
+	contains(text, "None of your characters has Blacksmithing", "no one has it")
+end)
+
+test("could learn lists an alt in blue when you can't", function()
+	bootCrafting()
+	local tt = tooltipFor(LW_PATTERN)
+	contains(tt:Text(), "Could learn: Frostia (290)", "alt")
+	assert(not tt:Text():find("you (", 1, true), "not you")
+end)
+
+test("Shift on a recipe item adds the reagents against what you own", function()
+	bootCrafting()
+	stubs.shift = true
+	stubs.itemNames[17056] = "Light Feather"
+	local text = tooltipFor(PATTERN):Text()
+	contains(text, "Light Feather", "reagent")
+	contains(text, "2 / 3", "have / need")
+	assert(not text:find("Hold Shift", 1, true), "no hint in the Shift view")
+	stubs.shift = false
+end)
+
+test("a crafted item shows its profession and who can make it", function()
+	bootCrafting()
+	local text = tooltipFor(990104):Text()
+	contains(text, "Reagent Atlas: Crafted with Tailoring 225", "profession")
+	contains(text, "Known by Brewdin", "who")
+	contains(text, "Hold Shift for reagents", "hint")
+end)
+
+test("a crafted item nobody knows shows where to get the recipe", function()
+	local ns = bootCrafting()
+	local collapsed = tooltipFor(990101):Text()
+	contains(collapsed, "None of your characters knows this", "nobody")
+	contains(collapsed, "Vendor", "source tag")
+	contains(collapsed, ns.Sources.UNCONFIRMED_NOTE, "flagged unconfirmed")
+	stubs.shift = true
+	contains(tooltipFor(990101):Text(), "Some Vendor", "full source")
+	stubs.shift = false
+end)
+
+test("an item that is crafted and a reagent gets both sections and one hint", function()
+	local ns = bootCrafting()
+	ns.Recipes[770001] = { prof = 164, skill = 200, out = 17056, outQ = 1, reagents = { [2604] = 1 } }
+	local text = tooltipFor(17056):Text()
+	contains(text, "Crafted with Blacksmithing 200", "crafted")
+	contains(text, "Used in 7 recipes", "reagent")
+	local _, hints = text:gsub("Hold Shift", "")
+	eq(hints, 1, "one hint")
+end)
+
+test("items that are none of these stay untouched, and the setting covers all of it", function()
+	local ns = bootCrafting()
+	eq(#tooltipFor(424242).lines, 0, "unrelated item")
+	ns.db.settings.tooltip = false
+	eq(#tooltipFor(PATTERN).lines, 0, "tooltip setting off")
+	eq(#tooltipFor(990104).lines, 0, "tooltip setting off")
+end)
+
+test("every recipe item and crafted item in the generated data renders", function()
+	local ns = T.boot(nil)
+	local count = 0
+	for _, recipe in pairs(ns.Recipes) do
+		if recipe.out then
+			tooltipFor(recipe.out)
+			count = count + 1
+		end
+	end
+	for _, source in pairs(ns.RecipeSources or {}) do
+		if source.i then
+			stubs.shift = true
+			tooltipFor(source.i)
+			stubs.shift = false
+		end
+	end
+	assert(count > 0, "recipes")
+	eq(#stubs.errors, 0, "no errors")
+end)

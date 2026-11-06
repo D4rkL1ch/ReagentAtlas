@@ -198,6 +198,7 @@ function M.reset()
 	ContainerFrameCombinedBags = nil
 	ContainerFrameContainer = { ContainerFrames = { M.newBagFrame(0, {}) } }
 	Auctionator = nil
+	ElvUI = nil
 	ReagentAtlasDB = nil
 end
 
@@ -345,6 +346,11 @@ function WrapTextInColorCode(text, color) return "|c" .. color .. text .. "|r" e
 
 function GetBuildInfo() return "1.60.0", "99999", "Nov 4 2026", 16000 end
 function UnitName() return "Tester" end
+function strsplit(sep, text)
+	local parts = {}
+	for part in (text .. sep):gmatch("(.-)" .. sep) do parts[#parts + 1] = part end
+	return unpack(parts)
+end
 function GetNormalizedRealmName() return "StubRealm" end
 function InCombatLockdown() return M.combat end
 function IsShiftKeyDown() return M.shift end

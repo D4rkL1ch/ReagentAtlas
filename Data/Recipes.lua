@@ -74,10 +74,10 @@ R[2545] = { prof = 185, skill = 125, out = 2682, outQ = 1, reagents = { [2675] =
 R[2546] = { prof = 185, skill = 120, out = 2687, outQ = 1, reagents = { [2677] = 1, [2678] = 1 } }
 R[2547] = { prof = 185, skill = 135, out = 1082, outQ = 1, reagents = { [1080] = 1, [1081] = 1 } }
 R[2548] = { prof = 185, skill = 130, out = 2685, outQ = 1, reagents = { [2677] = 2, [2692] = 1 } }
-R[2549] = { prof = 185, skill = 140, out = 1017, outQ = 1, reagents = { [1015] = 2, [2678] = 1 } }
+R[2549] = { prof = 185, skill = 140, out = 1017, outQ = 1, n = 3, reagents = { [1015] = 2, [2678] = 1 } }
 R[2657] = { prof = 186, skill = 25, out = 2840, outQ = 1, reagents = { [2770] = 1 } }
 R[2658] = { prof = 186, skill = 100, out = 2842, outQ = 2, reagents = { [2775] = 1 } }
-R[2659] = { prof = 186, skill = 65, out = 2841, outQ = 1, reagents = { [2840] = 1, [3576] = 1 } }
+R[2659] = { prof = 186, skill = 65, out = 2841, outQ = 1, n = 2, reagents = { [2840] = 1, [3576] = 1 } }
 R[2660] = { prof = 164, skill = 15, out = 2862, outQ = 1, reagents = { [2835] = 1 } }
 R[2661] = { prof = 164, skill = 70, out = 2851, outQ = 2, reagents = { [2840] = 6 } }
 R[2662] = { prof = 164, skill = 50, out = 2852, outQ = 2, reagents = { [2840] = 4 } }
@@ -102,7 +102,7 @@ R[2742] = { prof = 164, skill = 125, out = 2850, outQ = 2, reagents = { [2319] =
 R[2795] = { prof = 185, skill = 60, out = 2888, outQ = 1, reagents = { [2886] = 1, [2894] = 1 } }
 R[2835] = { prof = 40, skill = 175, out = 2892, outQ = 1, reagents = { [3372] = 1, [5173] = 1 } }
 R[2837] = { prof = 40, skill = 215, out = 2893, outQ = 1, reagents = { [3372] = 1, [5173] = 2 } }
-R[2881] = { prof = 165, skill = 20, out = 2318, outQ = 1, reagents = { [2934] = 3 } }
+R[2881] = { prof = 165, skill = 20, out = 2318, outQ = 1, conv = true, reagents = { [2934] = 3 } }
 R[2963] = { prof = 197, skill = 25, out = 2996, outQ = 1, reagents = { [2589] = 2 } }
 R[2964] = { prof = 197, skill = 70, out = 2997, outQ = 1, reagents = { [2592] = 3 } }
 R[3115] = { prof = 164, skill = 15, out = 3239, outQ = 1, reagents = { [2835] = 1 } }
@@ -146,7 +146,7 @@ R[3334] = { prof = 164, skill = 150, out = 3484, outQ = 2, reagents = { [1705] =
 R[3336] = { prof = 164, skill = 155, out = 3485, outQ = 2, reagents = { [2605] = 1, [3478] = 2, [3575] = 4, [5498] = 2 } }
 R[3337] = { prof = 164, skill = 100, out = 3486, outQ = 1, reagents = { [2838] = 3 } }
 R[3370] = { prof = 185, skill = 120, out = 3662, outQ = 1, reagents = { [2678] = 1, [2924] = 1 } }
-R[3371] = { prof = 185, skill = 100, out = 3220, outQ = 1, reagents = { [3172] = 1, [3173] = 1, [3174] = 1 } }
+R[3371] = { prof = 185, skill = 100, out = 3220, outQ = 1, n = 2, reagents = { [3172] = 1, [3173] = 1, [3174] = 1 } }
 R[3372] = { prof = 185, skill = 130, out = 3663, outQ = 1, reagents = { [1468] = 2, [2692] = 1 } }
 R[3373] = { prof = 185, skill = 160, out = 3664, outQ = 1, reagents = { [2692] = 1, [3667] = 1 } }
 R[3376] = { prof = 185, skill = 170, out = 3665, outQ = 1, reagents = { [2692] = 1, [3685] = 1 } }
@@ -158,12 +158,12 @@ R[3400] = { prof = 185, skill = 215, out = 3729, outQ = 1, reagents = { [3712] =
 R[3420] = { prof = 40, skill = 125, out = 3775, outQ = 1, reagents = { [2930] = 1, [3371] = 1 } }
 R[3421] = { prof = 40, skill = 275, out = 3776, outQ = 1, reagents = { [8923] = 3, [8925] = 1 } }
 R[3448] = { prof = 171, skill = 185, out = 3823, outQ = 1, reagents = { [3355] = 1, [3372] = 1, [3818] = 1 } }
-R[3449] = { prof = 171, skill = 190, out = 3824, outQ = 1, reagents = { [3369] = 4, [3372] = 1, [3818] = 4 } }
+R[3449] = { prof = 171, skill = 190, out = 3824, outQ = 1, n = 2, reagents = { [3369] = 4, [3372] = 1, [3818] = 4 } }
 R[3450] = { prof = 171, skill = 195, out = 3825, outQ = 1, reagents = { [3355] = 1, [3372] = 1, [3821] = 1 } }
 R[3451] = { prof = 171, skill = 200, out = 3826, outQ = 1, reagents = { [2453] = 1, [3357] = 1, [3372] = 1 } }
 R[3452] = { prof = 171, skill = 180, out = 3827, outQ = 1, reagents = { [3356] = 1, [3372] = 1, [3820] = 1 } }
 R[3453] = { prof = 171, skill = 215, out = 3828, outQ = 1, reagents = { [3358] = 1, [3372] = 1, [3818] = 1 } }
-R[3454] = { prof = 171, skill = 220, out = 3829, outQ = 1, reagents = { [3358] = 4, [3372] = 1, [3819] = 2 } }
+R[3454] = { prof = 171, skill = 220, out = 3829, outQ = 1, n = 2, reagents = { [3358] = 4, [3372] = 1, [3819] = 2 } }
 R[3491] = { prof = 164, skill = 110, out = 3848, outQ = 2, reagents = { [818] = 1, [2319] = 1, [2841] = 6, [2880] = 4, [3470] = 2 } }
 R[3492] = { prof = 164, skill = 160, out = 3849, outQ = 2, reagents = { [1705] = 2, [3466] = 2, [3486] = 1, [3575] = 6, [4234] = 3 } }
 R[3493] = { prof = 164, skill = 175, out = 3850, outQ = 2, reagents = { [1529] = 2, [3466] = 2, [3486] = 2, [3575] = 8, [4234] = 3 } }
@@ -251,33 +251,33 @@ R[3873] = { prof = 197, skill = 175, out = 4336, outQ = 1, reagents = { [2325] =
 R[3914] = { prof = 197, skill = 50, out = 4343, outQ = 2, reagents = { [2320] = 1, [2996] = 2 } }
 R[3915] = { prof = 197, skill = 35, out = 4344, outQ = 1, reagents = { [2320] = 1, [2996] = 1 } }
 R[3918] = { prof = 202, skill = 20, out = 4357, outQ = 1, reagents = { [2835] = 1 } }
-R[3919] = { prof = 202, skill = 30, out = 4358, outQ = 1, reagents = { [2589] = 1, [4357] = 1 } }
-R[3920] = { prof = 202, skill = 30, out = 8067, outQ = 1, reagents = { [2840] = 1, [4357] = 1 } }
+R[3919] = { prof = 202, skill = 30, out = 4358, outQ = 1, n = 2, reagents = { [2589] = 1, [4357] = 1 } }
+R[3920] = { prof = 202, skill = 30, out = 8067, outQ = 1, n = 200, reagents = { [2840] = 1, [4357] = 1 } }
 R[3922] = { prof = 202, skill = 45, out = 4359, outQ = 1, reagents = { [2840] = 1 } }
-R[3923] = { prof = 202, skill = 60, out = 4360, outQ = 1, reagents = { [2589] = 1, [2840] = 1, [4357] = 2, [4359] = 1 } }
+R[3923] = { prof = 202, skill = 60, out = 4360, outQ = 1, n = 2, reagents = { [2589] = 1, [2840] = 1, [4357] = 2, [4359] = 1 } }
 R[3924] = { prof = 202, skill = 80, out = 4361, outQ = 1, reagents = { [2840] = 2, [2880] = 1 } }
 R[3925] = { prof = 202, skill = 80, out = 4362, outQ = 2, reagents = { [4359] = 1, [4361] = 1, [4399] = 1 } }
 R[3926] = { prof = 202, skill = 95, out = 4363, outQ = 1, reagents = { [2589] = 2, [2840] = 1, [4359] = 2 } }
 R[3928] = { prof = 202, skill = 105, out = 4401, outQ = 1, reagents = { [774] = 2, [2840] = 1, [4359] = 1, [4363] = 1 } }
 R[3929] = { prof = 202, skill = 85, out = 4364, outQ = 1, reagents = { [2836] = 1 } }
-R[3930] = { prof = 202, skill = 85, out = 8068, outQ = 1, reagents = { [2840] = 1, [4364] = 1 } }
-R[3931] = { prof = 202, skill = 90, out = 4365, outQ = 1, reagents = { [2589] = 1, [4364] = 3 } }
+R[3930] = { prof = 202, skill = 85, out = 8068, outQ = 1, n = 200, reagents = { [2840] = 1, [4364] = 1 } }
+R[3931] = { prof = 202, skill = 90, out = 4365, outQ = 1, n = 2, reagents = { [2589] = 1, [4364] = 3 } }
 R[3932] = { prof = 202, skill = 115, out = 4366, outQ = 1, reagents = { [2592] = 1, [2841] = 1, [4359] = 2, [4363] = 1 } }
 R[3933] = { prof = 202, skill = 130, out = 4367, outQ = 1, reagents = { [159] = 1, [2318] = 1, [4363] = 1, [4364] = 2 } }
 R[3934] = { prof = 202, skill = 130, out = 4368, outQ = 2, reagents = { [818] = 2, [2318] = 6 } }
 R[3936] = { prof = 202, skill = 130, out = 4369, outQ = 2, reagents = { [2319] = 2, [4359] = 4, [4361] = 2, [4399] = 1 } }
-R[3937] = { prof = 202, skill = 105, out = 4370, outQ = 1, reagents = { [2840] = 3, [4364] = 4, [4404] = 1 } }
+R[3937] = { prof = 202, skill = 105, out = 4370, outQ = 1, n = 3, reagents = { [2840] = 3, [4364] = 4, [4404] = 1 } }
 R[3938] = { prof = 202, skill = 105, out = 4371, outQ = 1, reagents = { [2841] = 2, [2880] = 1 } }
 R[3939] = { prof = 202, skill = 145, out = 4372, outQ = 2, reagents = { [1206] = 3, [4359] = 2, [4371] = 2, [4400] = 1 } }
 R[3940] = { prof = 202, skill = 145, out = 4373, outQ = 2, reagents = { [1210] = 2, [2319] = 4 } }
-R[3941] = { prof = 202, skill = 120, out = 4374, outQ = 1, reagents = { [2592] = 1, [2841] = 2, [4364] = 4, [4404] = 1 } }
+R[3941] = { prof = 202, skill = 120, out = 4374, outQ = 1, n = 2, reagents = { [2592] = 1, [2841] = 2, [4364] = 4, [4404] = 1 } }
 R[3942] = { prof = 202, skill = 125, out = 4375, outQ = 1, reagents = { [2592] = 1, [2841] = 2 } }
 R[3944] = { prof = 202, skill = 125, out = 4376, outQ = 1, reagents = { [4375] = 1, [4402] = 1 } }
 R[3945] = { prof = 202, skill = 125, out = 4377, outQ = 1, reagents = { [2838] = 1 } }
-R[3946] = { prof = 202, skill = 125, out = 4378, outQ = 1, reagents = { [2592] = 1, [4377] = 2 } }
-R[3947] = { prof = 202, skill = 125, out = 8069, outQ = 1, reagents = { [2841] = 1, [4377] = 1 } }
+R[3946] = { prof = 202, skill = 125, out = 4378, outQ = 1, n = 3, reagents = { [2592] = 1, [4377] = 2 } }
+R[3947] = { prof = 202, skill = 125, out = 8069, outQ = 1, n = 200, reagents = { [2841] = 1, [4377] = 1 } }
 R[3949] = { prof = 202, skill = 155, out = 4379, outQ = 2, reagents = { [2842] = 3, [4371] = 2, [4375] = 2, [4400] = 1 } }
-R[3950] = { prof = 202, skill = 140, out = 4380, outQ = 1, reagents = { [2841] = 3, [4377] = 2, [4404] = 1 } }
+R[3950] = { prof = 202, skill = 140, out = 4380, outQ = 1, n = 3, reagents = { [2841] = 3, [4377] = 2, [4404] = 1 } }
 R[3952] = { prof = 202, skill = 165, out = 4381, outQ = 2, reagents = { [1206] = 1, [2319] = 2, [4371] = 1, [4375] = 2 } }
 R[3953] = { prof = 202, skill = 145, out = 4382, outQ = 1, reagents = { [2319] = 1, [2592] = 1, [2841] = 2 } }
 R[3954] = { prof = 202, skill = 170, out = 4383, outQ = 2, reagents = { [1705] = 2, [4371] = 3, [4375] = 3, [4400] = 1 } }
@@ -288,16 +288,16 @@ R[3958] = { prof = 202, skill = 160, out = 4387, outQ = 1, reagents = { [3575] =
 R[3959] = { prof = 202, skill = 180, out = 4388, outQ = 1, reagents = { [1529] = 1, [4306] = 2, [4371] = 1, [4375] = 3 } }
 R[3960] = { prof = 202, skill = 185, out = 4403, outQ = 1, reagents = { [2319] = 4, [4371] = 4, [4377] = 4, [4387] = 1 } }
 R[3961] = { prof = 202, skill = 170, out = 4389, outQ = 1, reagents = { [3575] = 1, [10558] = 1 } }
-R[3962] = { prof = 202, skill = 175, out = 4390, outQ = 1, reagents = { [3575] = 1, [4306] = 1, [4377] = 1 } }
+R[3962] = { prof = 202, skill = 175, out = 4390, outQ = 1, n = 3, reagents = { [3575] = 1, [4306] = 1, [4377] = 1 } }
 R[3963] = { prof = 202, skill = 175, out = 4391, outQ = 1, reagents = { [4234] = 4, [4382] = 1, [4387] = 2, [4389] = 2 } }
 R[3965] = { prof = 202, skill = 185, out = 4392, outQ = 1, reagents = { [4234] = 4, [4382] = 1, [4387] = 1, [4389] = 1 } }
 R[3966] = { prof = 202, skill = 205, out = 4393, outQ = 2, reagents = { [3864] = 2, [4234] = 6 } }
-R[3967] = { prof = 202, skill = 190, out = 4394, outQ = 1, reagents = { [3575] = 3, [4377] = 3, [4404] = 1 } }
+R[3967] = { prof = 202, skill = 190, out = 4394, outQ = 1, n = 2, reagents = { [3575] = 3, [4377] = 3, [4404] = 1 } }
 R[3968] = { prof = 202, skill = 215, out = 4395, outQ = 1, reagents = { [3575] = 2, [4377] = 3, [4389] = 1 } }
 R[3969] = { prof = 202, skill = 220, out = 4396, outQ = 1, reagents = { [3864] = 2, [4382] = 1, [4387] = 4, [4389] = 4, [7191] = 1 } }
 R[3971] = { prof = 202, skill = 220, out = 4397, outQ = 1, reagents = { [1529] = 2, [1705] = 2, [3864] = 2, [4389] = 4, [7191] = 1 } }
 R[3972] = { prof = 202, skill = 200, out = 4398, outQ = 1, reagents = { [159] = 1, [4234] = 2, [10505] = 2 } }
-R[3973] = { prof = 202, skill = 110, out = 4404, outQ = 1, reagents = { [2842] = 1 } }
+R[3973] = { prof = 202, skill = 110, out = 4404, outQ = 1, n = 5, reagents = { [2842] = 1 } }
 R[3977] = { prof = 202, skill = 90, out = 4405, outQ = 1, reagents = { [774] = 1, [4359] = 1, [4361] = 1 } }
 R[3978] = { prof = 202, skill = 135, out = 4406, outQ = 1, reagents = { [1206] = 1, [4371] = 1 } }
 R[3979] = { prof = 202, skill = 200, out = 4407, outQ = 1, reagents = { [1529] = 1, [3864] = 1, [4371] = 1 } }
@@ -310,17 +310,17 @@ R[5244] = { prof = 165, skill = 65, out = 5081, outQ = 1, reagents = { [2318] = 
 R[5763] = { prof = 40, skill = 150, out = 5237, outQ = 1, reagents = { [2928] = 1, [2930] = 1, [3371] = 1 } }
 R[6412] = { prof = 185, skill = 50, out = 5472, outQ = 1, reagents = { [5465] = 1 } }
 R[6413] = { prof = 185, skill = 60, out = 5473, outQ = 1, reagents = { [5466] = 1 } }
-R[6414] = { prof = 185, skill = 75, out = 5474, outQ = 1, reagents = { [2678] = 1, [5467] = 1 } }
-R[6415] = { prof = 185, skill = 90, out = 5476, outQ = 1, reagents = { [2678] = 1, [5468] = 1 } }
-R[6416] = { prof = 185, skill = 90, out = 5477, outQ = 1, reagents = { [4536] = 1, [5469] = 1 } }
-R[6417] = { prof = 185, skill = 130, out = 5478, outQ = 1, reagents = { [5051] = 1 } }
-R[6418] = { prof = 185, skill = 140, out = 5479, outQ = 1, reagents = { [2692] = 1, [5470] = 1 } }
-R[6419] = { prof = 185, skill = 150, out = 5480, outQ = 1, reagents = { [2678] = 4, [5471] = 1 } }
+R[6414] = { prof = 185, skill = 75, out = 5474, outQ = 1, n = 2, reagents = { [2678] = 1, [5467] = 1 } }
+R[6415] = { prof = 185, skill = 90, out = 5476, outQ = 1, n = 2, reagents = { [2678] = 1, [5468] = 1 } }
+R[6416] = { prof = 185, skill = 90, out = 5477, outQ = 1, n = 2, reagents = { [4536] = 1, [5469] = 1 } }
+R[6417] = { prof = 185, skill = 130, out = 5478, outQ = 1, n = 2, reagents = { [5051] = 1 } }
+R[6418] = { prof = 185, skill = 140, out = 5479, outQ = 1, n = 2, reagents = { [2692] = 1, [5470] = 1 } }
+R[6419] = { prof = 185, skill = 150, out = 5480, outQ = 1, n = 2, reagents = { [2678] = 4, [5471] = 1 } }
 R[6458] = { prof = 202, skill = 160, out = 5507, outQ = 1, reagents = { [1206] = 1, [4363] = 1, [4371] = 2, [4375] = 2 } }
 R[6499] = { prof = 185, skill = 90, out = 5525, outQ = 1, reagents = { [159] = 1, [5503] = 1 } }
 R[6500] = { prof = 185, skill = 165, out = 5527, outQ = 1, reagents = { [2692] = 1, [5504] = 1 } }
 R[6501] = { prof = 185, skill = 130, out = 5526, outQ = 1, reagents = { [1179] = 1, [2678] = 1, [5503] = 1 } }
-R[6510] = { prof = 40, skill = 170, out = 5530, outQ = 1, reagents = { [3818] = 1 } }
+R[6510] = { prof = 40, skill = 170, out = 5530, outQ = 1, n = 3, reagents = { [3818] = 1 } }
 R[6517] = { prof = 164, skill = 115, out = 5540, outQ = 2, reagents = { [2841] = 6, [3466] = 1, [3478] = 2, [5498] = 2 } }
 R[6518] = { prof = 164, skill = 145, out = 5541, outQ = 2, reagents = { [2319] = 2, [2841] = 10, [3466] = 1, [3478] = 2, [5500] = 1 } }
 R[6521] = { prof = 197, skill = 95, out = 5542, outQ = 2, reagents = { [2321] = 2, [2997] = 3, [5498] = 1 } }
@@ -397,7 +397,7 @@ R[7818] = { prof = 164, skill = 80, out = 6338, outQ = 1, reagents = { [2842] = 
 R[7827] = { prof = 185, skill = 90, out = 5095, outQ = 1, reagents = { [6361] = 1 } }
 R[7828] = { prof = 185, skill = 190, out = 4594, outQ = 1, reagents = { [6362] = 1 } }
 R[7836] = { prof = 171, skill = 80, out = 6370, outQ = 1, reagents = { [3371] = 1, [6358] = 2 } }
-R[7837] = { prof = 171, skill = 150, out = 6371, outQ = 1, reagents = { [3371] = 1, [6359] = 2 } }
+R[7837] = { prof = 171, skill = 150, out = 6371, outQ = 1, n = 2, reagents = { [3371] = 1, [6359] = 2 } }
 R[7841] = { prof = 171, skill = 130, out = 6372, outQ = 1, reagents = { [2452] = 1, [3371] = 1, [6370] = 1 } }
 R[7845] = { prof = 171, skill = 165, out = 6373, outQ = 1, reagents = { [3356] = 1, [3372] = 1, [6371] = 2 } }
 R[7857] = { prof = 333, skill = 145, reagents = { [10940] = 2, [10998] = 1 } }
@@ -409,8 +409,8 @@ R[7892] = { prof = 197, skill = 120, out = 6384, outQ = 1, reagents = { [2321] =
 R[7893] = { prof = 197, skill = 120, out = 6385, outQ = 1, reagents = { [2321] = 1, [2605] = 2, [2997] = 4, [4340] = 1 } }
 R[7928] = { prof = 129, skill = 150, out = 6450, outQ = 1, reagents = { [4306] = 1 } }
 R[7929] = { prof = 129, skill = 180, out = 6451, outQ = 1, reagents = { [4306] = 2 } }
-R[7934] = { prof = 129, skill = 80, out = 6452, outQ = 1, reagents = { [1475] = 1 } }
-R[7935] = { prof = 129, skill = 130, out = 6453, outQ = 1, reagents = { [1288] = 1 } }
+R[7934] = { prof = 129, skill = 80, out = 6452, outQ = 1, n = 3, reagents = { [1475] = 1 } }
+R[7935] = { prof = 129, skill = 130, out = 6453, outQ = 1, n = 3, reagents = { [1288] = 1 } }
 R[7953] = { prof = 165, skill = 95, out = 6466, outQ = 2, reagents = { [2321] = 1, [4231] = 1, [6470] = 8 } }
 R[7954] = { prof = 165, skill = 105, out = 6467, outQ = 2, reagents = { [2321] = 2, [6470] = 6, [6471] = 2 } }
 R[7955] = { prof = 165, skill = 115, out = 6468, outQ = 3, reagents = { [2321] = 2, [6470] = 10, [6471] = 10 } }
@@ -419,7 +419,7 @@ R[8240] = { prof = 171, skill = 120, out = 6662, outQ = 1, reagents = { [2449] =
 R[8243] = { prof = 202, skill = 185, out = 4852, outQ = 1, reagents = { [4306] = 1, [4377] = 1, [4611] = 1 } }
 R[8322] = { prof = 165, skill = 90, out = 6709, outQ = 2, reagents = { [2318] = 6, [2320] = 4, [4231] = 1, [5498] = 1 } }
 R[8334] = { prof = 202, skill = 115, out = 6712, outQ = 1, reagents = { [2841] = 1, [2880] = 1, [4359] = 2 } }
-R[8339] = { prof = 202, skill = 115, out = 6714, outQ = 1, reagents = { [2589] = 1, [4364] = 3, [260794] = 1 } }
+R[8339] = { prof = 202, skill = 115, out = 6714, outQ = 1, n = 2, reagents = { [2589] = 1, [4364] = 3, [260794] = 1 } }
 R[8366] = { prof = 164, skill = 80, out = 6730, outQ = 2, reagents = { [774] = 2, [2840] = 12, [3470] = 2 } }
 R[8367] = { prof = 164, skill = 115, out = 6731, outQ = 2, reagents = { [818] = 2, [2840] = 16, [3470] = 3 } }
 R[8368] = { prof = 164, skill = 140, out = 6733, outQ = 2, reagents = { [1210] = 3, [2841] = 8, [3478] = 4 } }
@@ -438,7 +438,7 @@ R[8760] = { prof = 197, skill = 130, out = 7048, outQ = 2, reagents = { [2321] =
 R[8762] = { prof = 197, skill = 135, out = 7050, outQ = 2, reagents = { [2321] = 2, [4305] = 3 } }
 R[8764] = { prof = 197, skill = 155, out = 7051, outQ = 2, reagents = { [2321] = 2, [4305] = 3, [7067] = 1 } }
 R[8766] = { prof = 197, skill = 160, out = 7052, outQ = 2, reagents = { [2321] = 2, [4305] = 4, [6260] = 2, [7070] = 1, [7071] = 1 } }
-R[8768] = { prof = 164, skill = 125, out = 7071, outQ = 1, reagents = { [3575] = 1 } }
+R[8768] = { prof = 164, skill = 125, out = 7071, outQ = 1, n = 2, reagents = { [3575] = 1 } }
 R[8770] = { prof = 197, skill = 175, out = 7054, outQ = 3, reagents = { [4291] = 2, [4339] = 2, [7067] = 2, [7068] = 2, [7069] = 2, [7070] = 2 } }
 R[8772] = { prof = 197, skill = 160, out = 7055, outQ = 2, reagents = { [2604] = 2, [4291] = 1, [4305] = 4, [7071] = 1 } }
 R[8774] = { prof = 197, skill = 165, out = 7057, outQ = 2, reagents = { [4291] = 2, [4305] = 5 } }
@@ -485,7 +485,7 @@ R[9206] = { prof = 165, skill = 190, out = 7387, outQ = 2, reagents = { [2325] =
 R[9207] = { prof = 165, skill = 195, out = 7390, outQ = 2, reagents = { [3824] = 1, [4234] = 8, [4291] = 2, [7428] = 2 } }
 R[9208] = { prof = 165, skill = 195, out = 7391, outQ = 2, reagents = { [2459] = 2, [4234] = 10, [4291] = 1, [4337] = 2 } }
 R[9269] = { prof = 202, skill = 150, out = 7506, outQ = 2, reagents = { [774] = 1, [814] = 2, [818] = 1, [2841] = 6, [4375] = 1 } }
-R[9271] = { prof = 202, skill = 150, out = 6533, outQ = 1, reagents = { [2841] = 2, [4364] = 1, [6530] = 1 } }
+R[9271] = { prof = 202, skill = 150, out = 6533, outQ = 1, n = 3, reagents = { [2841] = 2, [4364] = 1, [6530] = 1 } }
 R[9273] = { prof = 202, skill = 160, out = 7148, outQ = 1, reagents = { [814] = 2, [1210] = 2, [3575] = 6, [4306] = 2, [4375] = 2, [7191] = 1 } }
 R[9513] = { prof = 185, skill = 100, out = 7676, outQ = 1, reagents = { [159] = 1, [2452] = 1 } }
 R[9811] = { prof = 164, skill = 160, out = 7913, outQ = 2, reagents = { [1210] = 2, [3486] = 2, [3575] = 8, [5635] = 4 } }
@@ -590,7 +590,7 @@ R[11451] = { prof = 171, skill = 220, out = 8956, outQ = 1, reagents = { [3821] 
 R[11452] = { prof = 171, skill = 225, out = 9030, outQ = 1, reagents = { [3821] = 1, [7067] = 1, [8925] = 1 } }
 R[11453] = { prof = 171, skill = 225, out = 9036, outQ = 1, reagents = { [3358] = 1, [8831] = 1, [8925] = 1 } }
 R[11454] = { prof = 164, skill = 200, out = 9060, outQ = 1, reagents = { [3577] = 1, [3860] = 5, [6037] = 1 } }
-R[11456] = { prof = 171, skill = 225, out = 9061, outQ = 1, reagents = { [3372] = 1, [4625] = 1, [9260] = 1 } }
+R[11456] = { prof = 171, skill = 225, out = 9061, outQ = 1, n = 2, reagents = { [3372] = 1, [4625] = 1, [9260] = 1 } }
 R[11458] = { prof = 171, skill = 225, out = 9144, outQ = 1, reagents = { [8153] = 1, [8831] = 1, [8925] = 1 } }
 R[11459] = { prof = 171, skill = 240, out = 9149, outQ = 1, reagents = { [3575] = 4, [4625] = 4, [8831] = 4, [9262] = 1 } }
 R[11460] = { prof = 171, skill = 245, out = 9154, outQ = 1, reagents = { [8836] = 1, [8925] = 1 } }
@@ -601,12 +601,12 @@ R[11466] = { prof = 171, skill = 255, out = 9088, outQ = 1, reagents = { [8836] 
 R[11467] = { prof = 171, skill = 255, out = 9187, outQ = 1, reagents = { [3821] = 1, [8838] = 1, [8925] = 1 } }
 R[11468] = { prof = 171, skill = 255, out = 9197, outQ = 1, reagents = { [8831] = 3, [8925] = 1 } }
 R[11472] = { prof = 171, skill = 260, out = 9206, outQ = 1, reagents = { [8838] = 1, [8846] = 1, [8925] = 1 } }
-R[11473] = { prof = 171, skill = 260, out = 9210, outQ = 1, reagents = { [4342] = 1, [8845] = 2, [8925] = 1 } }
+R[11473] = { prof = 171, skill = 260, out = 9210, outQ = 1, n = 2, reagents = { [4342] = 1, [8845] = 2, [8925] = 1 } }
 R[11476] = { prof = 171, skill = 265, out = 9264, outQ = 1, reagents = { [8845] = 3, [8925] = 1 } }
 R[11477] = { prof = 171, skill = 265, out = 9224, outQ = 1, reagents = { [8845] = 1, [8846] = 1, [8925] = 1 } }
 R[11478] = { prof = 171, skill = 265, out = 9233, outQ = 1, reagents = { [8846] = 2, [8925] = 1 } }
-R[11479] = { prof = 171, skill = 240, out = 3577, outQ = 2, reagents = { [3575] = 1 } }
-R[11480] = { prof = 171, skill = 240, out = 6037, outQ = 2, reagents = { [3860] = 1 } }
+R[11479] = { prof = 171, skill = 240, out = 3577, outQ = 2, conv = true, reagents = { [3575] = 1 } }
+R[11480] = { prof = 171, skill = 240, out = 6037, outQ = 2, conv = true, reagents = { [3860] = 1 } }
 R[11643] = { prof = 164, skill = 200, out = 9366, outQ = 2, reagents = { [3486] = 4, [3577] = 4, [3859] = 10, [3864] = 1 } }
 R[12044] = { prof = 197, skill = 40, out = 10045, outQ = 1, reagents = { [2320] = 1, [2996] = 1 } }
 R[12045] = { prof = 197, skill = 50, out = 10046, outQ = 1, reagents = { [2318] = 1, [2320] = 1, [2996] = 2 } }
@@ -656,19 +656,19 @@ R[12092] = { prof = 197, skill = 220, out = 10041, outQ = 3, reagents = { [1529]
 R[12093] = { prof = 197, skill = 155, out = 10036, outQ = 1, reagents = { [4339] = 5, [8343] = 3 } }
 R[12259] = { prof = 164, skill = 155, out = 10423, outQ = 2, reagents = { [2841] = 12, [2842] = 4, [3478] = 2 } }
 R[12260] = { prof = 164, skill = 15, out = 10421, outQ = 2, reagents = { [2840] = 4 } }
-R[12584] = { prof = 202, skill = 150, out = 10558, outQ = 1, reagents = { [3577] = 1 } }
+R[12584] = { prof = 202, skill = 150, out = 10558, outQ = 1, n = 3, reagents = { [3577] = 1 } }
 R[12585] = { prof = 202, skill = 175, out = 10505, outQ = 1, reagents = { [7912] = 2 } }
-R[12586] = { prof = 202, skill = 175, out = 10507, outQ = 1, reagents = { [4306] = 1, [10505] = 1 } }
+R[12586] = { prof = 202, skill = 175, out = 10507, outQ = 1, n = 2, reagents = { [4306] = 1, [10505] = 1 } }
 R[12587] = { prof = 202, skill = 195, out = 10499, outQ = 2, reagents = { [3864] = 2, [4234] = 6 } }
 R[12589] = { prof = 202, skill = 195, out = 10559, outQ = 1, reagents = { [3860] = 3 } }
 R[12590] = { prof = 202, skill = 175, out = 10498, outQ = 1, reagents = { [3859] = 4 } }
 R[12591] = { prof = 202, skill = 200, out = 10560, outQ = 1, reagents = { [3860] = 1, [4338] = 1, [10505] = 1 } }
 R[12594] = { prof = 202, skill = 225, out = 10500, outQ = 2, reagents = { [3864] = 2, [4234] = 4, [4385] = 1, [7068] = 2 } }
 R[12595] = { prof = 202, skill = 225, out = 10508, outQ = 2, reagents = { [3860] = 4, [4400] = 1, [7068] = 2, [10559] = 1, [10560] = 1 } }
-R[12596] = { prof = 202, skill = 210, out = 10512, outQ = 2, reagents = { [3860] = 1, [10505] = 1 } }
+R[12596] = { prof = 202, skill = 210, out = 10512, outQ = 2, n = 200, reagents = { [3860] = 1, [10505] = 1 } }
 R[12597] = { prof = 202, skill = 230, out = 10546, outQ = 1, reagents = { [4304] = 2, [7909] = 2, [10559] = 1 } }
 R[12599] = { prof = 202, skill = 215, out = 10561, outQ = 1, reagents = { [3860] = 3 } }
-R[12603] = { prof = 202, skill = 215, out = 10514, outQ = 1, reagents = { [10505] = 1, [10560] = 1, [10561] = 1 } }
+R[12603] = { prof = 202, skill = 215, out = 10514, outQ = 1, n = 3, reagents = { [10505] = 1, [10560] = 1, [10561] = 1 } }
 R[12607] = { prof = 202, skill = 240, out = 10501, outQ = 2, reagents = { [4304] = 4, [7909] = 2, [10592] = 1 } }
 R[12609] = { prof = 171, skill = 220, out = 10592, outQ = 1, reagents = { [3372] = 1, [3818] = 1, [3821] = 1 } }
 R[12614] = { prof = 202, skill = 240, out = 10510, outQ = 2, reagents = { [3860] = 6, [3864] = 2, [4400] = 1, [10559] = 2, [10560] = 1 } }
@@ -676,19 +676,19 @@ R[12615] = { prof = 202, skill = 245, out = 10502, outQ = 2, reagents = { [4304]
 R[12616] = { prof = 202, skill = 245, out = 10518, outQ = 2, reagents = { [4339] = 4, [10285] = 2, [10505] = 4, [10560] = 1 } }
 R[12617] = { prof = 202, skill = 250, out = 10506, outQ = 2, reagents = { [774] = 4, [818] = 4, [3860] = 8, [6037] = 1, [10561] = 1 } }
 R[12618] = { prof = 202, skill = 250, out = 10503, outQ = 2, reagents = { [4304] = 6, [7910] = 2 } }
-R[12619] = { prof = 202, skill = 235, out = 10562, outQ = 1, reagents = { [10505] = 2, [10560] = 1, [10561] = 2 } }
+R[12619] = { prof = 202, skill = 235, out = 10562, outQ = 1, n = 4, reagents = { [10505] = 2, [10560] = 1, [10561] = 2 } }
 R[12620] = { prof = 202, skill = 260, out = 10548, outQ = 1, reagents = { [6037] = 2, [7910] = 1, [10559] = 1 } }
-R[12621] = { prof = 202, skill = 245, out = 10513, outQ = 2, reagents = { [3860] = 2, [10505] = 2 } }
+R[12621] = { prof = 202, skill = 245, out = 10513, outQ = 2, n = 200, reagents = { [3860] = 2, [10505] = 2 } }
 R[12622] = { prof = 202, skill = 265, out = 10504, outQ = 3, reagents = { [1529] = 3, [4304] = 8, [7909] = 3, [8153] = 2, [10286] = 2 } }
 R[12624] = { prof = 202, skill = 270, out = 10576, outQ = 1, reagents = { [3860] = 14, [6037] = 4, [7077] = 4, [7910] = 2, [9060] = 2, [9061] = 2 } }
 R[12715] = { prof = 202, skill = 205, out = 10644, outQ = 1, reagents = { [10647] = 1, [10648] = 1 } }
 R[12716] = { prof = 202, skill = 225, out = 10577, outQ = 1, reagents = { [3860] = 4, [7068] = 1, [10505] = 5, [10558] = 1, [10559] = 2 } }
 R[12717] = { prof = 202, skill = 225, out = 10542, outQ = 2, reagents = { [3860] = 8, [3864] = 1, [7067] = 4 } }
 R[12718] = { prof = 202, skill = 225, out = 10543, outQ = 2, reagents = { [3860] = 8, [3864] = 1, [7068] = 4 } }
-R[12719] = { prof = 202, skill = 210, out = 10579, outQ = 3, reagents = { [3030] = 100, [3860] = 2, [10505] = 2 } }
+R[12719] = { prof = 202, skill = 210, out = 10579, outQ = 3, n = 100, reagents = { [3030] = 100, [3860] = 2, [10505] = 2 } }
 R[12720] = { prof = 202, skill = 235, out = 10580, outQ = 1, reagents = { [3860] = 2, [10505] = 2, [10558] = 1, [10561] = 1 } }
 R[12722] = { prof = 202, skill = 240, out = 10585, outQ = 1, reagents = { [3860] = 2, [4389] = 1, [10560] = 1, [10561] = 1 } }
-R[12754] = { prof = 202, skill = 235, out = 10586, outQ = 1, reagents = { [9061] = 1, [10507] = 6, [10560] = 1, [10561] = 1 } }
+R[12754] = { prof = 202, skill = 235, out = 10586, outQ = 1, n = 2, reagents = { [9061] = 1, [10507] = 6, [10560] = 1, [10561] = 1 } }
 R[12755] = { prof = 202, skill = 230, out = 10587, outQ = 1, reagents = { [4407] = 2, [6037] = 6, [10505] = 4, [10560] = 1, [10561] = 2 } }
 R[12758] = { prof = 202, skill = 265, out = 10588, outQ = 2, reagents = { [3860] = 4, [9061] = 4, [10543] = 1, [10560] = 1 } }
 R[12759] = { prof = 202, skill = 260, out = 10645, outQ = 1, reagents = { [7972] = 4, [9060] = 1, [10559] = 2, [10560] = 1, [12808] = 1 } }
@@ -704,7 +704,7 @@ R[12905] = { prof = 202, skill = 245, out = 10724, outQ = 2, reagents = { [4234]
 R[12906] = { prof = 202, skill = 250, out = 10725, outQ = 1, reagents = { [1529] = 2, [3860] = 6, [6037] = 6, [9060] = 2, [10558] = 1, [10561] = 1 } }
 R[12907] = { prof = 202, skill = 255, out = 10726, outQ = 2, reagents = { [3860] = 10, [4338] = 4, [6037] = 4, [7910] = 2, [10558] = 1 } }
 R[12908] = { prof = 202, skill = 260, out = 10727, outQ = 1, reagents = { [3860] = 6, [6037] = 6, [9061] = 4, [10559] = 2, [10560] = 1 } }
-R[13028] = { prof = 185, skill = 215, out = 10841, outQ = 1, reagents = { [159] = 1, [3821] = 1 } }
+R[13028] = { prof = 185, skill = 215, out = 10841, outQ = 1, n = 4, reagents = { [159] = 1, [3821] = 1 } }
 R[13220] = { prof = 40, skill = 185, out = 10918, outQ = 1, reagents = { [2930] = 1, [3372] = 1, [5173] = 1 } }
 R[13228] = { prof = 40, skill = 225, out = 10920, outQ = 1, reagents = { [2930] = 1, [3372] = 1, [5173] = 2 } }
 R[13229] = { prof = 40, skill = 265, out = 10921, outQ = 1, reagents = { [5173] = 2, [8923] = 1, [8925] = 1 } }
@@ -799,11 +799,11 @@ R[15833] = { prof = 171, skill = 245, out = 12190, outQ = 1, reagents = { [8831]
 R[15853] = { prof = 185, skill = 165, out = 12209, outQ = 1, reagents = { [1015] = 1, [2678] = 1 } }
 R[15855] = { prof = 185, skill = 215, out = 12210, outQ = 1, reagents = { [2692] = 1, [12184] = 1 } }
 R[15856] = { prof = 185, skill = 215, out = 13851, outQ = 1, reagents = { [2692] = 1, [12203] = 1 } }
-R[15861] = { prof = 185, skill = 215, out = 12212, outQ = 1, reagents = { [159] = 1, [4536] = 2, [12202] = 1 } }
+R[15861] = { prof = 185, skill = 215, out = 12212, outQ = 1, n = 2, reagents = { [159] = 1, [4536] = 2, [12202] = 1 } }
 R[15863] = { prof = 185, skill = 215, out = 12213, outQ = 1, reagents = { [2692] = 1, [12037] = 1 } }
 R[15865] = { prof = 185, skill = 215, out = 12214, outQ = 1, reagents = { [2596] = 1, [12037] = 1 } }
 R[15906] = { prof = 185, skill = 240, out = 12217, outQ = 1, reagents = { [2692] = 1, [4402] = 1, [12037] = 1 } }
-R[15910] = { prof = 185, skill = 240, out = 12215, outQ = 1, reagents = { [159] = 1, [3713] = 1, [12204] = 2 } }
+R[15910] = { prof = 185, skill = 240, out = 12215, outQ = 1, n = 2, reagents = { [159] = 1, [3713] = 1, [12204] = 2 } }
 R[15915] = { prof = 185, skill = 265, out = 12216, outQ = 1, reagents = { [2692] = 2, [12206] = 1 } }
 R[15933] = { prof = 185, skill = 265, out = 12218, outQ = 1, reagents = { [3713] = 2, [12207] = 1 } }
 R[15935] = { prof = 185, skill = 45, out = 12224, outQ = 1, reagents = { [2678] = 1, [12223] = 1 } }
@@ -875,20 +875,20 @@ R[16995] = { prof = 164, skill = 320, out = 12783, outQ = 3, reagents = { [7910]
 R[17180] = { prof = 333, skill = 250, out = 12655, outQ = 1, reagents = { [11176] = 3, [12359] = 1 } }
 R[17181] = { prof = 333, skill = 250, out = 12810, outQ = 1, reagents = { [8170] = 1, [16202] = 1 } }
 R[17187] = { prof = 171, skill = 275, out = 12360, outQ = 2, reagents = { [12359] = 1, [12363] = 1 } }
-R[17551] = { prof = 171, skill = 250, out = 13423, outQ = 1, reagents = { [3372] = 1, [13422] = 1 } }
+R[17551] = { prof = 171, skill = 250, out = 13423, outQ = 1, n = 2, reagents = { [3372] = 1, [13422] = 1 } }
 R[17552] = { prof = 171, skill = 270, out = 13442, outQ = 1, reagents = { [8846] = 3, [8925] = 1 } }
 R[17553] = { prof = 171, skill = 275, out = 13443, outQ = 1, reagents = { [8838] = 2, [8839] = 2, [8925] = 1 } }
 R[17554] = { prof = 171, skill = 280, out = 13445, outQ = 1, reagents = { [8838] = 1, [8925] = 1, [13423] = 2 } }
 R[17555] = { prof = 171, skill = 285, out = 13447, outQ = 1, reagents = { [8925] = 1, [13463] = 1, [13466] = 2 } }
 R[17557] = { prof = 171, skill = 290, out = 13453, outQ = 1, reagents = { [8846] = 2, [8925] = 1, [13466] = 2 } }
-R[17559] = { prof = 171, skill = 275, out = 7078, outQ = 2, reagents = { [7082] = 1 } }
-R[17560] = { prof = 171, skill = 275, out = 7076, outQ = 2, reagents = { [7078] = 1 } }
-R[17561] = { prof = 171, skill = 275, out = 7080, outQ = 2, reagents = { [7076] = 1 } }
-R[17562] = { prof = 171, skill = 275, out = 7082, outQ = 2, reagents = { [7080] = 1 } }
-R[17563] = { prof = 171, skill = 275, out = 7080, outQ = 2, reagents = { [12808] = 1 } }
-R[17564] = { prof = 171, skill = 275, out = 12808, outQ = 2, reagents = { [7080] = 1 } }
-R[17565] = { prof = 171, skill = 275, out = 7076, outQ = 2, reagents = { [12803] = 1 } }
-R[17566] = { prof = 171, skill = 275, out = 12803, outQ = 2, reagents = { [7076] = 1 } }
+R[17559] = { prof = 171, skill = 275, out = 7078, outQ = 2, conv = true, reagents = { [7082] = 1 } }
+R[17560] = { prof = 171, skill = 275, out = 7076, outQ = 2, conv = true, reagents = { [7078] = 1 } }
+R[17561] = { prof = 171, skill = 275, out = 7080, outQ = 2, conv = true, reagents = { [7076] = 1 } }
+R[17562] = { prof = 171, skill = 275, out = 7082, outQ = 2, conv = true, reagents = { [7080] = 1 } }
+R[17563] = { prof = 171, skill = 275, out = 7080, outQ = 2, conv = true, reagents = { [12808] = 1 } }
+R[17564] = { prof = 171, skill = 275, out = 12808, outQ = 2, conv = true, reagents = { [7080] = 1 } }
+R[17565] = { prof = 171, skill = 275, out = 7076, outQ = 2, conv = true, reagents = { [12803] = 1 } }
+R[17566] = { prof = 171, skill = 275, out = 12803, outQ = 2, conv = true, reagents = { [7076] = 1 } }
 R[17570] = { prof = 171, skill = 295, out = 13455, outQ = 1, reagents = { [8925] = 1, [10620] = 1, [13423] = 3 } }
 R[17571] = { prof = 171, skill = 295, out = 13452, outQ = 1, reagents = { [8925] = 1, [13465] = 2, [13466] = 2 } }
 R[17572] = { prof = 171, skill = 300, out = 13462, outQ = 1, reagents = { [8925] = 1, [13466] = 2, [13467] = 2 } }
@@ -966,7 +966,7 @@ R[18458] = { prof = 197, skill = 310, out = 14153, outQ = 4, reagents = { [7078]
 R[18560] = { prof = 197, skill = 270, out = 14342, outQ = 1, reagents = { [14256] = 2 } }
 R[18629] = { prof = 129, skill = 260, out = 14529, outQ = 1, reagents = { [14047] = 1 } }
 R[18630] = { prof = 129, skill = 290, out = 14530, outQ = 1, reagents = { [14047] = 2 } }
-R[19047] = { prof = 165, skill = 225, out = 15407, outQ = 1, reagents = { [8171] = 1, [15409] = 1 } }
+R[19047] = { prof = 165, skill = 225, out = 15407, outQ = 1, n = 2, reagents = { [8171] = 1, [15409] = 1 } }
 R[19048] = { prof = 165, skill = 250, out = 15077, outQ = 2, reagents = { [8170] = 4, [14341] = 1, [15408] = 4 } }
 R[19049] = { prof = 165, skill = 255, out = 15083, outQ = 2, reagents = { [2325] = 1, [8170] = 8, [14341] = 1 } }
 R[19050] = { prof = 165, skill = 255, out = 15045, outQ = 3, reagents = { [8170] = 20, [14341] = 2, [15412] = 25 } }
@@ -1023,26 +1023,26 @@ R[19106] = { prof = 165, skill = 320, out = 15141, outQ = 4, reagents = { [8170]
 R[19107] = { prof = 165, skill = 310, out = 15052, outQ = 3, reagents = { [8170] = 40, [12810] = 4, [14341] = 2, [15407] = 1, [15416] = 60 } }
 R[19435] = { prof = 197, skill = 285, out = 15802, outQ = 3, reagents = { [7971] = 2, [14048] = 6, [14341] = 1, [14342] = 4 } }
 R[19567] = { prof = 202, skill = 270, out = 15846, outQ = 1, reagents = { [10558] = 1, [10560] = 4, [10561] = 1, [12359] = 6 } }
-R[19666] = { prof = 164, skill = 75, out = 15869, outQ = 2, reagents = { [2842] = 1, [3470] = 1 } }
-R[19667] = { prof = 164, skill = 125, out = 15870, outQ = 2, reagents = { [3486] = 1, [3577] = 1 } }
-R[19668] = { prof = 164, skill = 175, out = 15871, outQ = 2, reagents = { [6037] = 1, [7966] = 1 } }
-R[19669] = { prof = 164, skill = 250, out = 15872, outQ = 2, reagents = { [12360] = 1, [12644] = 1 } }
+R[19666] = { prof = 164, skill = 75, out = 15869, outQ = 2, n = 2, reagents = { [2842] = 1, [3470] = 1 } }
+R[19667] = { prof = 164, skill = 125, out = 15870, outQ = 2, n = 2, reagents = { [3486] = 1, [3577] = 1 } }
+R[19668] = { prof = 164, skill = 175, out = 15871, outQ = 2, n = 2, reagents = { [6037] = 1, [7966] = 1 } }
+R[19669] = { prof = 164, skill = 250, out = 15872, outQ = 2, n = 2, reagents = { [12360] = 1, [12644] = 1 } }
 R[19788] = { prof = 202, skill = 250, out = 15992, outQ = 1, reagents = { [12365] = 2 } }
-R[19790] = { prof = 202, skill = 280, out = 15993, outQ = 1, reagents = { [12359] = 3, [14047] = 3, [15992] = 3, [15994] = 1 } }
+R[19790] = { prof = 202, skill = 280, out = 15993, outQ = 1, n = 3, reagents = { [12359] = 3, [14047] = 3, [15992] = 3, [15994] = 1 } }
 R[19791] = { prof = 202, skill = 280, out = 15994, outQ = 1, reagents = { [12359] = 3, [14047] = 1 } }
 R[19792] = { prof = 202, skill = 280, out = 15995, outQ = 2, reagents = { [10546] = 1, [10559] = 2, [10561] = 2, [12359] = 4, [15994] = 2 } }
 R[19793] = { prof = 202, skill = 285, out = 15996, outQ = 1, reagents = { [8170] = 1, [10558] = 1, [12803] = 1, [15994] = 4 } }
 R[19794] = { prof = 202, skill = 290, out = 15999, outQ = 2, reagents = { [7910] = 4, [10502] = 1, [12810] = 2, [14047] = 8 } }
 R[19795] = { prof = 202, skill = 295, out = 16000, outQ = 1, reagents = { [12359] = 6 } }
 R[19796] = { prof = 202, skill = 295, out = 16004, outQ = 3, reagents = { [8170] = 4, [10546] = 2, [11371] = 6, [12361] = 2, [12799] = 2, [16000] = 2 } }
-R[19799] = { prof = 202, skill = 305, out = 16005, outQ = 1, reagents = { [11371] = 1, [14047] = 3, [15992] = 3, [15994] = 2 } }
-R[19800] = { prof = 202, skill = 305, out = 15997, outQ = 2, reagents = { [12359] = 2, [15992] = 1 } }
+R[19799] = { prof = 202, skill = 305, out = 16005, outQ = 1, n = 3, reagents = { [11371] = 1, [14047] = 3, [15992] = 3, [15994] = 2 } }
+R[19800] = { prof = 202, skill = 305, out = 15997, outQ = 2, n = 200, reagents = { [12359] = 2, [15992] = 1 } }
 R[19814] = { prof = 202, skill = 295, out = 16023, outQ = 1, reagents = { [6037] = 1, [8170] = 2, [10561] = 1, [14047] = 4, [15994] = 2, [16000] = 1 } }
 R[19815] = { prof = 202, skill = 305, out = 16006, outQ = 1, reagents = { [12360] = 1, [14227] = 1 } }
 R[19819] = { prof = 202, skill = 310, out = 16009, outQ = 2, reagents = { [10558] = 1, [12799] = 1, [15994] = 1, [16006] = 2 } }
 R[19825] = { prof = 202, skill = 310, out = 16008, outQ = 2, reagents = { [10500] = 1, [12364] = 2, [12810] = 4 } }
 R[19830] = { prof = 202, skill = 320, out = 16022, outQ = 3, reagents = { [10558] = 4, [10576] = 1, [12655] = 10, [12810] = 6, [15994] = 6, [16006] = 8 } }
-R[19831] = { prof = 202, skill = 320, out = 16040, outQ = 1, reagents = { [12359] = 3, [14047] = 1, [16006] = 1 } }
+R[19831] = { prof = 202, skill = 320, out = 16040, outQ = 1, n = 3, reagents = { [12359] = 3, [14047] = 1, [16006] = 1 } }
 R[19833] = { prof = 202, skill = 320, out = 16007, outQ = 3, reagents = { [7076] = 2, [7078] = 2, [12360] = 10, [12800] = 2, [12810] = 2, [16000] = 2 } }
 R[20008] = { prof = 333, skill = 275, reagents = { [16202] = 2 } }
 R[20009] = { prof = 333, skill = 290, reagents = { [11176] = 7, [16202] = 2 } }
@@ -1070,10 +1070,10 @@ R[20035] = { prof = 333, skill = 320, reagents = { [14344] = 2, [16203] = 12 } }
 R[20036] = { prof = 333, skill = 320, reagents = { [14344] = 2, [16203] = 12 } }
 R[20051] = { prof = 333, skill = 310, out = 16207, outQ = 1, reagents = { [13926] = 1, [14343] = 4, [14344] = 2, [16203] = 4, [16204] = 10, [16206] = 1 } }
 R[20201] = { prof = 164, skill = 250, out = 16206, outQ = 1, reagents = { [12360] = 3, [12644] = 1 } }
-R[20626] = { prof = 185, skill = 265, out = 16766, outQ = 1, reagents = { [1179] = 1, [2692] = 1, [7974] = 2 } }
-R[20648] = { prof = 165, skill = 75, out = 2319, outQ = 1, reagents = { [2318] = 4 } }
-R[20649] = { prof = 165, skill = 125, out = 4234, outQ = 1, reagents = { [2319] = 5 } }
-R[20650] = { prof = 165, skill = 175, out = 4304, outQ = 1, reagents = { [4234] = 6 } }
+R[20626] = { prof = 185, skill = 265, out = 16766, outQ = 1, n = 2, reagents = { [1179] = 1, [2692] = 1, [7974] = 2 } }
+R[20648] = { prof = 165, skill = 75, out = 2319, outQ = 1, conv = true, reagents = { [2318] = 4 } }
+R[20649] = { prof = 165, skill = 125, out = 4234, outQ = 1, conv = true, reagents = { [2319] = 5 } }
+R[20650] = { prof = 165, skill = 175, out = 4304, outQ = 1, conv = true, reagents = { [4234] = 6 } }
 R[20848] = { prof = 197, skill = 315, out = 16980, outQ = 4, reagents = { [12810] = 6, [14048] = 12, [14341] = 2, [17010] = 4, [17011] = 4 } }
 R[20849] = { prof = 197, skill = 315, out = 16979, outQ = 4, reagents = { [7078] = 4, [12810] = 2, [14048] = 8, [14341] = 2, [17010] = 6 } }
 R[20853] = { prof = 165, skill = 315, out = 16982, outQ = 4, reagents = { [14341] = 2, [17010] = 6, [17011] = 2, [17012] = 20 } }
@@ -1096,8 +1096,8 @@ R[21931] = { prof = 333, skill = 210, reagents = { [3819] = 1, [11135] = 1, [111
 R[21940] = { prof = 202, skill = 190, out = 17716, outQ = 1, reagents = { [3829] = 1, [3860] = 8, [4389] = 4, [17202] = 4 } }
 R[21943] = { prof = 165, skill = 185, out = 17721, outQ = 2, reagents = { [4234] = 8, [4291] = 1, [7067] = 4 } }
 R[21945] = { prof = 197, skill = 165, out = 17723, outQ = 1, reagents = { [2605] = 4, [4291] = 1, [4305] = 5 } }
-R[22331] = { prof = 165, skill = 225, out = 8170, outQ = 1, reagents = { [4304] = 6 } }
-R[22430] = { prof = 171, skill = 315, out = 17967, outQ = 3, reagents = { [15410] = 1 } }
+R[22331] = { prof = 165, skill = 225, out = 8170, outQ = 1, conv = true, reagents = { [4304] = 6 } }
+R[22430] = { prof = 171, skill = 315, out = 17967, outQ = 3, conv = true, reagents = { [15410] = 1 } }
 R[22480] = { prof = 185, skill = 265, out = 18045, outQ = 1, reagents = { [3713] = 1, [12208] = 1 } }
 R[22704] = { prof = 202, skill = 320, out = 18232, outQ = 1, reagents = { [7067] = 2, [7068] = 1, [7191] = 1, [8170] = 4, [12359] = 12 } }
 R[22711] = { prof = 165, skill = 185, out = 18238, outQ = 3, reagents = { [1210] = 4, [4236] = 2, [4304] = 6, [7428] = 8, [7971] = 2, [8343] = 1 } }
@@ -1127,11 +1127,11 @@ R[22926] = { prof = 165, skill = 320, out = 18509, outQ = 4, reagents = { [8170]
 R[22927] = { prof = 165, skill = 320, out = 18510, outQ = 4, reagents = { [7080] = 10, [8170] = 30, [12803] = 12, [14341] = 8, [15407] = 3, [18512] = 8 } }
 R[22928] = { prof = 165, skill = 320, out = 18511, outQ = 4, reagents = { [7082] = 12, [8170] = 30, [12753] = 4, [12809] = 8, [14341] = 8, [15407] = 4 } }
 R[22967] = { prof = 186, skill = 310, out = 17771, outQ = 5, reagents = { [12360] = 10, [17010] = 1, [18562] = 1, [18567] = 3 } }
-R[23066] = { prof = 202, skill = 150, out = 9318, outQ = 1, reagents = { [4234] = 1, [4377] = 1 } }
-R[23067] = { prof = 202, skill = 150, out = 9312, outQ = 1, reagents = { [4234] = 1, [4377] = 1 } }
-R[23068] = { prof = 202, skill = 150, out = 9313, outQ = 1, reagents = { [4234] = 1, [4377] = 1 } }
+R[23066] = { prof = 202, skill = 150, out = 9318, outQ = 1, n = 3, reagents = { [4234] = 1, [4377] = 1 } }
+R[23067] = { prof = 202, skill = 150, out = 9312, outQ = 1, n = 3, reagents = { [4234] = 1, [4377] = 1 } }
+R[23068] = { prof = 202, skill = 150, out = 9313, outQ = 1, n = 3, reagents = { [4234] = 1, [4377] = 1 } }
 R[23069] = { prof = 202, skill = 200, out = 18588, outQ = 1, reagents = { [4306] = 1, [10505] = 1, [260801] = 1 } }
-R[23070] = { prof = 202, skill = 250, out = 18641, outQ = 1, reagents = { [14047] = 3, [15992] = 2 } }
+R[23070] = { prof = 202, skill = 250, out = 18641, outQ = 1, n = 2, reagents = { [14047] = 3, [15992] = 2 } }
 R[23071] = { prof = 202, skill = 270, out = 18631, outQ = 1, reagents = { [6037] = 2, [7067] = 2, [7069] = 1 } }
 R[23077] = { prof = 202, skill = 280, out = 18634, outQ = 3, reagents = { [3829] = 2, [7078] = 4, [12361] = 2, [13467] = 4, [15994] = 6, [18631] = 2 } }
 R[23078] = { prof = 202, skill = 285, out = 18587, outQ = 1, reagents = { [7191] = 2, [7910] = 2, [14227] = 2, [15994] = 2, [18631] = 2 } }
@@ -1145,7 +1145,7 @@ R[23190] = { prof = 165, skill = 125, out = 18662, outQ = 1, reagents = { [2321]
 R[23399] = { prof = 165, skill = 155, out = 18948, outQ = 3, reagents = { [4234] = 8, [4236] = 2, [4461] = 1, [5498] = 4, [5637] = 4 } }
 R[23486] = { prof = 202, skill = 285, out = 18984, outQ = 2, reagents = { [3860] = 10, [7077] = 4, [7910] = 2, [10586] = 1, [18631] = 1 } }
 R[23489] = { prof = 202, skill = 285, out = 18986, outQ = 2, reagents = { [3860] = 12, [7075] = 4, [7079] = 2, [7909] = 4, [9060] = 1, [18631] = 2 } }
-R[23507] = { prof = 202, skill = 250, out = 19026, outQ = 1, reagents = { [8150] = 1, [14047] = 2, [15992] = 2 } }
+R[23507] = { prof = 202, skill = 250, out = 19026, outQ = 1, n = 4, reagents = { [8150] = 1, [14047] = 2, [15992] = 2 } }
 R[23628] = { prof = 165, skill = 285, out = 19043, outQ = 3, reagents = { [7076] = 3, [8170] = 12, [12803] = 3, [14341] = 1 } }
 R[23629] = { prof = 165, skill = 300, out = 19048, outQ = 3, reagents = { [7076] = 6, [8170] = 20, [12803] = 6, [14341] = 1 } }
 R[23632] = { prof = 164, skill = 285, out = 19051, outQ = 3, reagents = { [6037] = 6, [12359] = 8, [12811] = 1 } }
@@ -1171,7 +1171,7 @@ R[23707] = { prof = 165, skill = 320, out = 19149, outQ = 4, reagents = { [14227
 R[23708] = { prof = 165, skill = 320, out = 19157, outQ = 4, reagents = { [12607] = 4, [14227] = 4, [15407] = 4, [17010] = 5, [17011] = 2, [17012] = 4 } }
 R[23709] = { prof = 165, skill = 320, out = 19162, outQ = 4, reagents = { [12810] = 10, [14227] = 4, [15407] = 4, [17010] = 8, [17012] = 12 } }
 R[23710] = { prof = 165, skill = 320, out = 19163, outQ = 4, reagents = { [7076] = 6, [14227] = 4, [15407] = 4, [17010] = 2, [17011] = 7 } }
-R[23787] = { prof = 129, skill = 300, out = 19440, outQ = 1, reagents = { [19441] = 1 } }
+R[23787] = { prof = 129, skill = 300, out = 19440, outQ = 1, n = 3, reagents = { [19441] = 1 } }
 R[23799] = { prof = 333, skill = 310, reagents = { [7076] = 2, [14344] = 6, [16203] = 6, [16204] = 4 } }
 R[23800] = { prof = 333, skill = 310, reagents = { [7082] = 2, [14344] = 6, [16203] = 6, [16204] = 4 } }
 R[23801] = { prof = 333, skill = 310, reagents = { [7080] = 2, [16203] = 4, [16204] = 16 } }
@@ -1192,7 +1192,7 @@ R[24138] = { prof = 164, skill = 320, out = 19692, outQ = 3, reagents = { [12359
 R[24139] = { prof = 164, skill = 320, out = 19693, outQ = 3, reagents = { [12359] = 20, [12799] = 2, [19774] = 14 } }
 R[24140] = { prof = 164, skill = 320, out = 19694, outQ = 3, reagents = { [12359] = 18, [12799] = 2, [19774] = 12 } }
 R[24141] = { prof = 164, skill = 320, out = 19695, outQ = 3, reagents = { [12359] = 16, [12799] = 1, [19774] = 10 } }
-R[24266] = { prof = 171, skill = 315, out = 19931, outQ = 3, reagents = { [12804] = 6, [12938] = 1, [13468] = 1, [19943] = 1 } }
+R[24266] = { prof = 171, skill = 315, out = 19931, outQ = 3, n = 3, reagents = { [12804] = 6, [12938] = 1, [13468] = 1, [19943] = 1 } }
 R[24356] = { prof = 202, skill = 320, out = 19999, outQ = 3, reagents = { [12804] = 8, [12810] = 4, [16006] = 2, [19726] = 4, [19774] = 5 } }
 R[24357] = { prof = 202, skill = 320, out = 19998, outQ = 3, reagents = { [12804] = 8, [12810] = 4, [16006] = 1, [19726] = 5, [19774] = 5 } }
 R[24365] = { prof = 171, skill = 290, out = 20007, outQ = 1, reagents = { [8925] = 1, [13463] = 1, [13466] = 2 } }
@@ -1236,9 +1236,9 @@ R[25127] = { prof = 333, skill = 260, out = 20747, outQ = 1, reagents = { [8831]
 R[25128] = { prof = 333, skill = 285, out = 20750, outQ = 1, reagents = { [4625] = 2, [8925] = 1, [16204] = 3 } }
 R[25129] = { prof = 333, skill = 310, out = 20749, outQ = 1, reagents = { [4625] = 3, [14344] = 2, [18256] = 1 } }
 R[25130] = { prof = 333, skill = 310, out = 20748, outQ = 1, reagents = { [8831] = 3, [14344] = 2, [18256] = 1 } }
-R[25146] = { prof = 171, skill = 301, out = 7068, outQ = 1, reagents = { [7077] = 1 } }
+R[25146] = { prof = 171, skill = 301, out = 7068, outQ = 1, n = 3, conv = true, reagents = { [7077] = 1 } }
 R[25347] = { prof = 40, skill = 300, out = 20844, outQ = 1, reagents = { [5173] = 7, [8925] = 1 } }
-R[25659] = { prof = 185, skill = 325, out = 21023, outQ = 1, reagents = { [2692] = 1, [8150] = 1, [9061] = 1, [21024] = 1 } }
+R[25659] = { prof = 185, skill = 325, out = 21023, outQ = 1, n = 5, reagents = { [2692] = 1, [8150] = 1, [9061] = 1, [21024] = 1 } }
 R[25704] = { prof = 185, skill = 120, out = 21072, outQ = 1, reagents = { [2678] = 1, [21071] = 1 } }
 R[25954] = { prof = 185, skill = 215, out = 21217, outQ = 1, reagents = { [2692] = 1, [21153] = 1 } }
 R[26011] = { prof = 202, skill = 320, out = 21277, outQ = 1, reagents = { [7079] = 2, [10558] = 1, [15407] = 1, [15994] = 4, [18631] = 2 } }
@@ -1249,18 +1249,18 @@ R[26277] = { prof = 171, skill = 265, out = 21546, outQ = 1, reagents = { [4625]
 R[26279] = { prof = 165, skill = 310, out = 21278, outQ = 3, reagents = { [7080] = 4, [7082] = 4, [12810] = 6, [14227] = 2, [15407] = 2 } }
 R[26403] = { prof = 197, skill = 220, out = 21154, outQ = 1, reagents = { [2604] = 2, [4625] = 2, [14048] = 4, [14341] = 1 } }
 R[26407] = { prof = 197, skill = 220, out = 21542, outQ = 1, reagents = { [2604] = 2, [4625] = 2, [14048] = 4, [14341] = 1 } }
-R[26416] = { prof = 202, skill = 125, out = 21558, outQ = 1, reagents = { [2319] = 1, [4364] = 1 } }
-R[26417] = { prof = 202, skill = 125, out = 21559, outQ = 1, reagents = { [2319] = 1, [4364] = 1 } }
-R[26418] = { prof = 202, skill = 125, out = 21557, outQ = 1, reagents = { [2319] = 1, [4364] = 1 } }
-R[26420] = { prof = 202, skill = 175, out = 21589, outQ = 1, reagents = { [4234] = 1, [4377] = 1 } }
-R[26421] = { prof = 202, skill = 175, out = 21590, outQ = 1, reagents = { [4234] = 1, [4377] = 1 } }
-R[26422] = { prof = 202, skill = 175, out = 21592, outQ = 1, reagents = { [4234] = 1, [4377] = 1 } }
-R[26423] = { prof = 202, skill = 225, out = 21571, outQ = 1, reagents = { [4304] = 1, [10505] = 1 } }
-R[26424] = { prof = 202, skill = 225, out = 21574, outQ = 1, reagents = { [4304] = 1, [10505] = 1 } }
-R[26425] = { prof = 202, skill = 225, out = 21576, outQ = 1, reagents = { [4304] = 1, [10505] = 1 } }
-R[26426] = { prof = 202, skill = 275, out = 21714, outQ = 1, reagents = { [8170] = 1, [15992] = 1 } }
-R[26427] = { prof = 202, skill = 275, out = 21716, outQ = 1, reagents = { [8170] = 1, [15992] = 1 } }
-R[26428] = { prof = 202, skill = 275, out = 21718, outQ = 1, reagents = { [8170] = 1, [15992] = 1 } }
+R[26416] = { prof = 202, skill = 125, out = 21558, outQ = 1, n = 5, reagents = { [2319] = 1, [4364] = 1 } }
+R[26417] = { prof = 202, skill = 125, out = 21559, outQ = 1, n = 5, reagents = { [2319] = 1, [4364] = 1 } }
+R[26418] = { prof = 202, skill = 125, out = 21557, outQ = 1, n = 5, reagents = { [2319] = 1, [4364] = 1 } }
+R[26420] = { prof = 202, skill = 175, out = 21589, outQ = 1, n = 5, reagents = { [4234] = 1, [4377] = 1 } }
+R[26421] = { prof = 202, skill = 175, out = 21590, outQ = 1, n = 5, reagents = { [4234] = 1, [4377] = 1 } }
+R[26422] = { prof = 202, skill = 175, out = 21592, outQ = 1, n = 5, reagents = { [4234] = 1, [4377] = 1 } }
+R[26423] = { prof = 202, skill = 225, out = 21571, outQ = 1, n = 5, reagents = { [4304] = 1, [10505] = 1 } }
+R[26424] = { prof = 202, skill = 225, out = 21574, outQ = 1, n = 5, reagents = { [4304] = 1, [10505] = 1 } }
+R[26425] = { prof = 202, skill = 225, out = 21576, outQ = 1, n = 5, reagents = { [4304] = 1, [10505] = 1 } }
+R[26426] = { prof = 202, skill = 275, out = 21714, outQ = 1, n = 5, reagents = { [8170] = 1, [15992] = 1 } }
+R[26427] = { prof = 202, skill = 275, out = 21716, outQ = 1, n = 5, reagents = { [8170] = 1, [15992] = 1 } }
+R[26428] = { prof = 202, skill = 275, out = 21718, outQ = 1, n = 5, reagents = { [8170] = 1, [15992] = 1 } }
 R[26442] = { prof = 202, skill = 245, out = 21569, outQ = 1, reagents = { [9060] = 2, [9061] = 2, [10560] = 2, [10561] = 1 } }
 R[26443] = { prof = 202, skill = 295, out = 21570, outQ = 1, reagents = { [9060] = 3, [9061] = 3, [10561] = 1, [18631] = 1 } }
 R[27585] = { prof = 164, skill = 320, out = 22197, outQ = 3, reagents = { [7076] = 2, [12655] = 4, [22202] = 14 } }
@@ -1302,7 +1302,7 @@ R[28474] = { prof = 165, skill = 320, out = 22761, outQ = 3, reagents = { [12803
 R[28480] = { prof = 197, skill = 315, out = 22756, outQ = 3, reagents = { [12803] = 2, [14048] = 4, [14227] = 2, [19726] = 2 } }
 R[28481] = { prof = 197, skill = 315, out = 22757, outQ = 3, reagents = { [12803] = 2, [14048] = 4, [14227] = 2, [14342] = 2 } }
 R[28482] = { prof = 197, skill = 315, out = 22758, outQ = 3, reagents = { [12803] = 4, [14048] = 2, [14227] = 2 } }
-R[30021] = { prof = 129, skill = 300, out = 23684, outQ = 1, reagents = { [14047] = 10, [23567] = 1 } }
+R[30021] = { prof = 129, skill = 300, out = 23684, outQ = 1, n = 4, reagents = { [14047] = 10, [23567] = 1 } }
 R[44950] = { prof = 197, skill = 250, out = 34087, outQ = 1, reagents = { [2605] = 2, [2997] = 1, [14048] = 4, [14341] = 1 } }
 R[44953] = { prof = 165, skill = 1, out = 34086, outQ = 1, reagents = { [2840] = 1, [2997] = 1, [8170] = 4, [14341] = 1 } }
 R[44958] = { prof = 197, skill = 250, out = 34085, outQ = 1, reagents = { [2604] = 2, [2997] = 1, [14048] = 4, [14341] = 1 } }
@@ -1334,10 +1334,10 @@ R[435953] = { prof = 165, skill = 225, out = 215382, outQ = 1, reagents = { [817
 R[435956] = { prof = 202, skill = 200, out = 213383, outQ = 3, reagents = { [6037] = 1, [213381] = 5 } }
 R[435958] = { prof = 202, skill = 225, out = 213390, outQ = 1, reagents = { [3860] = 15, [4389] = 2, [10561] = 2, [213369] = 2, [213376] = 3, [213383] = 5 } }
 R[435960] = { prof = 202, skill = 225, out = 215115, outQ = 1, reagents = { [3577] = 10, [213369] = 1, [213379] = 3, [213383] = 3 } }
-R[435964] = { prof = 202, skill = 225, out = 215127, outQ = 1, reagents = { [3860] = 2, [10505] = 1, [215430] = 1 } }
-R[435966] = { prof = 202, skill = 225, out = 215168, outQ = 1, reagents = { [3860] = 2, [10505] = 2, [215430] = 1 } }
+R[435964] = { prof = 202, skill = 225, out = 215127, outQ = 1, n = 3, reagents = { [3860] = 2, [10505] = 1, [215430] = 1 } }
+R[435966] = { prof = 202, skill = 225, out = 215168, outQ = 1, n = 3, reagents = { [3860] = 2, [10505] = 2, [215430] = 1 } }
 R[435969] = { prof = 171, skill = 200, out = 213372, outQ = 1, reagents = { [3372] = 1, [213371] = 5 } }
-R[435971] = { prof = 171, skill = 225, out = 215162, outQ = 1, reagents = { [2456] = 1, [8925] = 5, [213371] = 1, [215430] = 3 } }
+R[435971] = { prof = 171, skill = 225, out = 215162, outQ = 1, n = 5, reagents = { [2456] = 1, [8925] = 5, [213371] = 1, [215430] = 3 } }
 R[439085] = { prof = 197, skill = 220, out = 217245, outQ = 1, reagents = { [2604] = 4, [3827] = 2, [4291] = 1, [4305] = 8, [7068] = 4 } }
 R[439086] = { prof = 197, skill = 220, out = 217246, outQ = 1, reagents = { [4291] = 3, [4339] = 2 } }
 R[439088] = { prof = 197, skill = 220, out = 217247, outQ = 1, reagents = { [4291] = 3, [4339] = 2 } }
@@ -1469,9 +1469,9 @@ R[1213559] = { prof = 171, skill = 315, out = 233967, outQ = 1, reagents = { [89
 R[1213563] = { prof = 171, skill = 315, out = 233968, outQ = 1, reagents = { [8925] = 1, [13466] = 2, [234011] = 1, [234012] = 2 } }
 R[1213565] = { prof = 171, skill = 315, out = 233969, outQ = 1, reagents = { [8925] = 1, [13467] = 2, [234011] = 1, [234012] = 2 } }
 R[1213571] = { prof = 171, skill = 315, out = 233977, outQ = 1, reagents = { [8925] = 1, [13463] = 2, [234011] = 1, [234012] = 2 } }
-R[1213573] = { prof = 202, skill = 315, out = 233984, outQ = 1, reagents = { [14047] = 1, [16006] = 1, [20725] = 1 } }
+R[1213573] = { prof = 202, skill = 315, out = 233984, outQ = 1, n = 5, reagents = { [14047] = 1, [16006] = 1, [20725] = 1 } }
 R[1213576] = { prof = 202, skill = 315, out = 233985, outQ = 1, reagents = { [14047] = 1, [234005] = 2, [234011] = 1 } }
-R[1213578] = { prof = 202, skill = 315, out = 233986, outQ = 1, reagents = { [12365] = 1, [234005] = 3, [234007] = 1, [234008] = 1 } }
+R[1213578] = { prof = 202, skill = 315, out = 233986, outQ = 1, n = 3, reagents = { [12365] = 1, [234005] = 3, [234007] = 1, [234008] = 1 } }
 R[1213586] = { prof = 202, skill = 315, out = 233987, outQ = 1, reagents = { [234005] = 20, [234007] = 8, [234009] = 8, [234010] = 8, [234011] = 8, [234012] = 30 } }
 R[1213588] = { prof = 202, skill = 315, out = 233988, outQ = 1, reagents = { [18168] = 1, [234003] = 8, [234005] = 5, [234007] = 4 } }
 R[1213593] = { prof = 333, skill = 320, out = 233990, outQ = 1, reagents = { [2452] = 20, [20725] = 6, [234004] = 6, [234006] = 10, [234010] = 10 } }
@@ -1589,9 +1589,9 @@ R[1224636] = { prof = 164, skill = 270, out = 238292, outQ = 1, reagents = { [12
 R[1224637] = { prof = 164, skill = 260, out = 238293, outQ = 1, reagents = { [12359] = 20, [12811] = 1 } }
 R[1224638] = { prof = 164, skill = 280, out = 238294, outQ = 1, reagents = { [12359] = 20, [12811] = 1, [12938] = 1 } }
 R[1224639] = { prof = 164, skill = 270, out = 238295, outQ = 1, reagents = { [12359] = 20, [12811] = 1 } }
-R[1225758] = { prof = 185, skill = 260, out = 238637, outQ = 1, reagents = { [12202] = 2, [239016] = 1 } }
-R[1225759] = { prof = 185, skill = 260, out = 238638, outQ = 1, reagents = { [12203] = 2, [239016] = 1 } }
-R[1225760] = { prof = 185, skill = 260, out = 238639, outQ = 1, reagents = { [12207] = 2, [239016] = 1 } }
+R[1225758] = { prof = 185, skill = 260, out = 238637, outQ = 1, n = 2, reagents = { [12202] = 2, [239016] = 1 } }
+R[1225759] = { prof = 185, skill = 260, out = 238638, outQ = 1, n = 2, reagents = { [12203] = 2, [239016] = 1 } }
+R[1225760] = { prof = 185, skill = 260, out = 238639, outQ = 1, n = 2, reagents = { [12207] = 2, [239016] = 1 } }
 R[1225762] = { prof = 185, skill = 290, out = 238641, outQ = 2, reagents = { [4603] = 12, [6362] = 3, [12184] = 4, [239017] = 1 } }
 R[1225763] = { prof = 185, skill = 290, out = 238642, outQ = 2, reagents = { [3404] = 3, [3712] = 4, [13888] = 12, [239017] = 1 } }
 R[1226206] = { prof = 202, skill = 260, out = 238737, outQ = 1, reagents = { [10558] = 2, [10561] = 1 } }
@@ -1638,7 +1638,7 @@ R[1244648] = { prof = 171, skill = 230, out = 247242, outQ = 1, reagents = { [73
 R[1245246] = { prof = 171, skill = 10, out = 247754, outQ = 1, reagents = { [2447] = 1, [3371] = 1 } }
 R[1245250] = { prof = 171, skill = 10, out = 247755, outQ = 1, reagents = { [765] = 1, [3371] = 1 } }
 R[1245287] = { prof = 164, skill = 10, out = 6217, outQ = 1, reagents = { [2840] = 1 } }
-R[1245320] = { prof = 333, skill = 10, out = 247786, outQ = 1, reagents = { [10940] = 1 } }
+R[1245320] = { prof = 333, skill = 10, out = 247786, outQ = 1, n = 3, reagents = { [10940] = 1 } }
 R[1245321] = { prof = 333, skill = 10, out = 247789, outQ = 1, reagents = { [4470] = 1, [247786] = 1 } }
 R[1247741] = { prof = 185, skill = 210, out = 8957, outQ = 1, reagents = { [8959] = 1 } }
 R[1248458] = { prof = 333, skill = 110, reagents = { [10938] = 1 } }
@@ -2229,11 +2229,11 @@ R[1257492] = { prof = 197, skill = 270, out = 254133, outQ = 1, reagents = { [14
 R[1257493] = { prof = 197, skill = 275, out = 254135, outQ = 2, reagents = { [9210] = 3, [14048] = 6, [14227] = 2, [14341] = 1 } }
 R[1257494] = { prof = 197, skill = 275, out = 254137, outQ = 2, reagents = { [7076] = 3, [14048] = 6, [14341] = 1 } }
 R[1257495] = { prof = 197, skill = 315, out = 254139, outQ = 1, reagents = { [14048] = 8, [14341] = 2, [14342] = 12, [14344] = 2, [249427] = 5, [249428] = 5, [249429] = 5 } }
-R[1259341] = { prof = 129, skill = 230, out = 255715, outQ = 1, reagents = { [255645] = 1 } }
-R[1259342] = { prof = 129, skill = 90, out = 255716, outQ = 1, reagents = { [2678] = 1, [2723] = 1, [3174] = 1 } }
-R[1259343] = { prof = 129, skill = 160, out = 255717, outQ = 1, reagents = { [1468] = 1, [2686] = 1, [3713] = 1 } }
-R[1259344] = { prof = 129, skill = 225, out = 255718, outQ = 1, reagents = { [2596] = 1, [2692] = 1, [7070] = 1 } }
-R[1259345] = { prof = 129, skill = 295, out = 255719, outQ = 1, reagents = { [2594] = 1, [2692] = 1, [7080] = 1 } }
+R[1259341] = { prof = 129, skill = 230, out = 255715, outQ = 1, n = 3, reagents = { [255645] = 1 } }
+R[1259342] = { prof = 129, skill = 90, out = 255716, outQ = 1, n = 3, reagents = { [2678] = 1, [2723] = 1, [3174] = 1 } }
+R[1259343] = { prof = 129, skill = 160, out = 255717, outQ = 1, n = 3, reagents = { [1468] = 1, [2686] = 1, [3713] = 1 } }
+R[1259344] = { prof = 129, skill = 225, out = 255718, outQ = 1, n = 3, reagents = { [2596] = 1, [2692] = 1, [7070] = 1 } }
+R[1259345] = { prof = 129, skill = 295, out = 255719, outQ = 1, n = 3, reagents = { [2594] = 1, [2692] = 1, [7080] = 1 } }
 R[1259347] = { prof = 129, skill = 120, out = 255720, outQ = 1, reagents = { [2321] = 2, [2592] = 2 } }
 R[1259348] = { prof = 129, skill = 220, out = 255721, outQ = 1, reagents = { [4291] = 2, [4304] = 2 } }
 R[1259349] = { prof = 129, skill = 280, out = 255722, outQ = 1, reagents = { [8170] = 2, [8343] = 2, [14047] = 2 } }
@@ -2382,8 +2382,8 @@ R[1293559] = { prof = 171, skill = 320, out = 274273, outQ = 2, reagents = { [13
 R[1293560] = { prof = 171, skill = 320, out = 274274, outQ = 2, reagents = { [13465] = 6, [18256] = 1, [248821] = 18, [248822] = 1 } }
 R[1293561] = { prof = 171, skill = 320, out = 274275, outQ = 2, reagents = { [13463] = 9, [18256] = 1, [248822] = 1, [248823] = 12 } }
 R[1293562] = { prof = 171, skill = 320, out = 274276, outQ = 2, reagents = { [13467] = 6, [18256] = 1, [248822] = 1, [248823] = 18 } }
-R[1293849] = { prof = 202, skill = 310, out = 274387, outQ = 4, reagents = { [7069] = 1, [17056] = 5, [251291] = 8 } }
-R[1293850] = { prof = 202, skill = 310, out = 274388, outQ = 4, reagents = { [7067] = 1, [12365] = 8, [251291] = 8 } }
+R[1293849] = { prof = 202, skill = 310, out = 274387, outQ = 4, n = 200, reagents = { [7069] = 1, [17056] = 5, [251291] = 8 } }
+R[1293850] = { prof = 202, skill = 310, out = 274388, outQ = 4, n = 200, reagents = { [7067] = 1, [12365] = 8, [251291] = 8 } }
 R[1294014] = { prof = 185, skill = 280, out = 267341, outQ = 1, reagents = { [3713] = 1, [249796] = 3 } }
 R[1294054] = { prof = 333, skill = 295, reagents = { [14343] = 2, [16202] = 4, [16204] = 12, [248822] = 1 } }
 R[1295805] = { prof = 185, skill = 220, out = 274971, outQ = 1, reagents = { [730] = 2, [2692] = 1, [12206] = 1 } }
@@ -2520,7 +2520,7 @@ R[1308183] = { prof = 202, skill = 205, out = 280310, outQ = 2, reagents = { [43
 R[1308184] = { prof = 202, skill = 205, out = 280311, outQ = 2, reagents = { [4234] = 8, [4389] = 1, [5507] = 1 } }
 R[1308185] = { prof = 202, skill = 205, out = 280312, outQ = 2, reagents = { [4234] = 8, [4389] = 1, [5507] = 1 } }
 R[1308186] = { prof = 202, skill = 205, out = 280313, outQ = 2, reagents = { [3860] = 2, [4389] = 1, [5507] = 1 } }
-R[1317270] = { prof = 202, skill = 280, out = 284869, outQ = 1, reagents = { [12655] = 2, [14047] = 2, [15992] = 3, [18631] = 1 } }
+R[1317270] = { prof = 202, skill = 280, out = 284869, outQ = 1, n = 3, reagents = { [12655] = 2, [14047] = 2, [15992] = 3, [18631] = 1 } }
 R[1317279] = { prof = 171, skill = 275, out = 251290, outQ = 2, reagents = { [248819] = 1, [251291] = 1 } }
 R[1317958] = { prof = 202, skill = 90, out = 285275, outQ = 2, reagents = { [2318] = 6, [4359] = 4, [4360] = 20 } }
 R[1317959] = { prof = 202, skill = 170, out = 285276, outQ = 2, reagents = { [2319] = 6, [4375] = 1, [4380] = 20 } }
@@ -2529,17 +2529,17 @@ R[1317961] = { prof = 202, skill = 290, out = 285278, outQ = 2, reagents = { [81
 R[1317962] = { prof = 164, skill = 115, out = 285279, outQ = 2, reagents = { [818] = 1, [2841] = 18, [2842] = 2 } }
 R[1317963] = { prof = 164, skill = 200, out = 285280, outQ = 2, reagents = { [3577] = 2, [3860] = 10, [7910] = 1 } }
 R[1317964] = { prof = 164, skill = 275, out = 285281, outQ = 3, reagents = { [11371] = 4, [12360] = 1, [12361] = 1 } }
-R[1319154] = { prof = 202, skill = 125, out = 21560, outQ = 1, reagents = { [2319] = 1, [4364] = 1 } }
-R[1319155] = { prof = 202, skill = 125, out = 21561, outQ = 1, reagents = { [2319] = 1, [4364] = 1 } }
-R[1319156] = { prof = 202, skill = 125, out = 21562, outQ = 1, reagents = { [2319] = 1, [4364] = 1 } }
-R[1319157] = { prof = 202, skill = 175, out = 21591, outQ = 1, reagents = { [4234] = 1, [4377] = 1 } }
-R[1319158] = { prof = 202, skill = 175, out = 21593, outQ = 1, reagents = { [4234] = 1, [4377] = 1 } }
-R[1319159] = { prof = 202, skill = 175, out = 21595, outQ = 1, reagents = { [4234] = 1, [4377] = 1 } }
-R[1319160] = { prof = 202, skill = 225, out = 21575, outQ = 1, reagents = { [4304] = 1, [10505] = 1 } }
-R[1319161] = { prof = 202, skill = 225, out = 21577, outQ = 1, reagents = { [4304] = 1, [10505] = 1 } }
-R[1319162] = { prof = 202, skill = 225, out = 21578, outQ = 1, reagents = { [4304] = 1, [10505] = 1 } }
-R[1319163] = { prof = 202, skill = 275, out = 21717, outQ = 1, reagents = { [8170] = 1, [15992] = 1 } }
-R[1319164] = { prof = 202, skill = 275, out = 21719, outQ = 1, reagents = { [8170] = 1, [15992] = 1 } }
-R[1319165] = { prof = 202, skill = 275, out = 21720, outQ = 1, reagents = { [8170] = 1, [15992] = 1 } }
+R[1319154] = { prof = 202, skill = 125, out = 21560, outQ = 1, n = 5, reagents = { [2319] = 1, [4364] = 1 } }
+R[1319155] = { prof = 202, skill = 125, out = 21561, outQ = 1, n = 5, reagents = { [2319] = 1, [4364] = 1 } }
+R[1319156] = { prof = 202, skill = 125, out = 21562, outQ = 1, n = 5, reagents = { [2319] = 1, [4364] = 1 } }
+R[1319157] = { prof = 202, skill = 175, out = 21591, outQ = 1, n = 5, reagents = { [4234] = 1, [4377] = 1 } }
+R[1319158] = { prof = 202, skill = 175, out = 21593, outQ = 1, n = 5, reagents = { [4234] = 1, [4377] = 1 } }
+R[1319159] = { prof = 202, skill = 175, out = 21595, outQ = 1, n = 5, reagents = { [4234] = 1, [4377] = 1 } }
+R[1319160] = { prof = 202, skill = 225, out = 21575, outQ = 1, n = 5, reagents = { [4304] = 1, [10505] = 1 } }
+R[1319161] = { prof = 202, skill = 225, out = 21577, outQ = 1, n = 5, reagents = { [4304] = 1, [10505] = 1 } }
+R[1319162] = { prof = 202, skill = 225, out = 21578, outQ = 1, n = 5, reagents = { [4304] = 1, [10505] = 1 } }
+R[1319163] = { prof = 202, skill = 275, out = 21717, outQ = 1, n = 5, reagents = { [8170] = 1, [15992] = 1 } }
+R[1319164] = { prof = 202, skill = 275, out = 21719, outQ = 1, n = 5, reagents = { [8170] = 1, [15992] = 1 } }
+R[1319165] = { prof = 202, skill = 275, out = 21720, outQ = 1, n = 5, reagents = { [8170] = 1, [15992] = 1 } }
 R[1319313] = { prof = 185, skill = 245, out = 286152, outQ = 1, reagents = { [3713] = 1, [13890] = 1 } }
 R[1328948] = { prof = 333, skill = 280, reagents = { [11175] = 2, [11176] = 8, [11178] = 2, [12361] = 1 } }

@@ -5,6 +5,7 @@ local Tooltip = ns:RegisterModule("Tooltip", {})
 local MAX_COLLAPSED_PROFS = 2   -- professions named on the "Used in" line
 local MAX_EXPANDED_RECIPES = 30 -- recipe lines in the Shift view before "and N more"
 local MAX_NAMES = 3             -- character names listed before "+N"
+local POISONS = 40              -- a class skill: rogues have it without a profession entry
 
 -- The default font has no check mark glyph; use the ready-check texture.
 local CHECK = "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t "
@@ -259,16 +260,152 @@ local function AddExpanded(tooltip, info)
 	AddOwnedBreakdown(tooltip, info)
 end
 
+-- Crafted items and recipe items ---------------------------------------------
+
+local NO_RECIPES = {}
+local craftedBy, taughtBy -- itemID -> recipeIDs, built on first use
+
+local function Append(index, itemID, recipeID)
+	local list = index[itemID]
+	if not list then
+		list = {}
+		index[itemID] = list
+	end
+	list[#list + 1] = recipeID
+end
+
+local function BySkill(a, b)
+	local skillA, skillB = ns.Recipes[a].skill, ns.Recipes[b].skill
+	if skillA ~= skillB then return skillA > skillB end
+	return a < b
+end
+
+local function BuildRecipeIndex()
+	craftedBy, taughtBy = {}, {}
+	for recipeID, recipe in pairs(ns.Recipes) do
+		if recipe.out then Append(craftedBy, recipe.out, recipeID) end
+		local source = ns.RecipeSources and ns.RecipeSources[recipeID]
+		if source and source.i then Append(taughtBy, source.i, recipeID) end
+	end
+	for _, index in ipairs({ craftedBy, taughtBy }) do
+		for _, list in pairs(index) do table.sort(list, BySkill) end
+	end
+end
+
+-- Recipes that make the item, and recipes the item teaches.
+function Tooltip:GetRecipesFor(itemID)
+	if not craftedBy then BuildRecipeIndex() end
+	return craftedBy[itemID] or NO_RECIPES, taughtBy[itemID] or NO_RECIPES
+end
+
+local function AddKnownLine(tooltip, recipeID)
+	local isMe, alts = ns.Professions:GetKnownBy(recipeID)
+	if not isMe and #alts == 0 then return false end
+	tooltip:AddLine(Color("Known by " .. NameList(isMe, alts), isMe and COLOR_YOURS or COLOR_ALT))
+	return true
+end
+
+-- "Could learn: you (290), Brewdin (250/300) +1": rank alone when it's enough,
+-- rank/needed when it isn't yet. Returns the text and whether you can.
+function Tooltip:FormatLearners(learners)
+	local names = {}
+	for i = 1, math.min(#learners, MAX_NAMES) do
+		local learner = learners[i]
+		local name = learner.isMe and "you" or ns:CharDisplayName(learner.key)
+		local rank = learner.ready and tostring(learner.rank) or ("%d/%d"):format(learner.rank, learner.need)
+		names[i] = ("%s (%s)"):format(name, rank)
+	end
+	local text = "Could learn: " .. table.concat(names, ", ")
+	if #learners > MAX_NAMES then text = text .. (" +%d"):format(#learners - MAX_NAMES) end
+	return text, learners[1].isMe and learners[1].ready
+end
+
+local function AddLearnersLine(tooltip, learners)
+	local text, mine = Tooltip:FormatLearners(learners)
+	tooltip:AddLine(Color(text, mine and COLOR_YOURS or COLOR_ALT))
+end
+
+-- One craft's reagents against what you own, for the Shift view.
+local function AddReagentLines(tooltip, recipeID)
+	local status = ns.Tracker:GetStatus({ kind = "recipe", id = recipeID, need = 1 })
+	for _, reagent in ipairs(status.reagents) do
+		local name = ns.Browser:GetItemName(reagent.itemID) or ("Item #" .. reagent.itemID)
+		tooltip:AddDoubleLine(Color(name, COLOR_TEXT), Color(("%d / %d"):format(reagent.have, reagent.need),
+			reagent.have >= reagent.need and COLOR_YOURS or COLOR_TEXT))
+	end
+end
+
+-- A recipe item answers "is this any use to me?": who knows it already, who
+-- has the profession to learn it, or that nobody does.
+local function AddTaughtRecipe(tooltip, recipeID, expanded)
+	local name = Tooltip:GetRecipeName(recipeID)
+	tooltip:AddLine(Color("Reagent Atlas: Teaches " .. name, COLOR_HEADER))
+	local known = AddKnownLine(tooltip, recipeID)
+	local learners = ns.Professions:GetLearners(recipeID)
+	if #learners > 0 then
+		AddLearnersLine(tooltip, learners)
+	elseif not known and ns.Recipes[recipeID].prof ~= POISONS then
+		local prof = Tooltip:GetProfessionName(ns.Recipes[recipeID].prof)
+		tooltip:AddLine(Color(("None of your characters has %s"):format(prof), COLOR_UNKNOWN))
+	end
+	if expanded then AddReagentLines(tooltip, recipeID) end
+end
+
+-- A crafted item: which profession makes it and who can. Returns true if a
+-- source shown is unconfirmed.
+local function AddCraftedRecipe(tooltip, recipeID, expanded)
+	local recipe = ns.Recipes[recipeID]
+	local prof = Tooltip:GetProfessionName(recipe.prof)
+	tooltip:AddLine(Color(("Reagent Atlas: Crafted with %s %d"):format(prof, recipe.skill), COLOR_HEADER))
+	local unconfirmed = false
+	if not AddKnownLine(tooltip, recipeID) then
+		if expanded then
+			local lines
+			lines, unconfirmed = ns.Sources:GetDetailLines(recipeID)
+			tooltip:AddLine(Color("None of your characters knows this", COLOR_UNKNOWN))
+			for _, line in ipairs(lines) do tooltip:AddLine(Color(line, COLOR_HINT)) end
+		else
+			local tag
+			tag, unconfirmed = ns.Sources:GetTag(recipeID)
+			tooltip:AddDoubleLine(Color("None of your characters knows this", COLOR_UNKNOWN), Color(tag or "", COLOR_HINT))
+		end
+	end
+	if expanded then AddReagentLines(tooltip, recipeID) end
+	return unconfirmed
+end
+
+-- Everything the item teaches or is crafted by, then one note on unconfirmed sources.
+local function AddRecipeSections(tooltip, crafted, taught, expanded)
+	local unconfirmed = false
+	for _, recipeID in ipairs(taught) do
+		AddTaughtRecipe(tooltip, recipeID, expanded)
+	end
+	for _, recipeID in ipairs(crafted) do
+		unconfirmed = AddCraftedRecipe(tooltip, recipeID, expanded) or unconfirmed
+	end
+	if unconfirmed then
+		tooltip:AddLine(Color(ns.Sources.UNCONFIRMED_NOTE, COLOR_HINT))
+	end
+end
+
 -- Builds the Reagent Atlas section for an item. Separate from the hook so it
--- can be tested and reused (e.g. by the browser detail pane).
+-- can be tested and reused (e.g. by the browser detail pane). An item can be
+-- both crafted and a reagent, so the sections stack.
 function Tooltip:AddItemLines(tooltip, itemID, expanded)
 	local info = ns.Valuation:GetInfo(itemID)
-	if not info then return false end
+	local crafted, taught = self:GetRecipesFor(itemID)
+	local hasRecipes = #crafted > 0 or #taught > 0
+	if not info and not hasRecipes then return false end
 	tooltip:AddLine(" ")
-	if expanded then
+	AddRecipeSections(tooltip, crafted, taught, expanded)
+	if info and expanded then
 		AddExpanded(tooltip, info)
-	else
+	elseif info then
 		AddCollapsed(tooltip, info)
+	end
+	-- A reagent with recipes already has its own hint, and Shift shows both.
+	if hasRecipes and not expanded and not (info and info.recipeCount > 0) then
+		tooltip:AddLine(Color("Hold Shift for reagents", COLOR_HINT))
 	end
 	return true
 end

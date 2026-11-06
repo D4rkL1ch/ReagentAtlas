@@ -9,7 +9,7 @@ local ICON_SIZE = 22
 local INFO_COL = 130
 local DETAIL_ROW_HEIGHT = 24
 local DETAIL_ICON = 18
-local COUNT_COL = 70
+local COUNT_COL = 120
 local PAD = 12
 
 local COLOR_TEXT = "ffe8e2d0"
@@ -17,10 +17,12 @@ local COLOR_HINT = "ffa39a85"
 local COLOR_MET = "ff1eff00"
 local COLOR_ALT = "ff66b3ff"
 local COLOR_UNKNOWN = "ff9d9d9d"
+local COLOR_LOSS = "ffff5555"
 local CHECK = "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t "
 
 local KNOWN_COLOR = { me = COLOR_MET, alt = COLOR_ALT, none = COLOR_UNKNOWN }
-local DEFAULT_FILTERS = { prof = 0, known = false, ready = false }
+local DEFAULT_FILTERS = { prof = 0, known = false, ready = false, learnable = false, sort = "skill" }
+local SORT_CHOICES = { { value = "skill", label = "Skill" }, { value = "profit", label = "Profit" } }
 
 local function Color(text, color)
 	return ns.Browser.Color(text, color)
@@ -52,13 +54,26 @@ local function Matches(search, name)
 	return name ~= nil and name:lower():find(search, 1, true) ~= nil
 end
 
+local function CanLearn(recipeID)
+	for _, learner in ipairs(ns.Professions:GetLearners(recipeID)) do
+		if learner.ready then return true end
+	end
+	return false
+end
+
 -- Rows matching the filters, highest skill first, then by name. filters:
 --   search  substring of the crafted item or recipe name, case-insensitive
 --   prof    skill line ID of the recipe (0 = any)
 --   known   only recipes some character knows
 --   ready   only recipes with enough reagents for one craft (account-wide)
+--   learnable  only recipes a character could learn now: has the profession
+--           and the skill, and doesn't know it
+--   sort    "profit": best profit first, recipes without one after them; the
+--           Auctionator lookups are only made for this sort
 function CraftingUI:BuildRows(filters)
 	local search = (filters.search or ""):lower()
+	local byProfit = filters.sort == "profit"
+	local prices = {}
 	local rows = {}
 	for recipeID, recipe in pairs(ns.Recipes) do
 		if filters.prof == 0 or recipe.prof == filters.prof then
@@ -68,16 +83,20 @@ function CraftingUI:BuildRows(filters)
 			local keep = (not filters.known or known ~= "none")
 				and (search == "" or Matches(search, itemName) or Matches(search, recipeName))
 				and (not filters.ready or Status(recipeID).met)
+				and (not filters.learnable or CanLearn(recipeID))
 			if keep then
 				rows[#rows + 1] = {
 					recipeID = recipeID, itemID = recipe.out, name = itemName or recipeName,
 					quality = recipe.outQ, prof = ns.Tooltip:GetProfessionName(recipe.prof),
 					skill = recipe.skill, known = known,
+					profit = byProfit and ns.Pricing:GetCraftValue(recipeID, prices).profit or nil,
 				}
 			end
 		end
 	end
 	table.sort(rows, function(a, b)
+		if (a.profit ~= nil) ~= (b.profit ~= nil) then return a.profit ~= nil end
+		if a.profit and a.profit ~= b.profit then return a.profit > b.profit end
 		if a.skill ~= b.skill then return a.skill > b.skill end
 		if a.name ~= b.name then return a.name < b.name end
 		return a.recipeID < b.recipeID
@@ -85,8 +104,33 @@ function CraftingUI:BuildRows(filters)
 	return rows
 end
 
+-- Signed money, green for a gain and red for a loss.
+local function FormatProfit(copper)
+	local money = ns.Pricing:FormatMoney(math.abs(copper))
+	if copper < 0 then return Color("-", COLOR_LOSS) .. money end
+	return Color("+", COLOR_MET) .. money
+end
+
+-- What a craft costs and earns, or nothing without a price source.
+local function AddValueRows(rows, recipeID)
+	if not ns.Pricing:IsEnabled() then return end
+	local recipe = ns.Recipes[recipeID]
+	local value = ns.Pricing:GetCraftValue(recipeID)
+	rows[#rows + 1] = { type = "head", text = "Value" }
+	local cost = value.cost and ns.Pricing:FormatMoney(value.cost)
+		or ("no price for %d reagent%s"):format(value.unpriced, value.unpriced == 1 and "" or "s")
+	rows[#rows + 1] = { type = "value", text = "Cost per craft", value = cost }
+	if recipe.out then
+		local label = (recipe.n or 1) > 1 and ("Sells for (%d items)"):format(recipe.n) or "Sells for"
+		rows[#rows + 1] = { type = "value", text = label, value = value.sale and ns.Pricing:FormatMoney(value.sale) or "no AH price" }
+	end
+	if value.profit then
+		rows[#rows + 1] = { type = "value", text = "Profit after AH cut", value = FormatProfit(value.profit) }
+	end
+end
+
 -- Everything the detail pane shows for one recipe. rows: headings, one row per
--- reagent, then who knows the recipe or where to get it.
+-- reagent, its value, then who knows the recipe or where to get it.
 function CraftingUI:GetDetail(recipeID)
 	local recipe = ns.Recipes[recipeID]
 	if not recipe then return nil end
@@ -106,8 +150,15 @@ function CraftingUI:GetDetail(recipeID)
 			name = ns.Browser:GetItemName(reagent.itemID) or ("Item #" .. reagent.itemID),
 		}
 	end
+	AddValueRows(rows, recipeID)
 	rows[#rows + 1] = { type = "head", text = "Recipe" }
-	if ns.Tracker:AddRecipeInfo(rows, recipeID) then
+	local unconfirmed = ns.Tracker:AddRecipeInfo(rows, recipeID)
+	local learners = ns.Professions:GetLearners(recipeID)
+	if #learners > 0 then
+		local text, mine = ns.Tooltip:FormatLearners(learners)
+		rows[#rows + 1] = { type = "info", recipeID = recipeID, known = mine and "me" or "alt", text = text }
+	end
+	if unconfirmed then
 		rows[#rows + 1] = { type = "note", text = ns.Sources.UNCONFIRMED_NOTE }
 	end
 
@@ -173,7 +224,11 @@ local function InitRow(button, row)
 	button.Icon:SetTexture(Icon(row.recipeID))
 	button.Name:SetText(Color(row.name, ns.Browser.QualityColor(row.quality)))
 	local mark = row.known == "none" and "" or CHECK
-	button.Info:SetText(mark .. Color(("%s %d"):format(row.prof, row.skill), KNOWN_COLOR[row.known]))
+	if row.profit then
+		button.Info:SetText(mark .. FormatProfit(row.profit))
+	else
+		button.Info:SetText(mark .. Color(("%s %d"):format(row.prof, row.skill), KNOWN_COLOR[row.known]))
+	end
 	button.Selected:SetShown(row.recipeID == selected)
 end
 
@@ -218,10 +273,17 @@ local function InitDetailRow(row, data)
 		row.Text:SetWordWrap(false)
 	end
 	row.data = data
-	local isReagent = data.type == "reagent"
+	local isReagent, isValue = data.type == "reagent", data.type == "value"
 	row.Icon:SetShown(isReagent)
-	row.Count:SetShown(isReagent)
+	row.Count:SetShown(isReagent or isValue)
 	row.Text:ClearAllPoints()
+	if isValue then
+		row.Text:SetPoint("LEFT", 2, 0)
+		row.Text:SetPoint("RIGHT", row.Count, "LEFT", -4, 0)
+		row.Text:SetText(Color(data.text, COLOR_TEXT))
+		row.Count:SetText(Color(data.value, COLOR_TEXT))
+		return
+	end
 	if isReagent then
 		row.Text:SetPoint("LEFT", row.Icon, "RIGHT", 6, 0)
 		row.Text:SetPoint("RIGHT", row.Count, "LEFT", -4, 0)
@@ -336,10 +398,19 @@ local function CreatePane()
 		function(value) filters.prof = value; CraftingUI:Refresh() end)
 	profChoice:SetPoint("TOPLEFT", profLabel, "BOTTOMLEFT", 0, -2)
 
+	local sortLabel = CreateLabel(left, "GameFontNormalSmall", "Sort by")
+	sortLabel:SetPoint("LEFT", profLabel, "LEFT", 176, 0)
+	local sortChoice = ns.Browser.CreateChoice(left, 160, function() return SORT_CHOICES end,
+		function() return filters.sort end,
+		function(value) filters.sort = value; CraftingUI:Refresh() end)
+	sortChoice:SetPoint("TOPLEFT", sortLabel, "BOTTOMLEFT", 0, -2)
+
 	local knownCheck = ns.Browser.CreateCheck(left, "Known", "known", CraftingUI)
 	knownCheck:SetPoint("TOPLEFT", profChoice, "BOTTOMLEFT", -2, -6)
 	local readyCheck = ns.Browser.CreateCheck(left, "Have reagents", "ready", CraftingUI)
-	readyCheck:SetPoint("LEFT", knownCheck, "LEFT", 100, 0)
+	readyCheck:SetPoint("LEFT", knownCheck, "LEFT", 90, 0)
+	local learnCheck = ns.Browser.CreateCheck(left, "Can learn", "learnable", CraftingUI)
+	learnCheck:SetPoint("LEFT", readyCheck, "LEFT", 130, 0)
 
 	list = ns.Browser:CreateList(left, ROW_HEIGHT, InitRow)
 	list:SetPoint("TOPLEFT", knownCheck, "BOTTOMLEFT", 2, -8)
@@ -372,9 +443,11 @@ function CraftingUI:Refresh()
 	local filters = self:GetFilters()
 	local rows = self:BuildRows({
 		search = search, prof = filters.prof, known = filters.known, ready = filters.ready,
+		learnable = filters.learnable, sort = filters.sort,
 	})
 	-- Data arriving keeps your place; changing the search or filters starts over.
-	local query = ("%s|%d|%s|%s"):format(search, filters.prof, tostring(filters.known), tostring(filters.ready))
+	local query = ("%s|%d|%s|%s|%s|%s"):format(search, filters.prof, tostring(filters.known), tostring(filters.ready),
+		tostring(filters.learnable), filters.sort)
 	local retain = query == lastQuery
 	lastQuery = query
 	list:SetDataProvider(CreateDataProvider(rows), retain and ScrollBoxConstants and ScrollBoxConstants.RetainScrollPosition)

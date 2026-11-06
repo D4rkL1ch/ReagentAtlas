@@ -26,12 +26,17 @@ Reagent Atlas is a WoW Forever (client 1.60.x, modern addon API) addon that tell
 | --- | --- | --- |
 | Item tooltip (collapsed) | Tier badge, recipe count, top professions, highest skill level, owned total, AH price if known. Max ~5 lines. Spell reagents read "Spell reagent for your class" (green) for your own class, otherwise "Spell reagent for <classes>" in class colors. | P0 |
 | Item tooltip (Shift held) | Full recipe list grouped by profession, sorted by skill desc. Craftable recipes marked with a check and the character name. Recipes nobody knows show where to get them (vendor and zone, drop, quest, likely trainer, reputation hint), with one note when any of that is unconfirmed. | P0 |
+| Recipe item tooltip | "Teaches <recipe>", who knows it, and who could learn it: characters with the profession who don't know it, with their rank, or rank/required when it isn't enough yet (`req` in `Data/Sources.lua`, the recipe item's required skill). Otherwise says none of your characters has the profession. Known recipes are only recorded from an opened profession window, so "could learn" can include someone who already knows it. Shift adds the reagents, have / need. | P0 |
+| Crafted item tooltip | "Crafted with <profession> <skill>", then who knows it, or that nobody does with a short source tag. Shift adds the full source and the reagents, have / need. An item that is also a reagent shows both sections. | P0 |
 | Alt-aware highlighting | Recipes known by the current character are green; known by an alt are blue with the alt's name; unknown are grey. | P0 |
 | Account-wide inventory | Counts per character for bags + bank; tooltip shows total and a per-character breakdown on Shift. | P1 |
 | Browser window | `/ratlas` opens a two-pane window: filterable reagent list (left: search, profession, min tier, owned, craftable; filters are saved, the search is not), detail pane (right: tier, AH and vendor price, owned/recipes/craftable, where the items are, recipe list marked by who knows each, with the source of unknown recipes). Movable, position saved. Hovering a reagent row shows its item tooltip. A recipe row stands for the crafted item (the spell for enchants); its icon stands for the recipe (the recipe item, or the craft spell for trainer recipes) and its tooltip adds the full source. Modified clicks on any of these work as on an item link (Shift links to chat, Ctrl previews in the dressing room). | P1 |
-| Crafting tab | The browser's second tab, the reverse of the first: every recipe and what it crafts, 2,518 rows in 1.60.1. Rows and crafted items are the same list because only 7 items have more than one recipe. Search matches the crafted item or the recipe name (Copper Bar and Smelt Copper find the same row); filters are profession, known by any character, and reagents in hand for one craft (account-wide). Sorted by skill, highest first. The detail pane shows the reagents with have / need, then who knows the recipe or where to get it, and a Track button. Clicking a reagent opens it on the Reagents tab, a crafted item that is also a reagent has a "Used as reagent" button, and clicking a recipe row on the Reagents tab opens it here. The tab is remembered; its filters are saved in `ui.craftFilters`, the search is not. Built on first open, since listing it asks the client for every crafted item. | P1 |
+| Crafting tab | The browser's second tab, the reverse of the first: every recipe and what it crafts, 2,518 rows in 1.60.1. Rows and crafted items are the same list because only 7 items have more than one recipe. Search matches the crafted item or the recipe name (Copper Bar and Smelt Copper find the same row); filters are profession, known by any character, reagents in hand for one craft (account-wide), and Can learn: a character has the profession and skill and doesn't know it. Trainer recipes have no recipe item, so Can learn compares them with where they turn yellow, a little above the real requirement. Sorted by skill, highest first. The detail pane shows the reagents with have / need, then who knows the recipe or where to get it, and a Track button. Clicking a reagent opens it on the Reagents tab, a crafted item that is also a reagent has a "Used as reagent" button, and clicking a recipe row on the Reagents tab opens it here. The tab is remembered; its filters are saved in `ui.craftFilters`, the search is not. Built on first open, since listing it asks the client for every crafted item. | P1 |
+| Safe to sell | A Reagents tab filter for items you own that nothing of yours uses: no character has a profession that uses them or a class that casts with them, the tracking list isn't after them, and they rate Useful or below. It replaces the owned and min tier filters while on. | P2 |
+| Vendor sightings | Merchant windows are read for recipe items, and who sold them is saved in `seenVendors`. Tooltips and the detail pane show these first, as confirmed sources, since they come from Forever and not from Classic-era data. Nothing is bought or changed. | P2 |
+| Crafting value | With Auctionator, the Crafting detail pane shows cost per craft, what the output sells for (all items a craft makes) and the profit after the 5% AH cut. A "Sort by" choice orders the list by profit, best first, with the profit in place of the skill; recipes without one follow, by skill. A reagent costs the vendor price if vendors sell it (`buy` in `Data/Reagents.lua`, per item) or the AH price if that's lower; other reagents use the AH price, so a reagent with no fresh price leaves the cost unknown. Crafted reagents are priced as bought, not by what they cost to make. Listing deposits aren't included. The Auctionator lookups only run for the profit sort or the selected recipe. | P2 |
 | Tracking list | A small movable window (browser button, Shift-click on the minimap entries, Settings, `/ratlas track`) listing tracked recipes and reagents; it stays open across reloads and can be left open in combat. Add with Track in the browser's detail pane or + on a recipe row; a recipe is reachable from any of its reagents. A recipe shows have / need per reagent, then who knows it, or where to get it (`Sources:GetDetailLines`, with the unconfirmed note). A plain click folds it. A reagent shows the owned count, optionally against a goal. Clicking a count sets the goal in the footer box: how many of a reagent (empty clears it), or how many crafts of a recipe (needs multiply; empty means one). Reaching a goal alerts: raid-warning text, a chat line and a sound (Settings toggle, Master channel). See "Tracking list" below. | P1 |
-| Bag markers | Small tier-colored diamond pip in the top-left corner of default bag slots at or above the minimum tier (default Valuable). Toggleable. Hooks each bag window's `UpdateItems` (retail container frames in Forever); the bank window is not marked. | P2 |
+| Bag markers | Small tier-colored diamond pip in the top-left corner of default bag slots at or above the minimum tier (default Valuable). Toggleable. Hooks each bag window's `UpdateItems` (retail container frames in Forever); the bank window is not marked. With ElvUI, whose bags replace those windows, it hooks ElvUI's `UpdateSlot` instead, which also marks ElvUI's bank windows. | P2 |
 | Settings | Toggles for tooltip, markers, minimap icon, Auctionator use, minimum tier for markers, and an Open button for the browser. A "Status & characters" subpage shows version, data build and price source, lists tracked characters with a confirmed Forget button, and lists learned recipes missing from the data. Uses the modern Settings panel (Esc → Options → AddOns, the gear in the browser, right-click on the minimap icon, or `/ratlas config`; not in combat). | P2 |
 | Minimap access | Always an entry in Blizzard's AddOns button by the minimap (runtime `AddonCompartmentFrame:RegisterAddon`, so no global), plus a draggable round icon that can be turned off. Left-click: browser. Right-click: settings. Angle saved in `ui.minimapAngle`. Own code, no LibDBIcon. | P2 |
 | No typing required | Every slash command has a UI equivalent; the commands stay as shortcuts. | P1 |
@@ -39,6 +44,8 @@ Reagent Atlas is a WoW Forever (client 1.60.x, modern addon API) addon that tell
 Tier colors: Vendor = grey, Useful = white, Valuable = blue, Keep! = orange.
 
 ### Tracking list
+
+The window has two views, switched by a button and remembered in `ui.trackerView`: the list itself, and a shopping list. The shopping list adds up what all tracked recipes need and shares your reagents out across them, then shows what is still to get (vendor goods marked), what to craft first and who can, and the totals. A reagent you're short of is broken down into what makes it when a character knows the recipe, unless vendors sell it or the recipe only converts another material (`conv` in `Data/Recipes.lua`). Stock is spent as it goes, and what a batch makes beyond the need (`n`, items per craft) serves the next demand. Reagent goals aren't included: they may be for the same recipes, and adding them would count those twice.
 
 Counts are the same account-wide total as everywhere else (bags and banks of every character plus the warband bank), so a goal can be met by items on an alt; hovering a row shows where they are. Each entry counts on its own: two recipes needing the same 5 bars are both met by 5 bars.
 
@@ -97,6 +104,8 @@ ns.Recipes[recipeSpellID] = {
   skill = 285,           -- required skill
   out = 15090,           -- output itemID
   outQ = 3,              -- output quality (0-5), used by valuation
+  n = 5,                 -- optional: items made per craft, when more than one
+  conv = true,           -- optional: only converts another material (see Crafting chain)
   reagents = { [17012] = 2, [15407] = 1 }, -- itemID -> count
 }
 
@@ -109,6 +118,7 @@ ns.Reagents[itemID] = {
 -- Data/Sources.lua (recipes with a recipe item; absent = probably a trainer)
 ns.RecipeSources[recipeSpellID] = {
   i = 12233,                 -- recipe item
+  req = 300,                 -- skill the recipe item requires
   v = { npcID, ... },        -- vendors
   q = { "Quest name", ... }, -- quest rewards
   d = { npcID, ... },        -- droppers, when at most 5
@@ -139,6 +149,7 @@ ReagentAtlasDB = {
     },
   },
   account = { bank = { [itemID] = count } },  -- warband bank, shared by all characters
+  seenVendors = { [recipe itemID] = { [npcID] = { "Name", "Zone" } } }, -- from merchant windows
 }
 ```
 
@@ -152,13 +163,13 @@ The in-game API only lists recipes a character knows, so the full recipe databas
 2. Join them in `tools/build_data.py`:
    - `SkillLineAbility` → recipe spell ID to profession skill line and skill. Forever leaves `MinSkillLineRank` at 1, so the skill used is `TrivialSkillLineRankLow` (where the recipe turns yellow).
    - `SpellReagents` → reagent itemIDs and counts per spell (recipes and class spells)
-   - `SpellEffect` (create-item effect) → output itemID
-   - `ItemSparse` → item quality, vendor sell price
+   - `SpellEffect` (create-item effect) → output itemID, items made per craft (`EffectBasePointsF`)
+   - `ItemSparse` → item quality, vendor sell price, vendor buy price per item (`BuyPrice` / `VendorStackCount`)
    - `SkillLine` → child (tier) skill lines folded into their parent profession; class skill lines
    - `SpellClassOptions` → class of a spell (spell family) for spell reagents
    - `SpellName` → used to drop test/DND spells
 3. Filter to primary + secondary professions plus Poisons, drop internal or test spells and Season of Discovery engraving leftovers, drop duplicate recipes (same profession, output and reagents).
-4. Emit `Data/Recipes.lua` (with `ns.DATA_BUILD` and `ns.MAX_SKILL`, the highest recipe skill) and the inverted `Data/Reagents.lua` (recipes, own quality `q`, vendor sell price `sell`, spell classes, `vendor` flag).
+4. Emit `Data/Recipes.lua` (with `ns.DATA_BUILD` and `ns.MAX_SKILL`, the highest recipe skill) and the inverted `Data/Reagents.lua` (recipes, own quality `q`, vendor sell price `sell`, spell classes, `vendor` flag with its price `buy`).
 5. Re-run on every client build. Chat shows a one-time warning per client build if `ns.DATA_BUILD` differs from `GetBuildInfo()`.
 
 Two hand-maintained lists cover what the DB2 data lacks: `tools/spell_reagents.csv` (overrides for the spell reagent mapping) and `tools/vendor_reagents.csv` (reagents NPC vendors sell; vendor inventories are server data).
@@ -224,6 +235,7 @@ Forever uses the modern retail-style API. Names below are from the retail API; c
 | Professions | `GetProfessions`, `GetProfessionInfo`, `SKILL_LINES_CHANGED` | Profession ranks at login, no window needed. Forever returns prof1, prof2, first aid, fishing, cooking. |
 | Professions | `TRADE_SKILL_SHOW`, `TRADE_SKILL_LIST_UPDATE`, `C_TradeSkillUI.GetAllRecipeIDs`, `C_TradeSkillUI.GetRecipeInfo` (`learned`), `IsTradeSkillLinked/Guild/NPCCrafting` | Record learned recipes when your own window is open (debounced). `NEW_RECIPE_LEARNED` adds single recipes without the window. |
 | Professions | `C_TradeSkillUI.GetBaseProfessionInfo` | Profession skill line and rank. |
+| Vendors | `MERCHANT_SHOW`, `MERCHANT_UPDATE`, `GetMerchantNumItems`, `GetMerchantItemID`, `UnitGUID("npc")` | Record recipe items for sale. Auctionator uses the first three on Forever. |
 | Items | `C_Item.GetItemInfo`, `Item:CreateFromItemID():ContinueOnItemLoad` | Names, icons, quality; handle uncached items async. |
 | Character | `UnitName`, `GetNormalizedRealmName`, `UnitClass` | Build the `Name-Realm` key. |
 | UI list | `CreateScrollBoxListLinearView`, `ScrollUtil.InitScrollBoxListWithScrollBar` | Virtualized reagent list in the browser. |
@@ -253,7 +265,7 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 - [x] Forever bank layout: classic bank bags or retail-style bank tabs? Retail-style tabs (Enum.BagIndex 6-14 character, 15-23 warband) plus a reagent bag (5), per the Forever 1.60.1 API docs. Confirm in-game that the warband bank is enabled.
 - [x] Spell reagents: which classes and spells use reagents in Forever? Derived from DB2 (`SpellReagents` + `SpellClassOptions` + class skill lines): 23 items in 1.60.1. Gaps (e.g. Levitate) fixed in `tools/spell_reagents.csv`.
 - [ ] Vendor-sold reagents: `tools/vendor_reagents.csv` (58 items) is from Classic knowledge; verify against Forever vendors after launch.
-- [ ] Recipe sources: confirm Classic-era vendors and drops against Forever. New Forever recipes (most of the 987 unknown in 1.60.1, some possibly unused Season of Discovery leftovers) have no source yet; re-check QuestieDB as it fills in, or add merchant-window recording.
+- [ ] Recipe sources: confirm Classic-era vendors and drops against Forever. New Forever recipes (most of the 987 unknown in 1.60.1, some possibly unused Season of Discovery leftovers) have no source yet; re-check QuestieDB as it fills in. Merchant-window recording now covers what you visit; each player's sightings stay local.
 - [ ] Licensing: `Data/Sources.lua` derives from QuestieDB, which allows copying under GPLv3 terms but cannot promise every historic contributor agreed. Decide the addon's licence before any public release.
 - [ ] Tracking list alert: confirm in-game that `SOUNDKIT.IG_QUEST_LIST_COMPLETE` plays on Forever and is loud enough (Blizzard's Forever constants could not be checked offline).
 - [ ] Heuristic weights are guesses until the live economy settles after launch; plan a tuning pass a few weeks in.

@@ -3,6 +3,7 @@ local addonName, ns = ...
 local Pricing = ns:RegisterModule("Pricing", {})
 
 local MAX_AGE_DAYS = 7 -- older Auctionator prices are ignored (SPEC.md > Auctionator bridge)
+local AH_CUT = 0.05    -- share of a sale the auction house keeps
 
 -- Set when an Auctionator call errors; the bridge stays off for the session.
 local brokenReason
@@ -50,6 +51,56 @@ function Pricing:GetPrice(itemID)
 		return nil
 	end
 	return price, age
+end
+
+-- AH price of an item, through a table shared across one pass over the
+-- recipes: a list asks about the same reagents many times.
+local function Lookup(itemID, cache)
+	local price = cache[itemID]
+	if price == nil then
+		price = Pricing:GetPrice(itemID) or false
+		cache[itemID] = price
+	end
+	return price or nil
+end
+
+-- What one item of a reagent costs: the vendor if it sells it, or the AH if
+-- that's cheaper; nil without either price.
+local function ReagentCost(itemID, cache)
+	local reagent = ns.Reagents[itemID]
+	local vendor = reagent and reagent.buy
+	local ah = Lookup(itemID, cache)
+	if vendor and ah then return math.min(vendor, ah) end
+	return vendor or ah
+end
+
+-- Value of one craft, in copper:
+--   cost      all reagents, nil unless every one has a price
+--   unpriced  how many reagents have none
+--   sale      what the output lists for on the AH, for all items a craft makes
+--   profit    sale less the AH cut less cost; nil unless both are known
+-- Listing deposits aren't included. cache is optional, see Lookup.
+function Pricing:GetCraftValue(recipeID, cache)
+	cache = cache or {}
+	local recipe = ns.Recipes[recipeID]
+	local cost, unpriced = 0, 0
+	for itemID, count in pairs(recipe.reagents) do
+		local price = ReagentCost(itemID, cache)
+		if price then
+			cost = cost + price * count
+		else
+			unpriced = unpriced + 1
+		end
+	end
+	local value = { cost = unpriced == 0 and cost or nil, unpriced = unpriced }
+	local price = recipe.out and Lookup(recipe.out, cache)
+	if price then
+		value.sale = price * (recipe.n or 1)
+		if value.cost then
+			value.profit = math.floor(value.sale * (1 - AH_CUT)) - value.cost
+		end
+	end
+	return value
 end
 
 -- "12g 40s" with coin icons; plain text if the client lacks the helper.

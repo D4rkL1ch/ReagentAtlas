@@ -9,6 +9,7 @@ local REMOVE_SIZE = 16
 local INDENT = 20
 local COUNT_WIDTH = 76
 local FOOTER_HEIGHT = 30
+local HEADER_HEIGHT = 20
 local PAD = 12
 local MAX_NEED_DIGITS = 5
 local REFRESH_DELAY = 0.2
@@ -17,11 +18,15 @@ local COLOR_TEXT = "ffe8e2d0"
 local COLOR_HINT = "ffa39a85"
 local COLOR_MET = "ff1eff00"
 local COLOR_ALT = "ff66b3ff"
+local COLOR_HEAD = "ffffd100"
 local CHECK = "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t "
 local EXPANDED = "|TInterface\\Buttons\\UI-MinusButton-Up:12|t "
 local COLLAPSED = "|TInterface\\Buttons\\UI-PlusButton-Up:12|t "
 local HINT = "Click a count to set how many you need."
+local SHOPPING_HINT = "Totals for tracked recipes, reagents shared out."
 local EMPTY = "Nothing tracked yet. In the reagent browser, press Track on a reagent or + on a recipe."
+local EMPTY_SHOPPING = "No tracked recipes yet. Track a recipe to see what you need for all of them together."
+local VIEW_SHOPPING = "shopping"
 
 local function Color(text, color)
 	return WrapTextInColorCode(text, color)
@@ -30,6 +35,11 @@ end
 ---@type table
 local frame
 local editing -- entry whose goal the footer box is changing
+local shownShopping -- the view on screen, to tell a refresh from a switch
+
+local function IsShopping()
+	return ns.db.ui.trackerView == VIEW_SHOPPING
+end
 
 -- Footer: set a goal --------------------------------------------------------
 
@@ -194,22 +204,40 @@ local function InitEntry(row, data)
 	end
 end
 
+-- Indented rows with an icon and a count: reagents and the shopping view.
+local function InitItem(row, icon, text, count)
+	row.IconButton:EnableMouse(false)
+	PlaceIcon(row, INDENT)
+	row.Icon:SetTexture(icon)
+	row.Text:SetText(text)
+	row.Count.Label:SetText(count)
+end
+
 local function InitRow(row, data)
 	if not row.Text then CreateRow(row) end
 	row.data = data
-	local isEntry, isReagent = data.type == "entry", data.type == "reagent"
+	local isEntry = data.type == "entry"
+	local isItem = data.type == "reagent" or data.type == "shop" or data.type == "craft"
 	row.Remove:SetShown(isEntry)
-	row.Count:SetShown(isEntry or isReagent)
+	row.Count:SetShown(isEntry or isItem)
 	row.Count:EnableMouse(isEntry)
-	row.IconButton:SetShown(isEntry or isReagent)
+	row.IconButton:SetShown(isEntry or isItem)
 	if isEntry then
 		InitEntry(row, data)
-	elseif isReagent then
-		row.IconButton:EnableMouse(false)
-		PlaceIcon(row, INDENT)
-		row.Icon:SetTexture(C_Item.GetItemIconByID(data.itemID))
-		row.Text:SetText(Color(data.name, COLOR_TEXT))
-		row.Count.Label:SetText(Progress(data.have, data.need))
+	elseif data.type == "reagent" then
+		InitItem(row, C_Item.GetItemIconByID(data.itemID), Color(data.name, COLOR_TEXT), Progress(data.have, data.need))
+	elseif data.type == "shop" then
+		local text = Color(data.name, COLOR_TEXT)
+		if data.vendor then text = text .. Color(" (vendor)", COLOR_HINT) end
+		InitItem(row, C_Item.GetItemIconByID(data.itemID), text, Color(tostring(data.count), COLOR_TEXT))
+	elseif data.type == "craft" then
+		local text = Color(data.name, COLOR_TEXT) .. Color((" (%s)"):format(data.who), data.mine and COLOR_MET or COLOR_ALT)
+		InitItem(row, ns.Browser:GetRecipeIcon(data.recipeID), text, Color("x" .. data.count, COLOR_HINT))
+	elseif data.type == "head" then
+		row.Text:ClearAllPoints()
+		row.Text:SetPoint("LEFT", 4, 0)
+		row.Text:SetPoint("RIGHT", -4, 0)
+		row.Text:SetText(Color(data.text, COLOR_HEAD))
 	elseif data.known then
 		PlainLine(row, data.text, data.known == "me" and COLOR_MET or COLOR_ALT)
 	else
@@ -250,8 +278,17 @@ local function CreateWindow()
 	frame.Prompt:SetWordWrap(false)
 	frame.Prompt:SetText(Color(HINT, COLOR_HINT))
 
+	frame.ViewButton = CreateFrame("Button", nil, content, "UIPanelButtonTemplate")
+	frame.ViewButton:SetSize(120, HEADER_HEIGHT)
+	frame.ViewButton:SetPoint("TOPLEFT", 2, -2)
+	frame.ViewButton:SetScript("OnClick", function()
+		EndEdit()
+		ns.db.ui.trackerView = not IsShopping() and VIEW_SHOPPING or nil
+		TrackerUI:Refresh()
+	end)
+
 	frame.List = ns.Browser:CreateList(content, ROW_HEIGHT, InitRow)
-	frame.List:SetPoint("TOPLEFT", 0, -4)
+	frame.List:SetPoint("TOPLEFT", 0, -(HEADER_HEIGHT + 6))
 	frame.List:SetPoint("BOTTOMRIGHT", -16, FOOTER_HEIGHT)
 
 	frame.Empty = content:CreateFontString(nil, "OVERLAY", "GameFontDisable")
@@ -274,9 +311,18 @@ function TrackerUI:Refresh()
 	if editing and ns.Tracker:Find(editing.kind, editing.id) ~= editing then
 		EndEdit()
 	end
-	local rows = ns.Tracker:GetRows()
-	frame.List:SetDataProvider(CreateDataProvider(rows), ScrollBoxConstants and ScrollBoxConstants.RetainScrollPosition)
+	local shopping = IsShopping()
+	local rows = shopping and ns.Tracker:GetShoppingRows() or ns.Tracker:GetRows()
+	-- Your place in a view is kept, but the other view starts at the top.
+	local sameView = shopping == shownShopping
+	shownShopping = shopping
+	frame.List:SetDataProvider(CreateDataProvider(rows), sameView and ScrollBoxConstants and ScrollBoxConstants.RetainScrollPosition)
+	frame.Empty:SetText(shopping and EMPTY_SHOPPING or EMPTY)
 	frame.Empty:SetShown(#rows == 0)
+	frame.ViewButton:SetText(shopping and "Tracked items" or "Shopping list")
+	if not editing then
+		frame.Prompt:SetText(Color(shopping and SHOPPING_HINT or HINT, COLOR_HINT))
+	end
 end
 
 function TrackerUI:IsShown()

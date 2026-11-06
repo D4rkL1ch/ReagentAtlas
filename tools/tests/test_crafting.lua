@@ -258,3 +258,130 @@ test("every recipe in the generated data lists and opens", function()
 	end
 	eq(#stubs.errors, 0, "no errors")
 end)
+
+-- Value ---------------------------------------------------------------------
+
+local function fakePrices(prices)
+	_G.Auctionator = { API = { v1 = {
+		GetAuctionPriceByItemID = function(_, itemID) return prices[itemID] end,
+		GetAuctionAgeByItemID = function() return 0 end,
+	} } }
+end
+
+test("a craft value adds reagents, takes the AH cut and counts every item made", function()
+	local ns = boot()
+	ns.Recipes[770004] = { prof = 164, skill = 100, out = 770104, outQ = 1, n = 5, reagents = { [12360] = 2, [2604] = 3 } }
+	ns.Reagents[2604].buy = 10
+	fakePrices({ [12360] = 1000, [770104] = 1000 })
+	local value = ns.Pricing:GetCraftValue(770004)
+	eq(value.cost, 2030, "2 bars at 10s, 3 dye at the vendor")
+	eq(value.sale, 5000, "5 items")
+	eq(value.profit, 2720, "95% of the sale less cost")
+end)
+
+test("a vendor reagent uses the AH price when that is lower", function()
+	local ns = boot()
+	ns.Recipes[770005] = { prof = 164, skill = 100, out = 770105, outQ = 1, reagents = { [2604] = 1 } }
+	ns.Reagents[2604].buy = 10
+	fakePrices({ [2604] = 4 })
+	eq(ns.Pricing:GetCraftValue(770005).cost, 4, "cheaper on the AH")
+end)
+
+test("a reagent with no price leaves cost and profit unknown", function()
+	local ns = boot()
+	fakePrices({ [880101] = 90000, [12360] = 1000 })
+	local value = ns.Pricing:GetCraftValue(880001)
+	eq(value.cost, nil, "no cost")
+	eq(value.unpriced, 2, "nexus and dye")
+	eq(value.sale, 90000, "sale still known")
+	eq(value.profit, nil, "no profit")
+end)
+
+test("the profit sort puts the best first and unknowns after, by skill", function()
+	local ns = boot()
+	fakePrices({ [2589] = 10, [2996] = 100, [1251] = 15 })
+	local rows = ns.CraftingUI:BuildRows(filters({ sort = "profit" }))
+	eq(rows[1].recipeID, 2963, "bolt: 95 less 20")
+	eq(rows[1].profit, 75, "profit")
+	eq(rows[2].recipeID, 3275, "bandage: 14 less 10")
+	eq(rows[3].profit, nil, "no profit after that")
+	eq(rows[3].recipeID, 880001, "then by skill")
+end)
+
+test("no lookups for the skill sort, and no prices means no value rows", function()
+	local ns = boot()
+	local asked = 0
+	_G.Auctionator = { API = { v1 = { GetAuctionPriceByItemID = function() asked = asked + 1 end } } }
+	ns.CraftingUI:BuildRows(filters())
+	eq(asked, 0, "no lookups")
+	_G.Auctionator = nil
+	for _, row in ipairs(ns.CraftingUI:GetDetail(990004).rows) do
+		assert(row.type ~= "value", "no value rows without Auctionator")
+	end
+	eq(#ns.CraftingUI:BuildRows(filters({ sort = "profit" })), 11, "profit sort still lists all")
+end)
+
+test("the detail pane shows the value and the list shows the profit", function()
+	local ns = boot()
+	fakePrices({ [2589] = 10, [2996] = 100 })
+	stubs.slash("/ratlas", "")
+	click(button("Crafting"))
+	ns.CraftingUI:GetFilters().sort = "profit"
+	ns.CraftingUI:Refresh()
+	contains(recipeList().rows[1].Info.text, "+", "signed profit")
+	ns.CraftingUI:Select(2963)
+	local labels = {}
+	for _, row in ipairs(detailList().provider.list) do
+		if row.type == "value" then labels[#labels + 1] = row.text end
+	end
+	eq(table.concat(labels, ","), "Cost per craft,Sells for,Profit after AH cut", "rows")
+	eq(#stubs.errors, 0, "no errors")
+end)
+
+test("every real recipe values without errors, with prices on everything", function()
+	local ns = T.boot(nil)
+	_G.Auctionator = { API = { v1 = {
+		GetAuctionPriceByItemID = function(_, itemID) return itemID % 977 + 1 end,
+		GetAuctionAgeByItemID = function() return 0 end,
+	} } }
+	local rows = ns.CraftingUI:BuildRows(filters({ sort = "profit" }))
+	assert(rows[1].profit ~= nil, "profits")
+	for i = 2, #rows do
+		if rows[i - 1].profit and rows[i].profit then
+			assert(rows[i - 1].profit >= rows[i].profit, "sorted")
+		end
+	end
+	eq(#stubs.errors, 0, "no errors")
+end)
+
+-- Can learn -----------------------------------------------------------------
+
+test("can learn needs the profession, the skill and not knowing it", function()
+	local ns = boot()
+	ns.RecipeSources = { [990004] = { i = 9004, req = 200 }, [990005] = { i = 9005, req = 226 } }
+	-- The player has Tailoring 225 and knows 990004 (saved above); Frostia has
+	-- Blacksmithing 300 and knows 880001.
+	local rows = ns.CraftingUI:BuildRows(filters({ learnable = true }))
+	local got = {}
+	for _, row in ipairs(rows) do got[row.recipeID] = true end
+	eq(got[990004], nil, "already known")
+	eq(got[990005], nil, "needs 226, has 225")
+	eq(got[880001], nil, "known by Frostia")
+	eq(got[880002], true, "Frostia has the skill")
+	eq(got[990001], nil, "nobody has Leatherworking")
+end)
+
+test("a trainer recipe has no recipe item, so its yellow skill stands in", function()
+	local ns = boot()
+	ns.RecipeSources = {}
+	local learners = ns.Professions:GetLearners(990005)
+	eq(learners[1].need, 180, "yellow skill")
+	eq(learners[1].ready, true, "225 is enough")
+end)
+
+test("the detail pane says who could learn it", function()
+	local ns = boot()
+	ns.RecipeSources = { [880002] = { i = 9002, req = 310 } }
+	local rows = ns.CraftingUI:GetDetail(880002).rows
+	contains(rows[#rows].text, "Could learn: Frostia (300/310)", "rank and requirement")
+end)

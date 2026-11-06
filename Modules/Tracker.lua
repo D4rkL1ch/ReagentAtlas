@@ -59,6 +59,20 @@ function Tracker:Find(kind, id)
 	return nil
 end
 
+-- Set of items the list is after: tracked reagents and what tracked recipes use.
+function Tracker:GetNeededItems()
+	local needed = {}
+	for _, entry in ipairs(ns.db.tracked) do
+		if entry.kind == "item" then
+			needed[entry.id] = true
+		else
+			local recipe = ns.Recipes[entry.id]
+			for itemID in pairs(recipe and recipe.reagents or {}) do needed[itemID] = true end
+		end
+	end
+	return needed
+end
+
 -- kind is "item" (a reagent) or "recipe". Reagents start without a goal,
 -- recipes with one craft. Returns the entry, or nil for unknown IDs.
 function Tracker:Add(kind, id)
@@ -162,6 +176,139 @@ function Tracker:GetRows()
 	end
 	if unconfirmed then
 		rows[#rows + 1] = { type = "note", text = ns.Sources.UNCONFIRMED_NOTE }
+	end
+	return rows
+end
+
+-- Shopping list -------------------------------------------------------------
+
+local function SortedKeys(map)
+	local keys = {}
+	for key in pairs(map) do keys[#keys + 1] = key end
+	table.sort(keys)
+	return keys
+end
+
+-- The recipe to make an item you're short of: one of yours if you have it,
+-- else an alt's. Nil means it has to be bought, farmed or looted: nobody knows
+-- a recipe, it's sold by vendors, or the recipe only converts another material.
+local function CraftRoute(itemID)
+	local reagent = ns.Reagents[itemID]
+	if reagent and reagent.vendor then return nil end
+	local route
+	for _, recipeID in ipairs((ns.Tooltip:GetRecipesFor(itemID))) do
+		if not ns.Recipes[recipeID].conv then
+			local isMe, alts = ns.Professions:GetKnownBy(recipeID)
+			if isMe then return recipeID end
+			if #alts > 0 then route = route or recipeID end
+		end
+	end
+	return route
+end
+
+-- Fills a demand from stock, then by crafting, then as missing. Stock is
+-- spent as it goes, so an item is never counted for two demands, and what a
+-- batch makes beyond the demand serves the next one. path guards against
+-- recipe loops.
+local function Allocate(plan, itemID, count, path)
+	local stock = plan.stock[itemID]
+	if not stock then
+		stock = ns.Inventory:GetCounts(itemID)
+	end
+	local used = math.min(stock, count)
+	plan.stock[itemID] = stock - used
+	local short = count - used
+	if short == 0 then return end
+
+	local recipeID = CraftRoute(itemID)
+	if not recipeID or path[recipeID] then
+		plan.missing[itemID] = (plan.missing[itemID] or 0) + short
+		return
+	end
+	local recipe = ns.Recipes[recipeID]
+	local made = recipe.n or 1
+	local crafts = math.ceil(short / made)
+	plan.crafts[recipeID] = (plan.crafts[recipeID] or 0) + crafts
+	plan.stock[itemID] = plan.stock[itemID] + crafts * made - short
+	path[recipeID] = true
+	for _, reagentID in ipairs(SortedKeys(recipe.reagents)) do
+		Allocate(plan, reagentID, recipe.reagents[reagentID] * crafts, path)
+	end
+	path[recipeID] = nil
+end
+
+-- What all tracked recipes need together. Unlike the list itself, where each
+-- entry counts on its own, reagents are shared out here. Reagent goals aren't
+-- included: they may be for the same recipes, and adding them would double up.
+--   totals   itemID -> reagents needed by tracked recipes
+--   missing  itemID -> count to buy, farm or loot
+--   crafts   recipeID -> crafts needed to make reagents you're short of
+function Tracker:GetShoppingPlan()
+	local plan = { totals = {}, missing = {}, crafts = {}, stock = {} }
+	for _, entry in ipairs(ns.db.tracked) do
+		local recipe = entry.kind == "recipe" and ns.Recipes[entry.id]
+		if recipe then
+			for itemID, count in pairs(recipe.reagents) do
+				plan.totals[itemID] = (plan.totals[itemID] or 0) + count * entry.need
+			end
+		end
+	end
+	for _, itemID in ipairs(SortedKeys(plan.totals)) do
+		Allocate(plan, itemID, plan.totals[itemID], {})
+	end
+	return plan
+end
+
+-- The shopping view's rows, what to do first: get, craft, then the totals.
+function Tracker:GetShoppingRows()
+	local plan = self:GetShoppingPlan()
+	local rows = {}
+	local missing = SortedKeys(plan.missing)
+	table.sort(missing, function(a, b)
+		local nameA, nameB = ItemName(a), ItemName(b)
+		if nameA ~= nameB then return nameA < nameB end
+		return a < b
+	end)
+	if #missing > 0 then
+		rows[#rows + 1] = { type = "head", text = "Still to get" }
+	end
+	for _, itemID in ipairs(missing) do
+		local reagent = ns.Reagents[itemID]
+		rows[#rows + 1] = {
+			type = "shop", itemID = itemID, name = ItemName(itemID), count = plan.missing[itemID],
+			vendor = reagent ~= nil and reagent.vendor == true,
+		}
+	end
+
+	local crafts = SortedKeys(plan.crafts)
+	table.sort(crafts, function(a, b)
+		local skillA, skillB = ns.Recipes[a].skill, ns.Recipes[b].skill
+		if skillA ~= skillB then return skillA < skillB end
+		return a < b
+	end)
+	if #crafts > 0 then
+		rows[#rows + 1] = { type = "head", text = "Craft first" }
+	end
+	for _, recipeID in ipairs(crafts) do
+		local isMe, alts = ns.Professions:GetKnownBy(recipeID)
+		rows[#rows + 1] = {
+			type = "craft", recipeID = recipeID, name = ns.Tooltip:GetRecipeName(recipeID),
+			count = plan.crafts[recipeID], who = ns.Tooltip:FormatNames(isMe, alts), mine = isMe,
+		}
+	end
+
+	local totals = SortedKeys(plan.totals)
+	if #totals > 0 then
+		if #missing == 0 and #crafts == 0 then
+			rows[#rows + 1] = { type = "note", text = "You have everything for your tracked recipes." }
+		end
+		rows[#rows + 1] = { type = "head", text = "All reagents" }
+	end
+	for _, itemID in ipairs(totals) do
+		rows[#rows + 1] = {
+			type = "reagent", itemID = itemID, name = ItemName(itemID),
+			have = (ns.Inventory:GetCounts(itemID)), need = plan.totals[itemID],
+		}
 	end
 	return rows
 end

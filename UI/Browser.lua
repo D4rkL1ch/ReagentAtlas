@@ -13,6 +13,7 @@ local TRACK_ICON = "Interface\\Buttons\\UI-PlusButton-Up"
 local UNTRACK_ICON = "Interface\\Buttons\\UI-MinusButton-Up"
 local TIER_COL, OWNED_COL = 70, 50
 local TAB_WIDTH, TAB_HEIGHT = 84, 20
+local TRACKER_BUTTON_WIDTH = 110
 local PAD = 12
 local TAB_REAGENTS, TAB_CRAFTING = "reagents", "crafting"
 
@@ -23,7 +24,7 @@ local COLOR_ALT = "ff66b3ff"
 local COLOR_UNKNOWN = "ff9d9d9d"
 local CHECK = "|TInterface\\RaidFrame\\ReadyCheck-Ready:0|t"
 
-local DEFAULT_FILTERS = { prof = 0, minTier = 2, owned = false, craftable = false }
+local DEFAULT_FILTERS = { prof = 0, minTier = 2, owned = false, craftable = false, sell = false }
 
 local function Color(text, color)
 	return WrapTextInColorCode(text, color)
@@ -109,14 +110,43 @@ local function CraftableCount(itemID)
 	return count, mine
 end
 
+-- What Safe to sell checks against, gathered once per list.
+local function YourCharacters()
+	local yours = { profs = {}, classes = {}, needed = ns.Tracker:GetNeededItems() }
+	for _, char in pairs(ns.db.chars) do
+		if char.class then yours.classes[char.class] = true end
+		for profID in pairs(char.profs or {}) do yours.profs[profID] = true end
+	end
+	return yours
+end
+
+-- Nothing of yours has a use for the item: no character has a profession that
+-- uses it or casts with it, and the tracking list isn't after it. Professions,
+-- not known recipes, because those are only recorded from an opened window and
+-- a recipe can still be learned. Valuable items are left out: they may sell,
+-- but that's a choice and not a clear-out.
+local function SafeToSell(itemID, info, tier, yours)
+	if tier > ns.Valuation.TIER_USEFUL or yours.needed[itemID] then return false end
+	for profID, count in pairs(info.profCounts) do
+		if count > 0 and yours.profs[profID] then return false end
+	end
+	for _, class in ipairs(info.spellClasses or {}) do
+		if yours.classes[class] then return false end
+	end
+	return true
+end
+
 -- Rows matching the filters, best tier first, then by score and name. filters:
 --   search    substring of the item name, case-insensitive ("" = any)
 --   prof      skill line ID the item must be used in (0 = any)
 --   minTier   lowest tier shown (1 = all)
 --   owned     only items some character (or the warband bank) holds
 --   craftable only items with a recipe some character knows
+--   sell      only items that are safe to sell, see SafeToSell; the tier and
+--             owned filters don't apply, it sets its own
 function Browser:BuildRows(filters)
 	local search = (filters.search or ""):lower()
+	local yours = filters.sell and YourCharacters()
 	local rows = {}
 	for itemID in pairs(ns.Reagents) do
 		local info = ns.Valuation:GetInfo(itemID)
@@ -125,15 +155,15 @@ function Browser:BuildRows(filters)
 			local tier, owned, craftable, name
 			if keep then
 				tier = ns.Valuation:GetTier(itemID)
-				keep = tier >= filters.minTier
+				keep = filters.sell or tier >= filters.minTier
 			end
 			if keep then
 				owned = ns.Inventory:GetCounts(itemID)
-				keep = not filters.owned or owned > 0
+				keep = not (filters.owned or filters.sell) or owned > 0
 			end
 			if keep then
 				craftable = CraftableCount(itemID)
-				keep = not filters.craftable or craftable > 0
+				keep = (not filters.craftable or craftable > 0) and (not yours or SafeToSell(itemID, info, tier, yours))
 			end
 			if keep then
 				name = self:GetItemName(itemID)
@@ -705,7 +735,7 @@ local function CreateBrowser()
 	frame.ReagentPanes = { left, right }
 
 	local searchBox = CreateFrame("EditBox", nil, left, "SearchBoxTemplate")
-	searchBox:SetSize(LIST_WIDTH - 2 * PAD - 4, 22)
+	searchBox:SetSize(LIST_WIDTH - 2 * PAD - 4 - TRACKER_BUTTON_WIDTH - 8, 22)
 	searchBox:SetPoint("TOPLEFT", PAD + 4, -PAD)
 	searchBox:HookScript("OnTextChanged", function(self)
 		search = self:GetText() or ""
@@ -736,10 +766,12 @@ local function CreateBrowser()
 	ownedCheck:SetPoint("TOPLEFT", profChoice, "BOTTOMLEFT", -2, -6)
 	local craftCheck = CreateCheck(left, "Craftable", "craftable", Browser)
 	craftCheck:SetPoint("LEFT", ownedCheck, "LEFT", 100, 0)
+	local sellCheck = CreateCheck(left, "Safe to sell", "sell", Browser)
+	sellCheck:SetPoint("LEFT", craftCheck, "LEFT", 110, 0)
 
 	local trackerButton = CreateFrame("Button", nil, left, "UIPanelButtonTemplate")
-	trackerButton:SetSize(110, 22)
-	trackerButton:SetPoint("LEFT", craftCheck, "LEFT", 124, 0)
+	trackerButton:SetSize(TRACKER_BUTTON_WIDTH, 22)
+	trackerButton:SetPoint("LEFT", searchBox, "RIGHT", 8, 0)
 	trackerButton:SetText("Tracking list")
 	trackerButton:SetScript("OnClick", function() ns.TrackerUI:Toggle() end)
 
@@ -785,7 +817,7 @@ function Browser:Refresh()
 	local filters = self:GetFilters()
 	local rows = self:BuildRows({
 		search = search, prof = filters.prof, minTier = filters.minTier,
-		owned = filters.owned, craftable = filters.craftable,
+		owned = filters.owned, craftable = filters.craftable, sell = filters.sell,
 	})
 	local provider = CreateDataProvider(rows)
 	frame.List:SetDataProvider(provider, ScrollBoxConstants and ScrollBoxConstants.RetainScrollPosition)

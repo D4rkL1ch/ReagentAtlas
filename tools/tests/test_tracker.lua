@@ -512,3 +512,164 @@ test("the sound defaults on for existing saved data", function()
 	eq(ns.db.settings.trackerSound, true, "default")
 	eq(#ns.db.tracked, 0, "empty list")
 end)
+
+-- Shopping list -------------------------------------------------------------
+
+local BAR, ORE, FLUX = 7001, 7002, 7003
+local SMELT, HELM, GLOVES = 7101, 7102, 7103
+
+-- Two armour recipes share Bars, and Bars are smelted two at a time from Ore
+-- and Flux, a vendor good.
+local function shoppingBoot(known)
+	local ns = settledBoot({
+		version = 1,
+		chars = { ["Brewdin-StubRealm"] = { class = "MAGE", profs = { [186] = { rank = 100, known = known or { [SMELT] = true } } }, bags = {}, bank = {} } },
+	})
+	ns.Recipes[SMELT] = { prof = 186, skill = 50, out = BAR, outQ = 1, n = 2, reagents = { [ORE] = 2, [FLUX] = 1 } }
+	ns.Recipes[HELM] = { prof = 164, skill = 200, out = 7201, outQ = 2, reagents = { [BAR] = 3 } }
+	ns.Recipes[GLOVES] = { prof = 164, skill = 150, out = 7202, outQ = 2, reagents = { [BAR] = 2 } }
+	ns.Reagents[BAR] = { r = { HELM, GLOVES }, q = 1, sell = 10 }
+	ns.Reagents[ORE] = { r = { SMELT }, q = 1, sell = 5 }
+	ns.Reagents[FLUX] = { r = { SMELT }, q = 1, sell = 1, vendor = true }
+	stubs.itemNames[BAR], stubs.itemNames[ORE], stubs.itemNames[FLUX] = "Bar", "Ore", "Flux"
+	stubs.spellNames[SMELT] = "Smelt Bar"
+	return ns
+end
+
+local function shopDump(ns)
+	local out = {}
+	for i, row in ipairs(ns.Tracker:GetShoppingRows()) do
+		if row.type == "reagent" then
+			out[i] = ("%s %d/%d"):format(row.name, row.have, row.need)
+		elseif row.type == "shop" then
+			out[i] = ("get %s x%d%s"):format(row.name, row.count, row.vendor and " (vendor)" or "")
+		elseif row.type == "craft" then
+			out[i] = ("craft %s x%d (%s)"):format(row.name, row.count, row.who)
+		else
+			out[i] = row.text
+		end
+	end
+	return table.concat(out, "\n")
+end
+
+test("recipes share reagents, and shortfalls break down into what makes them", function()
+	local ns = shoppingBoot()
+	ns.Tracker:Add("recipe", HELM)
+	ns.Tracker:Add("recipe", GLOVES)
+	setBags({ [BAR] = 1 })
+	eq(shopDump(ns), table.concat({
+		"Still to get",
+		"get Flux x2 (vendor)",
+		"get Ore x4",
+		"Craft first",
+		"craft Smelt Bar x2 (Brewdin)",
+		"All reagents",
+		"Bar 1/5",
+	}, "\n"))
+end)
+
+test("a shared reagent is counted once, unlike the entries themselves", function()
+	local ns = shoppingBoot()
+	local helm = ns.Tracker:Add("recipe", HELM)
+	local gloves = ns.Tracker:Add("recipe", GLOVES)
+	setBags({ [BAR] = 3 })
+	eq(ns.Tracker:GetStatus(helm).met, true, "helm counts on its own")
+	eq(ns.Tracker:GetStatus(gloves).met, true, "gloves count on their own")
+	eq(ns.Tracker:GetShoppingPlan().crafts[SMELT], 1, "together they are 2 bars short")
+end)
+
+test("crafts scale with the number of crafts tracked", function()
+	local ns = shoppingBoot()
+	local helm = ns.Tracker:Add("recipe", HELM)
+	ns.Tracker:SetNeed(helm, 2)
+	local plan = ns.Tracker:GetShoppingPlan()
+	eq(plan.totals[BAR], 6, "bars")
+	eq(plan.crafts[SMELT], 3, "batches of 2")
+end)
+
+test("a batch's surplus serves the next demand", function()
+	local ns = shoppingBoot()
+	ns.Recipes[7104] = { prof = 164, skill = 100, out = 7203, outQ = 1, reagents = { [BAR] = 1 } }
+	ns.Recipes[7105] = { prof = 164, skill = 100, out = 7204, outQ = 1, reagents = { [BAR] = 1, [ORE] = 1 } }
+	ns.Tracker:Add("recipe", 7104)
+	ns.Tracker:Add("recipe", 7105)
+	local plan = ns.Tracker:GetShoppingPlan()
+	eq(plan.crafts[SMELT], 1, "one batch makes both")
+	eq(plan.missing[ORE], 3, "2 for the batch, 1 direct")
+end)
+
+test("nobody knowing the recipe leaves the reagent to get", function()
+	local ns = shoppingBoot({})
+	ns.Tracker:Add("recipe", HELM)
+	eq(shopDump(ns), table.concat({ "Still to get", "get Bar x3", "All reagents", "Bar 0/3" }, "\n"))
+end)
+
+test("conversions and vendor goods aren't crafted", function()
+	local ns = shoppingBoot()
+	ns.Recipes[SMELT].conv = true
+	ns.Tracker:Add("recipe", HELM)
+	eq(ns.Tracker:GetShoppingPlan().missing[BAR], 3, "conversion not followed")
+end)
+
+test("a recipe loop ends instead of recursing forever", function()
+	local ns = shoppingBoot({ [SMELT] = true, [7106] = true })
+	ns.Recipes[7106] = { prof = 186, skill = 50, out = ORE, outQ = 1, reagents = { [BAR] = 1 } }
+	ns.Tracker:Add("recipe", HELM)
+	local plan = ns.Tracker:GetShoppingPlan()
+	assert(plan.missing[BAR] or plan.missing[ORE], "something is left to get")
+end)
+
+test("everything in hand says so; reagent goals stay out of it", function()
+	local ns = shoppingBoot()
+	ns.Tracker:Add("recipe", GLOVES)
+	ns.Tracker:SetNeed(ns.Tracker:Add("item", BAR), 50)
+	setBags({ [BAR] = 2 })
+	eq(shopDump(ns), table.concat({ "You have everything for your tracked recipes.", "All reagents", "Bar 2/2" }, "\n"))
+end)
+
+test("the shopping view shows the plan and remembers itself", function()
+	local ns = shoppingBoot()
+	ns.Tracker:Add("recipe", HELM)
+	ns.TrackerUI:Open()
+	local button
+	for _, w in ipairs(stubs.allWidgets()) do
+		if w.text == "Shopping list" then button = w end
+	end
+	button.scripts.OnClick(button)
+	eq(ns.db.ui.trackerView, "shopping", "saved")
+	eq(button.text, "Tracked items", "button flips")
+	local list
+	for _, w in ipairs(stubs.allWidgets()) do
+		if w.template == "WowScrollBoxList" and w.provider and w.provider.list[1] and w.provider.list[1].type == "head" then list = w end
+	end
+	assert(list, "list shows the plan")
+	contains(list.rows[3].Text.text, "Ore", "shop row")
+	contains(list.rows[3].Count.Label.text, "4", "count")
+	local craft = list.rows[5]
+	contains(craft.Text.text, "Smelt Bar", "craft row")
+	contains(craft.Count.Label.text, "x2", "crafts")
+	eq(#stubs.errors, 0, "no errors")
+
+	list.scroll = 40
+	ns:Fire("TRACKER_CHANGED")
+	eq(list.scroll, 40, "a refresh keeps your place")
+	button.scripts.OnClick(button)
+	eq(list.scroll, 0, "switching starts at the top")
+	eq(ns.db.ui.trackerView, nil, "back to the list")
+end)
+
+test("the plan ends for every recipe in the generated data, with all of them known", function()
+	local probe = T.boot(nil)
+	local known = {}
+	for recipeID in pairs(probe.Recipes) do known[recipeID] = true end
+	local ns = T.boot({
+		version = 1,
+		chars = { ["Brewdin-StubRealm"] = { class = "MAGE", profs = { [164] = { rank = 300, known = known } }, bags = {}, bank = {} } },
+	})
+	for recipeID in pairs(ns.Recipes) do
+		ns.db.tracked[#ns.db.tracked + 1] = { kind = "recipe", id = recipeID, need = 1 }
+	end
+	local rows = ns.Tracker:GetShoppingRows()
+	assert(#rows > 0, "rows")
+	eq(#stubs.errors, 0, "no errors")
+end)

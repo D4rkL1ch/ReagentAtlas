@@ -75,12 +75,57 @@ local function EachContainerFrame(fn)
 	end
 end
 
+-- ElvUI replaces the bag windows with its own buttons, which keep their item
+-- in slot.itemID. It covers its bank windows too.
+local elvBags -- ElvUI's Bags module, once hooked
+
+local function FindElvUIBags()
+	local engine = ElvUI
+	local elv = type(engine) == "table" and engine[1]
+	if not (elv and elv.GetModule) then return nil end
+	local ok, bags = pcall(elv.GetModule, elv, "Bags", true)
+	if ok and type(bags) == "table" and type(bags.UpdateSlot) == "function" and bags.BagFrames then
+		return bags
+	end
+	return nil
+end
+
+local function UpdateElvUISlot(slot)
+	SetPip(slot, BagMarkers:TierFor(slot.itemID))
+end
+
+-- includeClosed covers slots filled before the hook went in.
+local function UpdateElvUI(includeClosed)
+	for _, frame in pairs(elvBags.BagFrames) do
+		if frame.Bags and (includeClosed or frame:IsShown()) then
+			for _, bag in pairs(frame.Bags) do
+				if type(bag) == "table" then
+					for _, slot in ipairs(bag) do UpdateElvUISlot(slot) end
+				end
+			end
+		end
+	end
+end
+
+local function HookElvUI()
+	elvBags = FindElvUIBags()
+	if not elvBags then return false end
+	hooksecurefunc(elvBags, "UpdateSlot", function(_, frame, bagID, slotID)
+		local bag = frame and frame.Bags and frame.Bags[bagID]
+		local slot = bag and bag[slotID]
+		if slot then UpdateElvUISlot(slot) end
+	end)
+	UpdateElvUI(true)
+	return true
+end
+
 -- Redraw pips on open bag windows only; our own refresh never calls Blizzard
--- update code (that would spread taint into the bag buttons).
+-- or ElvUI update code (that would spread taint into the bag buttons).
 function BagMarkers:Refresh()
 	EachContainerFrame(function(frame)
 		if frame:IsShown() then self:UpdateFrame(frame) end
 	end)
+	if elvBags then UpdateElvUI(false) end
 end
 
 local hooked = setmetatable({}, { __mode = "k" })
@@ -94,7 +139,8 @@ function BagMarkers:OnLogin()
 			count = count + 1
 		end
 	end)
-	if count == 0 then
+	local usingElvUI = HookElvUI()
+	if count == 0 and not usingElvUI then
 		ns:Print("bag markers unavailable: no bag frames found in this client.")
 		return
 	end

@@ -10,7 +10,7 @@ may be written as Name[0] or Name_0):
     SkillLine.csv         ID, DisplayName_lang, ParentSkillLineID (optional)
     SkillLineAbility.csv  SkillLine, Spell, MinSkillLineRank
     SpellReagents.csv     SpellID, Reagent[0..7], ReagentCount[0..7]
-    SpellEffect.csv       SpellID, Effect, EffectItemType
+    SpellEffect.csv       SpellID, Effect, EffectItemType, EffectBasePointsF
     ItemSparse.csv        ID, OverallQualityID
     SpellName.csv         ID, Name_lang (optional; used to drop test spells)
     SpellClassOptions.csv SpellID, SpellClassSet (optional; maps class spells)
@@ -159,13 +159,15 @@ def load_reagents(src: Path) -> dict[int, dict[int, int]]:
     return result
 
 
-def load_outputs(src: Path) -> dict[int, int]:
-    result: dict[int, int] = {}
+def load_outputs(src: Path) -> dict[int, tuple[int, int]]:
+    """Spell -> (output itemID, items made per craft)."""
+    result: dict[int, tuple[int, int]] = {}
     for row in read_csv(src / "SpellEffect.csv"):
         if to_int(col(row, "Effect")) == EFFECT_CREATE_ITEM:
             item = to_int(col(row, "EffectItemType"))
             if item > 0:
-                result.setdefault(to_int(col(row, "SpellID")), item)
+                amount = max(to_int(col(row, "EffectBasePointsF")), 1)
+                result.setdefault(to_int(col(row, "SpellID")), (item, amount))
     return result
 
 
@@ -175,6 +177,17 @@ def load_items(src: Path) -> dict[int, tuple[int, int]]:
         to_int(r["ID"]): (to_int(col(r, "OverallQualityID")), to_int(col(r, "SellPrice")))
         for r in read_csv(src / "ItemSparse.csv")
     }
+
+
+def load_vendor_prices(src: Path) -> dict[int, int]:
+    """itemID -> vendor price per item in copper, rounded up (sold in stacks)."""
+    result = {}
+    for row in read_csv(src / "ItemSparse.csv"):
+        price = to_int(col(row, "BuyPrice"))
+        if price > 0:
+            stack = max(to_int(col(row, "VendorStackCount")), 1)
+            result[to_int(row["ID"])] = -(-price // stack)
+    return result
 
 
 def load_spell_classes(src: Path) -> dict[int, set[str]]:
@@ -294,10 +307,11 @@ def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
         # skill where the recipe turns yellow is the usable difficulty signal.
         skill = max(to_int(col(row, "MinSkillLineRank")), to_int(col(row, "TrivialSkillLineRankLow")))
         recipe = {"prof": prof, "skill": skill, "reagents": reagents[spell]}
-        out = outputs.get(spell)
+        out, amount = outputs.get(spell, (None, 1))
         if out:
             recipe["out"] = out
             recipe["outQ"] = items.get(out, (1, 0))[0]
+            recipe["n"] = amount
         # A spell can appear on several skill lines; keep the lowest requirement.
         prev = recipes.get(spell)
         if prev is None or recipe["skill"] < prev["skill"]:
@@ -344,16 +358,23 @@ def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
 
     # Vendor-sold reagents. NPC vendor inventories are server data, not in the
     # client DB2, so this list is maintained by hand.
+    vendor_prices = load_vendor_prices(src)
     vendor_path = src / "vendor_reagents.csv"
     if not vendor_path.exists():
         vendor_path = ROOT / "tools" / "vendor_reagents.csv"
     if vendor_path.exists():
         for row in read_csv(vendor_path):
-            entry = index.get(to_int(row.get("itemID", "")))
+            item = to_int(row.get("itemID", ""))
+            entry = index.get(item)
             if entry is not None:
                 entry["vendor"] = True
+                if item in vendor_prices:
+                    entry["buy"] = vendor_prices[item]
 
-    chains = chain_counts(recipes, index, conversion_recipes(src, recipes, names))
+    conversions = conversion_recipes(src, recipes, names)
+    for spell in conversions:
+        recipes[spell]["conv"] = True
+    chains = chain_counts(recipes, index, conversions)
     for item, entry in index.items():
         entry["q"], entry["sell"] = items.get(item, (1, 0))
         entry["deep"] = chains[item]
@@ -479,6 +500,7 @@ def build_sources(src: Path, recipes: dict[int, dict]) -> tuple[dict[int, dict],
         return None
 
     sparse = read_csv(src / "ItemSparse.csv")
+    required_rank = {to_int(r["ID"]): to_int(col(r, "RequiredSkillRank")) for r in sparse}
     item_names = {to_int(r["ID"]): col(r, "Display_lang") for r in sparse}
     requirements = {to_int(r["ID"]): (to_int(col(r, "MinFactionID")), to_int(col(r, "MinReputation"))) for r in sparse}
     factions = {to_int(r["ID"]): col(r, "Name_lang") for r in read_csv(src / "Faction.csv")}
@@ -496,6 +518,8 @@ def build_sources(src: Path, recipes: dict[int, dict]) -> tuple[dict[int, dict],
         quests: set[int] = set()
         container = False
         entry: dict = {"i": min(items)}
+        if required_rank.get(entry["i"]):
+            entry["req"] = required_rank[entry["i"]]
         for item in sorted(items):
             record = q_items.get(item)
             if record:
@@ -571,6 +595,10 @@ def write_recipes(recipes: dict[int, dict], build_id: str, version: str) -> None
         fields = [f"prof = {r['prof']}", f"skill = {r['skill']}"]
         if "out" in r:
             fields += [f"out = {r['out']}", f"outQ = {r['outQ']}"]
+            if r.get("n", 1) > 1:
+                fields.append(f"n = {r['n']}")
+        if r.get("conv"):
+            fields.append("conv = true")
         fields.append(f"reagents = {lua_map(r['reagents'])}")
         lines.append(f"R[{spell}] = {{ {', '.join(fields)} }}")
     (OUT_DIR / "Recipes.lua").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
@@ -590,6 +618,8 @@ def write_reagents(index: dict[int, dict], version: str) -> None:
             fields.append(f"spell = {lua_str_list(e['spell'])}")
         if e.get("vendor"):
             fields.append("vendor = true")
+            if "buy" in e:
+                fields.append(f"buy = {e['buy']}")
         lines.append(f"G[{item}] = {{ {', '.join(fields)} }}")
     (OUT_DIR / "Reagents.lua").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
@@ -610,6 +640,8 @@ def write_sources(result: tuple[dict[int, dict], dict[int, tuple], str] | None, 
         for recipe in sorted(sources):
             e = sources[recipe]
             fields = [f"i = {e['i']}"]
+            if "req" in e:
+                fields.append(f"req = {e['req']}")
             for key in ("v", "d"):
                 if key in e:
                     fields.append(f"{key} = {lua_int_list(e[key])}")

@@ -152,3 +152,57 @@ test("hovering a recipe icon shows the recipe item and lists its source", functi
 	contains(text, "Vendor: Horde Vendor (Orgrimmar)")
 	contains(text, ns.Sources.UNCONFIRMED_NOTE)
 end)
+
+-- Vendors seen in merchant windows ------------------------------------------
+
+local function openMerchant(guid, name, items)
+	_G.UnitGUID = function() return guid end
+	local realUnitName = _G.UnitName
+	_G.UnitName = function(unit) return unit == "npc" and name or realUnitName(unit) end
+	_G.GetRealZoneText = function() return "Orgrimmar" end
+	_G.GetMerchantNumItems = function() return #items end
+	_G.GetMerchantItemID = function(i) return items[i] end
+	stubs.fire("MERCHANT_SHOW")
+	_G.UnitName = realUnitName
+end
+
+test("a recipe item in a merchant window is remembered and beats the data", function()
+	local ns = boot({ [990001] = { i = 100, v = { 2 } }, [990002] = { i = 101 } })
+	eq(select(2, ns.Sources:GetTag(990001)), true, "unconfirmed before")
+	openMerchant("Creature-0-1-2-3-4242-0000", "Kirin Tor Vendor", { 100, 999, 101 })
+	local tag, unconfirmed = ns.Sources:GetTag(990001)
+	eq(tag, "Vendor · Orgrimmar", "seen vendor first")
+	eq(unconfirmed, false, "confirmed")
+	eq(ns.Sources:GetTag(990002), "Vendor · Orgrimmar", "fills a recipe with no source")
+	eq(ns.db.seenVendors[999], nil, "other goods are not saved")
+	eq(ns.db.seenVendors[100][4242][1], "Kirin Tor Vendor", "npc")
+end)
+
+test("detail lines lead with who was seen selling it", function()
+	local ns = boot({ [990002] = { i = 101 } })
+	stubs.itemNames[101] = "Pattern: Thing"
+	openMerchant("Creature-0-1-2-3-4242-0000", "Some Vendor", { 101 })
+	local lines, unconfirmed = ns.Sources:GetDetailLines(990002)
+	eq(table.concat(lines, "|"), "Learned from Pattern: Thing|Seen at Some Vendor (Orgrimmar)", "lines")
+	eq(unconfirmed, false, "confirmed")
+end)
+
+test("a merchant that is not a creature is ignored, and sightings survive a reload", function()
+	local ns = boot({ [990002] = { i = 101 } })
+	openMerchant("Player-1-00000001", "Someone", { 101 })
+	eq(ns.db.seenVendors[101], nil, "not a vendor NPC")
+	openMerchant("Creature-0-1-2-3-4242-0000", "Some Vendor", { 101 })
+	local saved = ns.db
+	local after = T.boot(saved, function(n)
+		T.useFixture(n)
+		n.RecipeSources, n.SourceNPCs = { [990002] = { i = 101 } }, NPCS
+	end)
+	eq(after.Sources:GetTag(990002), "Vendor · Orgrimmar", "kept")
+end)
+
+test("no merchant API means no scan and no error", function()
+	local ns = boot({ [990002] = { i = 101 } })
+	_G.GetMerchantNumItems, _G.GetMerchantItemID, _G.UnitGUID = nil, nil, nil
+	ns.Sources:ScanMerchant()
+	eq(next(ns.db.seenVendors), nil, "nothing saved")
+end)

@@ -13,7 +13,7 @@ Hover any item in your bags and Reagent Atlas shows:
 
 A browser window (`/ratlas`) lists every reagent in the game with filters for profession, tier, owned and craftable, and optional pips mark valuable items right in your bags. Its Crafting tab works the other way round: search any recipe or craftable item to see what it takes to make, how many of each reagent you have, and who knows the recipe or where to get it.
 
-A tracking list (`/ratlas track`, or the button in the browser) follows recipes and reagents: how many of each reagent you have and need, and where to get a recipe you don't know yet. Set a goal and you get a message and a sound when you have enough.
+A tracking list (`/ratlas track`, or the button in the browser) follows recipes and reagents: how many of each reagent you have and need, and where to get a recipe you don't know yet. Set a goal and you get a message and a sound when you have enough. Its shopping list adds up all your tracked recipes: what's still to get, what to craft first, and who can craft it.
 
 Reagent Atlas only displays information. It never loots, sells, posts or scans for you.
 

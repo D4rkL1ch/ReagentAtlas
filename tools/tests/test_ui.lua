@@ -425,6 +425,62 @@ test("bag markers: an item moving out of a slot clears its pip", function()
 	eq(pipShown(bag.buttons[2]), false, "cleared")
 end)
 
+-- ElvUI bags ----------------------------------------------------------------
+
+-- ElvUI's shape: engine[1]:GetModule("Bags"), BagFrames, frame.Bags[bagID][slotID]
+-- and the item in slot.itemID.
+local function fakeElvUI(items)
+	local frame = stubs.newWidget("Frame")
+	local bag = {}
+	for slotID, itemID in ipairs(items) do
+		local slot = stubs.newWidget("ItemButton", frame)
+		slot.itemID = itemID or nil
+		bag[slotID] = slot
+	end
+	frame.Bags = { [0] = bag, name = "not a bag" }
+	local bags = { BagFrames = { frame } }
+	function bags:UpdateSlot() end
+	_G.ElvUI = { { GetModule = function(_, name) return name == "Bags" and bags or nil end } }
+	return bags, frame, bag
+end
+
+test("ElvUI bags: slots filled before login get pips, and updates follow", function()
+	local bags, frame, bag = fakeElvUI({ 12360, 2589, false })
+	boot()
+	eq(pipShown(bag[1]), true, "already there at login")
+	eq(pipShown(bag[2]), false, "low tier unmarked")
+	eq(pipShown(bag[3]), false, "empty unmarked")
+
+	bag[1].itemID = nil
+	bag[3].itemID = 12360
+	bags:UpdateSlot(frame, 0, 1)
+	bags:UpdateSlot(frame, 0, 3)
+	eq(pipShown(bag[1]), false, "moved out")
+	eq(pipShown(bag[3]), true, "moved in")
+	eq(#stubs.errors, 0, "no errors")
+end)
+
+test("ElvUI bags: settings redraw open windows, unknown slots are ignored", function()
+	local bags, frame, bag = fakeElvUI({ 12360 })
+	boot()
+	bags:UpdateSlot(frame, 9, 1)
+	bags:UpdateSlot(frame, 0, 7)
+	Settings.settings.markers:SetValue(false)
+	eq(pipShown(bag[1]), false, "markers off")
+	frame:Hide()
+	Settings.settings.markers:SetValue(true)
+	eq(pipShown(bag[1]), false, "closed windows wait")
+	eq(#stubs.errors, 0, "no errors")
+end)
+
+test("an ElvUI without its bags module changes nothing", function()
+	_G.ElvUI = { { GetModule = function() error("no such module") end } }
+	local _, bag = bootWithBag()
+	bag:UpdateItems()
+	eq(pipShown(bag.buttons[2]), true, "Blizzard bags still marked")
+	eq(#stubs.errors, 0, "no errors")
+end)
+
 -- Settings panel ------------------------------------------------------------
 
 test("settings panel registers toggles and the tier dropdown", function()
@@ -626,5 +682,48 @@ test("no Minimap or compartment: login stays quiet", function()
 	local ok, err = pcall(boot)
 	_G.Minimap = realMinimap
 	assert(ok, err)
+	eq(#stubs.errors, 0, "no errors")
+end)
+
+-- Safe to sell --------------------------------------------------------------
+
+test("safe to sell: owned, nothing of yours uses it, Useful or below", function()
+	local ns = boot({
+		version = 1,
+		chars = {
+			["Brewdin-StubRealm"] = {
+				class = "WARRIOR", profs = { [197] = { rank = 100, known = {} } },
+				bags = { [2589] = 5, [12359] = 3, [2604] = 1, [12360] = 2 }, bank = {},
+			},
+		},
+	})
+	eq(ids(ns.Browser:BuildRows(filters({ sell = true }))), "2604,12359", "Linen is Tailoring, Arcanite too good, the rest unowned")
+
+	ns.Tracker:Add("item", 12359)
+	eq(ids(ns.Browser:BuildRows(filters({ sell = true }))), "2604", "a tracked item stays")
+	ns.Tracker:Remove("item", 12359)
+	ns.Tracker:Add("recipe", 880002)
+	eq(ids(ns.Browser:BuildRows(filters({ sell = true }))), "", "so do the reagents of a tracked recipe")
+end)
+
+test("safe to sell: a spell reagent stays if one of your classes casts with it", function()
+	local ns = boot({
+		version = 1,
+		chars = { ["Brewdin-StubRealm"] = { class = "WARRIOR", profs = {}, bags = { [17020] = 4 }, bank = {} } },
+	})
+	eq(ids(ns.Browser:BuildRows(filters({ sell = true }))), "17020", "nobody casts with it")
+	ns.db.chars["Brewdin-StubRealm"].class = "MAGE"
+	eq(ids(ns.Browser:BuildRows(filters({ sell = true }))), "", "a mage needs it")
+end)
+
+test("the Safe to sell box is saved and filters the list", function()
+	local saved = altData()
+	local ns = boot(saved)
+	open(ns)
+	local check = findWidget(function(w) return w.template == "UICheckButtonTemplate" and (w.text == "Safe to sell" or (w.Text and w.Text.text == "Safe to sell")) end)
+	assert(check, "box exists")
+	check:SetChecked(true)
+	check.scripts.OnClick(check)
+	eq(saved.ui.filters.sell, true, "saved")
 	eq(#stubs.errors, 0, "no errors")
 end)

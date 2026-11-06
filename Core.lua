@@ -155,6 +155,7 @@ local function InitDB()
 	db.chars = db.chars or {}
 	db.account = db.account or {}   -- account-wide data, e.g. the warband bank
 	db.tracked = db.tracked or {}   -- tracking list, see Modules/Tracker.lua
+	db.seenVendors = db.seenVendors or {} -- recipe vendors seen, see Modules/Sources.lua
 	ns.db = db
 end
 

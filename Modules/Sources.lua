@@ -55,6 +55,46 @@ local function DropTag(src)
 	return zone and ("Drop · " .. zone) or "Drop"
 end
 
+-- Vendors you've seen selling recipe items ------------------------------------
+
+-- Who sold a recipe's item in your merchant windows, as { name, zone } arrays
+-- in a stable order. Unlike the generated sources, this is Forever itself.
+local function SeenVendors(src)
+	local list, seen = {}, ns.db.seenVendors[src.i]
+	if not seen then return list end
+	local ids = {}
+	for npcID in pairs(seen) do ids[#ids + 1] = npcID end
+	table.sort(ids)
+	for i, npcID in ipairs(ids) do list[i] = seen[npcID] end
+	return list
+end
+
+-- Notes any recipe items the open merchant sells. Only reads the window.
+function Sources:ScanMerchant()
+	if not (GetMerchantNumItems and GetMerchantItemID and UnitGUID) then return end
+	local kind, _, _, _, _, id = strsplit("-", UnitGUID("npc") or "")
+	local npcID = tonumber(id)
+	if kind ~= "Creature" or not npcID then return end
+	local name, zone = UnitName("npc"), GetRealZoneText and GetRealZoneText() or ""
+	for i = 1, GetMerchantNumItems() do
+		local itemID = GetMerchantItemID(i)
+		if itemID and name then
+			local _, taught = ns.Tooltip:GetRecipesFor(itemID)
+			if #taught > 0 then
+				local seen = ns.db.seenVendors[itemID] or {}
+				seen[npcID] = { name, zone }
+				ns.db.seenVendors[itemID] = seen
+			end
+		end
+	end
+end
+
+function Sources:OnInit()
+	local function Scan() self:ScanMerchant() end
+	ns:RegisterEvent("MERCHANT_SHOW", Scan)
+	ns:RegisterEvent("MERCHANT_UPDATE", Scan) -- items can arrive after the window opens
+end
+
 -- Short label for a recipe: tag, unconfirmed. Returns nil without source data
 -- (a sample build). unconfirmed is true for anything from QuestieDB; the
 -- faction requirement comes from the client and a missing recipe item is
@@ -64,6 +104,8 @@ function Sources:GetTag(recipeID)
 	if not all then return nil end
 	local src = all[recipeID]
 	if not src then return "Trainer (likely)", false end
+	local seen = SeenVendors(src)[1]
+	if seen then return seen[2] ~= "" and ("Vendor · " .. seen[2]) or "Vendor", false end
 	if src.v then return VendorTag(src), true end
 	if src.q then return "Quest", true end
 	if src.d or src.dn then return DropTag(src), true end
@@ -104,6 +146,12 @@ function Sources:GetDetailLines(recipeID)
 	local itemName = ns.Browser:GetItemName(src.i)
 	if itemName then lines[1] = "Learned from " .. itemName end
 
+	local seen = SeenVendors(src)
+	for i = 1, math.min(#seen, MAX_DETAIL_NPCS) do
+		local vendor = seen[i]
+		lines[#lines + 1] = vendor[2] ~= "" and ("Seen at %s (%s)"):format(vendor[1], vendor[2]) or ("Seen at " .. vendor[1])
+	end
+
 	local unconfirmed = false
 	if src.v then
 		unconfirmed = true
@@ -137,7 +185,7 @@ function Sources:GetDetailLines(recipeID)
 	if src.fac then
 		lines[#lines + 1] = src.rep and ("Requires %s: %s"):format(src.fac, src.rep) or ("Requires " .. src.fac)
 	end
-	if not unconfirmed and not src.fac then
+	if not unconfirmed and not src.fac and #seen == 0 then
 		lines[#lines + 1] = "Source not mapped for Forever yet"
 	end
 	return lines, unconfirmed

@@ -388,1806 +388,1806 @@ N[15419] = { "Kania", "Silithus", "AH" }
 
 local S = {}
 ns.RecipeSources = S
-S[2158] = { i = 2406, o = true }
-S[2163] = { i = 2407, o = true }
-S[2164] = { i = 2408, o = true }
-S[2169] = { i = 2409, dn = 562, dz = { "The Barrens", "Darkshore", "Silverpine Forest" }, dzn = 28, o = true }
-S[2333] = { i = 3396, dn = 401, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 31, o = true }
-S[2335] = { i = 2555, o = true }
-S[2389] = { i = 2598, o = true }
-S[2403] = { i = 2601, dn = 451, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
-S[2542] = { i = 2697, v = { 340 }, q = { "Goretusk Liver Pie" } }
-S[2543] = { i = 728, v = { 340 }, q = { "Westfall Stew" } }
-S[2545] = { i = 2698, v = { 340 }, dn = 113, dz = { "Darkshore", "Westfall", "Silverpine Forest" }, dzn = 3 }
-S[2547] = { i = 2699, v = { 340 }, q = { "Redridge Goulash" } }
-S[2548] = { i = 2700, v = { 340 }, dn = 91, dz = { "Loch Modan", "Redridge Mountains" }, dzn = 2 }
-S[2549] = { i = 2701, v = { 340 }, q = { "Seasoned Wolf Kabobs" } }
-S[2667] = { i = 2881, dn = 568, dz = { "The Barrens", "Westfall", "Darkshore" }, dzn = 29, o = true }
-S[2673] = { i = 5578, dn = 471, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 26, o = true }
-S[2795] = { i = 2889, v = { 340 }, q = { "Beer Basted Boar Ribs" } }
-S[3172] = { i = 3393, dn = 401, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 27, o = true }
-S[3174] = { i = 3394, dn = 408, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 28, o = true }
-S[3175] = { i = 3395, dn = 520, dz = { "Feralas", "Tanaris", "Felwood" }, dzn = 30, o = true }
-S[3188] = { i = 6211, dn = 398, dz = { "Ashenvale", "Wetlands", "Thousand Needles" }, dzn = 29, o = true }
-S[3230] = { i = 2553, o = true }
-S[3295] = { i = 2883, dn = 451, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
-S[3297] = { i = 3608, dn = 406, dz = { "Wetlands", "Ashenvale", "Thousand Needles" }, dzn = 30, o = true }
-S[3321] = { i = 3609, q = { "Supplying the Front" }, o = true }
-S[3325] = { i = 3610, o = true }
-S[3330] = { i = 2882, dn = 451, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
-S[3334] = { i = 3611, dn = 411, dz = { "Ashenvale", "Thousand Needles", "Wetlands" }, dzn = 29, o = true }
-S[3336] = { i = 3612, dn = 414, dz = { "Ashenvale", "Wetlands", "Thousand Needles" }, dzn = 29, o = true }
-S[3370] = { i = 3678, v = { 340 }, q = { "Crocolisk Hunting" } }
-S[3371] = { i = 3679, v = { 340 }, q = { "Thelsamar Blood Sausages" } }
-S[3372] = { i = 3680, v = { 340 }, q = { "Selling Fish" } }
-S[3373] = { i = 3681, v = { 340 }, q = { "Apprentice's Duties" } }
-S[3376] = { i = 3682, v = { 340, 1148, 2821 }, q = { "Ormer's Revenge" } }
-S[3377] = { i = 3683, v = { 340 }, q = { "Dusky Crab Cakes" } }
-S[3397] = { i = 3734, v = { 3960, 12246 }, q = { "The Rescue" } }
-S[3398] = { i = 3735, v = { 3489, 12245 }, q = { "Elixir of Pain" } }
-S[3399] = { i = 3736, q = { "Costly Menace" } }
-S[3400] = { i = 3737, q = { "Soothing Turtle Bisque" } }
-S[3449] = { i = 6068, v = { 2481, 4878 } }
-S[3450] = { i = 3830, dn = 330, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
-S[3451] = { i = 3831, dn = 333, dz = { "Stranglethorn Vale", "Arathi Highlands", "Desolace" }, dzn = 27, o = true }
-S[3453] = { i = 3832, dn = 395, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 31, o = true }
-S[3454] = { i = 14634, v = { 2480 } }
-S[3492] = { i = 12162, v = { 2843, 3356, 5512 } }
-S[3493] = { i = 3866, dn = 377, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 28, o = true }
-S[3494] = { i = 10858, v = { 1471, 8878, 9179 } }
-S[3495] = { i = 3867, dn = 367, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 27, o = true }
-S[3496] = { i = 12163, v = { 2482 } }
-S[3497] = { i = 3868, dn = 387, dz = { "Stranglethorn Vale", "Arathi Highlands", "Desolace" }, dzn = 29, o = true }
-S[3498] = { i = 12164, v = { 1146, 2483 } }
-S[3500] = { i = 3869, dn = 407, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 28, o = true }
-S[3503] = { i = 6047, v = { 5411 } }
-S[3504] = { i = 3870, dn = 380, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
-S[3505] = { i = 3871, dn = 122, dz = { "Scarlet Monastery", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 23, o = true }
-S[3507] = { i = 3872, dn = 405, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 30, o = true }
-S[3511] = { i = 3873, dn = 390, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
-S[3513] = { i = 3874, dn = 407, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 28, o = true }
-S[3515] = { i = 3875, dn = 31, dz = { "Scarlet Monastery", "Arathi Highlands", "Stranglethorn Vale" }, dzn = 13, o = true }
-S[3758] = { i = 4292, dn = 559, dz = { "The Barrens", "Darkshore", "Westfall" }, dzn = 28, o = true }
-S[3762] = { i = 4293, dn = 554, dz = { "The Barrens", "Westfall", "Darkshore" }, dzn = 26, o = true }
-S[3765] = { i = 7360, dn = 418, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 29, o = true }
-S[3767] = { i = 4294, dn = 457, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 28, o = true }
-S[3769] = { i = 4296, dn = 413, dz = { "Ashenvale", "Wetlands", "Thousand Needles" }, dzn = 29, o = true }
-S[3771] = { i = 4297, dn = 399, dz = { "Wetlands", "Ashenvale", "Thousand Needles" }, dzn = 29, o = true }
-S[3772] = { i = 7613, v = { 2679, 2698 } }
-S[3773] = { i = 4299, dn = 386, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 30, o = true }
-S[3775] = { i = 4298, dn = 124, dz = { "Scarlet Monastery", "Stranglethorn Vale", "Alterac Mountains" }, dzn = 24, o = true }
-S[3777] = { i = 4300, dn = 392, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 29, o = true }
-S[3778] = { i = 14635, v = { 2699 } }
-S[3779] = { i = 4301, dn = 32, dz = { "Scarlet Monastery", "Arathi Highlands", "Stranglethorn Vale" }, dzn = 11, o = true }
-S[3844] = { i = 4346, dn = 573, dz = { "The Barrens", "Darkshore", "Westfall" }, dzn = 29, o = true }
-S[3847] = { i = 4345, dn = 572, dz = { "The Barrens", "Silverpine Forest", "Darkshore" }, dzn = 28, o = true }
-S[3849] = { i = 4347, dn = 453, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 28, o = true }
-S[3851] = { i = 4349, dn = 454, dz = { "The Barrens", "Ashenvale", "Redridge Mountains" }, dzn = 29, o = true }
-S[3854] = { i = 7114, v = { 2679, 9636 } }
-S[3856] = { i = 4350, dn = 412, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 29, o = true }
-S[3857] = { i = 14630, v = { 2670 } }
-S[3858] = { i = 4351, dn = 113, dz = { "Scarlet Monastery", "Alterac Mountains", "Arathi Highlands" }, dzn = 20, o = true }
-S[3860] = { i = 4352, dn = 387, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 30, o = true }
-S[3862] = { i = 4355, v = { 2381, 6567 } }
-S[3863] = { i = 4353, dn = 402, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 30, o = true }
-S[3864] = { i = 4356, dn = 25, dz = { "Scarlet Monastery", "Stranglethorn Vale", "Swamp of Sorrows" }, dzn = 12 }
-S[3868] = { i = 4348, dn = 473, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
-S[3869] = { i = 14627, v = { 2668 } }
-S[3870] = { i = 6401, v = { 2394, 2669 } }
-S[3872] = { i = 4354, dn = 45, dz = { "Scarlet Monastery", "Arathi Highlands", "Stranglethorn Vale" }, dzn = 13, o = true }
-S[3873] = { i = 10728, v = { 2663 } }
-S[3928] = { i = 4408, o = true }
-S[3933] = { i = 4409, dn = 564, dz = { "The Barrens", "Silverpine Forest", "Ashenvale" }, dzn = 27, o = true }
-S[3939] = { i = 13309, v = { 2682, 6730 } }
-S[3940] = { i = 4410, dn = 468, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 30, o = true }
-S[3944] = { i = 4411, d = { 7800 } }
-S[3952] = { i = 14639, v = { 2682, 2683, 3495 } }
-S[3954] = { i = 4412, dn = 442, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 30, o = true }
-S[3957] = { i = 13308, v = { 2684 } }
-S[3959] = { i = 4413, d = { 7800 } }
-S[3960] = { i = 4414, dn = 397, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 27, o = true }
-S[3966] = { i = 4415, dn = 43, dz = { "Scarlet Monastery", "Arathi Highlands", "Alterac Mountains" }, dzn = 19, o = true }
-S[3968] = { i = 4416, dn = 404, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 27, o = true }
-S[3969] = { i = 13311, v = { 2687 } }
-S[3971] = { i = 7742, v = { 6777 }, d = { 7800 } }
-S[3972] = { i = 4417, dn = 419, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 27, o = true }
-S[3979] = { i = 13310, v = { 2685 } }
-S[4094] = { i = 4609, v = { 2814, 12246 }, q = { "Barbecued Buzzard Wings" } }
-S[4096] = { i = 13287, v = { 2819 } }
-S[4097] = { i = 13288, v = { 2816 } }
-S[4508] = { i = 4597, q = { "Wild Hearts" } }
-S[4942] = { i = 4624, q = { "Liquid Stone" } }
-S[5244] = { i = 5083, q = { "Kodo Hide Bag" } }
-S[6412] = { i = 5482, q = { "Recipe of the Kaldorei" } }
-S[6413] = { i = 5483, v = { 3881 } }
-S[6414] = { i = 5484, v = { 3081 } }
-S[6415] = { i = 5485, v = { 4200 } }
-S[6416] = { i = 5486, v = { 3482 }, q = { "Easy Strider Living" } }
-S[6417] = { i = 5487, q = { "Dig Rat Stew" } }
-S[6418] = { i = 5488, v = { 3482 } }
-S[6419] = { i = 5489, v = { 3960, 12245 } }
-S[6501] = { i = 5528, v = { 4305, 4307 } }
-S[6518] = { i = 5543, dn = 430, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 29, o = true }
-S[6617] = { i = 5640, v = { 1669, 1685, 3335, 3499 } }
-S[6618] = { i = 5643, v = { 3335, 4226 } }
-S[6624] = { i = 5642, v = { 3348, 4226, 5178 } }
-S[6686] = { i = 5771, v = { 843, 3005, 3556, 4189 }, d = { 590, 3530, 3531 } }
-S[6688] = { i = 5772, v = { 777, 1454, 1474, 3005, 3364, 3485, 3537, 3683, 4189, 4577, 5944 }, d = { 450, 2264 } }
-S[6692] = { i = 5773, d = { 910, 2337, 10760 } }
-S[6693] = { i = 5774, dn = 386, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 29, o = true }
-S[6695] = { i = 5775, d = { 2242, 2434, 4834 } }
-S[6702] = { i = 5786, v = { 843, 3556, 4186 }, d = { 1732, 3385 } }
-S[6703] = { i = 5787, v = { 843, 3556, 4186 }, d = { 657, 3386 } }
-S[6704] = { i = 5788, v = { 2381, 2393, 2846 }, d = { 938, 1160 } }
-S[6705] = { i = 5789, v = { 2846, 4897 }, d = { 1561, 2636 } }
-S[7133] = { i = 5972, dn = 469, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 28, o = true }
-S[7149] = { i = 5973, v = { 2810, 2821, 3958, 4877 } }
-S[7153] = { i = 5974, dn = 400, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 26, o = true }
-S[7213] = { i = 6039, v = { 2664 } }
-S[7221] = { i = 6044, dn = 411, dz = { "Wetlands", "Thousand Needles", "Ashenvale" }, dzn = 31, o = true }
-S[7222] = { i = 6045, dn = 369, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
-S[7224] = { i = 6046, dn = 29, dz = { "Scarlet Monastery", "Desolace", "Arathi Highlands" }, dzn = 13, o = true }
-S[7255] = { i = 6053, v = { 1685, 3134, 3490 } }
-S[7256] = { i = 6054, v = { 2393, 3956 } }
-S[7257] = { i = 6055, v = { 2380, 4083 } }
-S[7258] = { i = 6056, v = { 2812, 2848 } }
-S[7259] = { i = 6057, v = { 2848, 5594, 8157, 8158 } }
-S[7443] = { i = 6342, v = { 1318, 3012, 3346, 4228, 4617, 5158, 5757, 5758, 15419 }, d = { 2186 }, o = true }
-S[7629] = { i = 6271, o = true }
-S[7630] = { i = 6270, v = { 66, 3364, 3522, 4189 } }
-S[7633] = { i = 6272, v = { 1250, 3485, 3499, 3556, 4168 } }
-S[7639] = { i = 6274, v = { 843, 1347, 2394, 3364 } }
-S[7643] = { i = 6275, v = { 1454, 1474, 2669, 4168, 4577 } }
-S[7751] = { i = 6325, v = { 66, 1684, 3029, 3550, 4265, 4574, 5494, 5940, 8508 } }
-S[7752] = { i = 6326, v = { 3550, 4305, 5162, 5942, 10118 } }
-S[7753] = { i = 6328, v = { 66, 1684, 3027, 4265, 4574, 5162, 5748, 5940 } }
-S[7754] = { i = 6329, v = { 1684 } }
-S[7755] = { i = 6330, v = { 2383, 2397, 3027, 3029, 3497, 4553, 5494 } }
-S[7766] = { i = 6344, dn = 563, dz = { "The Barrens", "Darkshore", "Westfall" }, dzn = 27, o = true }
-S[7771] = { i = 6345 }
-S[7776] = { i = 6346, v = { 3346, 5757 } }
-S[7782] = { i = 6347, dn = 560, dz = { "The Barrens", "Darkshore", "Westfall" }, dzn = 28, o = true }
-S[7786] = { i = 6348, dn = 559, dz = { "The Barrens", "Darkshore", "Westfall" }, dzn = 28, o = true }
-S[7793] = { i = 6349, v = { 3012, 3346, 5158 } }
-S[7827] = { i = 6368, v = { 3178, 3333, 3497, 4305, 4307, 4553, 5494, 5748, 5942, 10118 } }
-S[7828] = { i = 6369, v = { 2383, 2664, 3178, 3333, 4307, 4574, 5162, 12033, 12962 } }
-S[7859] = { i = 6375, dn = 467, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 27, o = true }
-S[7863] = { i = 6376 }
-S[7867] = { i = 6377, v = { 3012, 3537 } }
-S[7892] = { i = 6390, dn = 475, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 29, o = true }
-S[7893] = { i = 6391, dn = 458, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
-S[7929] = { i = 16112, v = { 2805, 13476 } }
-S[7935] = { i = 6454, dn = 420, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 31, o = true }
-S[7953] = { i = 6474, v = { 5783 } }
-S[7954] = { i = 6475, v = { 5783 } }
-S[7955] = { i = 6476, q = { "Deviate Eradication" } }
-S[8238] = { i = 6661, dn = 123, dz = { "The Barrens" }, dzn = 1 }
-S[8240] = { i = 6663, dn = 113, dz = { "The Barrens" }, dzn = 1 }
-S[8243] = { i = 6672, d = { 7800 }, q = { "Flash Bomb Recipe" } }
-S[8322] = { i = 6710, q = { "Moonglow Vest" } }
-S[8339] = { i = 6716, dn = 551, dz = { "The Barrens", "Westfall", "Darkshore" }, dzn = 28, o = true }
-S[8367] = { i = 6735, q = { "Gearing Redridge" } }
-S[8607] = { i = 6892, v = { 1465, 3556 } }
-S[8780] = { i = 7092, dn = 413, dz = { "Ashenvale", "Wetlands", "Thousand Needles" }, dzn = 29, o = true }
-S[8782] = { i = 7091, dn = 432, dz = { "Wetlands", "Ashenvale", "Thousand Needles" }, dzn = 29, o = true }
-S[8784] = { i = 7090, dn = 386, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
-S[8786] = { i = 7089, v = { 6574, 6576 } }
-S[8789] = { i = 7087, v = { 2670 } }
-S[8793] = { i = 7084, dn = 394, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 27, o = true }
-S[8795] = { i = 7085, dn = 408, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 29, o = true }
-S[8797] = { i = 7086, dn = 408, dz = { "Stranglethorn Vale", "Arathi Highlands", "Desolace" }, dzn = 30, o = true }
-S[8802] = { i = 7088, v = { 6568 } }
-S[8895] = { i = 7192, d = { 7800 } }
-S[9064] = { i = 7288, o = true }
-S[9070] = { i = 7289, v = { 2697 } }
-S[9072] = { i = 7290, v = { 2679 } }
-S[9146] = { i = 7361, v = { 6731 } }
-S[9147] = { i = 7362, v = { 3537 } }
-S[9148] = { i = 7363, dn = 410, dz = { "Wetlands", "Ashenvale", "Hillsbrad Foothills" }, dzn = 29, o = true }
-S[9149] = { i = 7364, dn = 428, dz = { "Ashenvale", "Wetlands", "Duskwood" }, dzn = 29, o = true }
-S[9195] = { i = 7449, dn = 390, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 31, o = true }
-S[9197] = { i = 7450, dn = 378, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
-S[9202] = { i = 7451, v = { 4225, 7852, 7854 } }
-S[9207] = { i = 7452, dn = 58, dz = { "Scarlet Monastery", "Stranglethorn Vale", "Badlands" }, dzn = 17, o = true }
-S[9208] = { i = 7453, dn = 393, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 29, o = true }
-S[9269] = { i = 7560, v = { 5175, 6730 }, d = { 7800 } }
-S[9273] = { i = 7561, v = { 3134, 3537, 4086 }, d = { 7800 } }
-S[9513] = { i = 7678, v = { 6779 }, q = { "Klaven's Tower", "Mission: Possible But Not Probable" } }
-S[9811] = { i = 7978, q = { "On Iron Pauldrons" } }
-S[9813] = { i = 7979, q = { "Barbaric Battlements" } }
-S[9814] = { i = 7980, q = { "Horns of Frenzy" } }
-S[9818] = { i = 7981, q = { "Trampled Under Foot" } }
-S[9820] = { i = 7982, q = { "Joys of Omosh" } }
-S[9933] = { i = 7975, dn = 407, dz = { "Stranglethorn Vale", "Feralas", "Tanaris" }, dzn = 27, o = true }
-S[9937] = { i = 7995, v = { 8161, 8176 } }
-S[9939] = { i = 7976, dn = 169, dz = { "Tanaris", "Feralas", "Uldaman" }, dzn = 25, o = true }
-S[9945] = { i = 7983, q = { "Smelt On, Smelt Off" } }
-S[9950] = { i = 7984, q = { "The Great Silver Deceiver" } }
-S[9952] = { i = 7985, q = { "The Art of the Imbue" } }
-S[9964] = { i = 7989, dn = 546, dz = { "Feralas", "Tanaris", "Felwood" }, dzn = 33, o = true }
-S[9966] = { i = 7991, dn = 80, dz = { "Blackrock Depths", "Tanaris", "Un'Goro Crater" }, dzn = 22, o = true }
-S[9970] = { i = 7990, dn = 533, dz = { "Feralas", "Tanaris", "Azshara" }, dzn = 33, o = true }
-S[9995] = { i = 7992, dn = 407, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
-S[9997] = { i = 8029, dn = 462, dz = { "Stranglethorn Vale", "Feralas", "Tanaris" }, dzn = 29, o = true }
-S[10005] = { i = 7993, dn = 538, dz = { "Feralas", "Tanaris", "Felwood" }, dzn = 31, o = true }
-S[10009] = { i = 8028, dn = 90, dz = { "Felwood", "Tanaris", "Blackrock Depths" }, dzn = 22, o = true }
-S[10013] = { i = 8030, v = { 11278 } }
-S[10490] = { i = 8384, dn = 29, dz = { "Scarlet Monastery", "Alterac Mountains", "Razorfen Downs" }, dzn = 17, o = true }
-S[10509] = { i = 8385, v = { 7852, 7854 }, dn = 370, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
-S[10516] = { i = 8409, v = { 7854, 8160 } }
-S[10520] = { i = 8386, dn = 421, dz = { "Stranglethorn Vale", "Feralas", "The Hinterlands" }, dzn = 27, o = true }
-S[10525] = { i = 8395, d = { 5618 } }
-S[10529] = { i = 8403, q = { "Wild Leather Shoulders" } }
-S[10531] = { i = 8387, dn = 427, dz = { "Feralas", "Stranglethorn Vale", "The Hinterlands" }, dzn = 29, o = true }
-S[10533] = { i = 8397, d = { 5617 } }
-S[10542] = { i = 8398, d = { 5616 } }
-S[10544] = { i = 8404, q = { "Wild Leather Vest" } }
-S[10546] = { i = 8405, q = { "Wild Leather Helmet" } }
-S[10550] = { i = 8388 }
-S[10554] = { i = 8399, d = { 5615 } }
-S[10560] = { i = 8389, dn = 570, dz = { "Feralas", "Tanaris", "Felwood" }, dzn = 31, o = true }
-S[10562] = { i = 8390, dn = 538, dz = { "Feralas", "Tanaris", "Azshara" }, dzn = 30, o = true }
-S[10564] = { i = 8400, d = { 5623, 7805, 7883 } }
-S[10566] = { i = 8406, q = { "Wild Leather Boots" } }
-S[10568] = { i = 8401, d = { 5615 } }
-S[10570] = { i = 8402, d = { 5623, 7805, 7883 } }
-S[10572] = { i = 8407, q = { "Wild Leather Leggings" } }
-S[10574] = { i = 8408, q = { "Master of the Wild Leather" } }
-S[10840] = { i = 16113, v = { 2805, 13476 } }
-S[11453] = { i = 9293, dn = 428, dz = { "Stranglethorn Vale", "Feralas", "Tanaris" }, dzn = 27, o = true }
-S[11454] = { i = 10713 }
-S[11456] = { i = 10644 }
-S[11458] = { i = 9294, dn = 48, dz = { "The Hinterlands", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 3 }
-S[11459] = { i = 9303, v = { 5594 } }
-S[11464] = { i = 9295, dn = 559, dz = { "Feralas", "Tanaris", "Azshara" }, dzn = 32, o = true }
-S[11466] = { i = 9296, d = { 1783, 1791 } }
-S[11468] = { i = 9297, dn = 74, dz = { "Azshara", "Blackrock Depths", "Zul'Farrak" }, dzn = 21, o = true }
-S[11472] = { i = 9298, dn = 552, dz = { "Tanaris", "Feralas", "Felwood" }, dzn = 32, o = true }
-S[11473] = { i = 9302, v = { 8157, 8158 } }
-S[11476] = { i = 9301, v = { 1313, 4610 } }
-S[11477] = { i = 9300, v = { 8177, 8178 } }
-S[11479] = { i = 9304, v = { 5594 } }
-S[11480] = { i = 9305, v = { 5594 } }
-S[11643] = { i = 9367, q = { "The Origins of Smithing" } }
-S[12047] = { i = 10316, dn = 457, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
-S[12056] = { i = 10300, dn = 445, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
-S[12059] = { i = 10301, dn = 442, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 29, o = true }
-S[12060] = { i = 10302, dn = 417, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
-S[12062] = { i = 254681 }
-S[12063] = { i = 254682 }
-S[12064] = { i = 10311, v = { 3005, 4168 } }
-S[12066] = { i = 10312, dn = 421, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
-S[12068] = { i = 254683 }
-S[12075] = { i = 10314, v = { 3364, 8681 } }
-S[12078] = { i = 10315, dn = 545, dz = { "Feralas", "The Hinterlands", "Tanaris" }, dzn = 33, o = true }
-S[12080] = { i = 10317, v = { 3364, 8681 } }
-S[12081] = { i = 10318, v = { 2672 } }
-S[12083] = { i = 254684 }
-S[12084] = { i = 10320, dn = 559, dz = { "Feralas", "Felwood", "Tanaris" }, dzn = 32, o = true }
-S[12085] = { i = 10321, v = { 4577, 8681 } }
-S[12086] = { i = 10463, q = { "The Undermarket" } }
-S[12087] = { i = 254685 }
-S[12089] = { i = 10323, v = { 4577, 8681 } }
-S[12090] = { i = 254686 }
-S[12091] = { i = 10325, v = { 1347, 3005 } }
-S[12093] = { i = 10326, v = { 4577, 8681 } }
-S[12259] = { i = 10424, dn = 431, dz = { "Wetlands", "Ashenvale", "Hillsbrad Foothills" }, dzn = 29, o = true }
-S[12587] = { i = 10601, dn = 367, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 30, o = true }
-S[12597] = { i = 10602, v = { 8679, 9544 } }
-S[12607] = { i = 10603, dn = 415, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
-S[12614] = { i = 10604, dn = 412, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 26, o = true }
-S[12615] = { i = 10605, dn = 156, dz = { "Tanaris", "Stranglethorn Vale", "Maraudon" }, dzn = 23, o = true }
-S[12616] = { i = 10606, dn = 426, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
-S[12617] = { i = 10607, v = { 8678 } }
-S[12620] = { i = 10608, dn = 87, dz = { "Blackrock Depths", "Tanaris", "Un'Goro Crater" }, dzn = 21, o = true }
-S[12624] = { i = 10609, v = { 2688 } }
-S[12717] = { i = 221336 }
-S[13380] = { i = 11038, dn = 465, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 28, o = true }
-S[13419] = { i = 11039, v = { 3954, 12043 }, dn = 450, dz = { "Ashenvale", "The Barrens", "Redridge Mountains" }, dzn = 29, o = true }
-S[13464] = { i = 11081, dn = 444, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 27, o = true }
-S[13522] = { i = 11098, dn = 413, dz = { "Ashenvale", "Hillsbrad Foothills", "Wetlands" }, dzn = 31, o = true }
-S[13536] = { i = 11101, v = { 3954, 12043 } }
-S[13612] = { i = 11150, d = { 1051, 1052, 1053, 1054, 1364 } }
-S[13617] = { i = 11151, d = { 3834, 3919, 4028, 4029, 4030 } }
-S[13620] = { i = 11152, d = { 2374, 2375, 2376, 2377, 14276 } }
-S[13646] = { i = 11163, v = { 2381, 2821 } }
-S[13653] = { i = 11164, dn = 388, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 29, o = true }
-S[13655] = { i = 11165, dn = 372, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
-S[13687] = { i = 11167, dn = 405, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 28, o = true }
-S[13689] = { i = 11168, dn = 42, dz = { "Scarlet Monastery", "Uldaman", "Arathi Highlands" }, dzn = 18, o = true }
-S[13698] = { i = 11166, d = { 2556, 2557, 2558, 2605, 2606 } }
-S[13817] = { i = 11202, dn = 427, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
-S[13841] = { i = 11203, d = { 674 } }
-S[13846] = { i = 11204, dn = 421, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 28, o = true }
-S[13868] = { i = 11205, d = { 764, 765, 766, 1081, 14448 } }
-S[13882] = { i = 11206, d = { 2246, 5623, 7805 } }
-S[13898] = { i = 11207, d = { 9024 } }
-S[13915] = { i = 11208, dn = 546, dz = { "Feralas", "Tanaris", "Felwood" }, dzn = 31, o = true }
-S[13931] = { i = 11223, v = { 989, 4229 } }
-S[13933] = { i = 11224, dn = 81, dz = { "The Hinterlands", "Western Plaguelands", "Felwood" }, dzn = 19, o = true }
-S[13945] = { i = 11225, dn = 534, dz = { "Feralas", "Felwood", "Tanaris" }, dzn = 32, o = true }
-S[13947] = { i = 11226, dn = 67, dz = { "Felwood", "Maraudon", "Tanaris" }, dzn = 22, o = true }
-S[15292] = { i = 11610, d = { 9028 } }
-S[15293] = { i = 11614, dn = 8, dz = { "Blackrock Depths" }, dzn = 1, o = true }
-S[15294] = { i = 11611, d = { 9554, 10043 } }
-S[15295] = { i = 11615, dn = 14, dz = { "Blackrock Depths" }, dzn = 1, o = true }
-S[15296] = { i = 11612, d = { 9543 } }
-S[15596] = { i = 11813, d = { 9025 } }
-S[15628] = { i = 11828, d = { 7800 }, o = true }
-S[15633] = { i = 11827, d = { 6229 }, o = true }
-S[15853] = { i = 12227, v = { 12246 } }
-S[15855] = { i = 12228, v = { 734, 1148, 2810, 2821, 4879, 4897, 12245 } }
-S[15856] = { i = 12229, v = { 7947, 8145, 12246 } }
-S[15861] = { i = 12231, v = { 734, 1148, 12245 } }
-S[15863] = { i = 12232, v = { 989, 4879, 9636, 12245 } }
-S[15865] = { i = 12233, v = { 4897, 8150, 12246 } }
-S[15906] = { i = 12239, v = { 4879, 4897, 12246 } }
-S[15910] = { i = 12240, v = { 8150, 9636, 12245 } }
-S[15915] = { i = 16111, v = { 989, 1149, 4305 } }
-S[15933] = { i = 16110, v = { 2803, 2806, 11187 } }
-S[15935] = { i = 12226, v = { 2118 } }
-S[15973] = { i = 12261, dn = 26, dz = { "Uldaman", "Scarlet Monastery", "Desolace" }, dzn = 12, o = true }
-S[16642] = { i = 12682, dn = 591, dz = { "Eastern Plaguelands", "Blackrock Spire", "Felwood" }, dzn = 34, o = true }
-S[16643] = { i = 12683, dn = 637, dz = { "Blackrock Spire", "Felwood", "Eastern Plaguelands" }, dzn = 31, o = true }
-S[16644] = { i = 12684, dn = 604, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 31, o = true }
-S[16645] = { i = 12685, dn = 109, dz = { "Blackrock Spire", "Stratholme", "Blackrock Depths" }, dzn = 23, o = true }
-S[16646] = { i = 12687, q = { "Imperial Plate Shoulders" } }
-S[16647] = { i = 12688, q = { "Imperial Plate Belt" } }
-S[16648] = { i = 12689, dn = 623, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 32, o = true }
-S[16649] = { i = 12690, q = { "Imperial Plate Bracer" } }
-S[16650] = { i = 12691, dn = 609, dz = { "Blackrock Spire", "Eastern Plaguelands", "Western Plaguelands" }, dzn = 33, o = true }
-S[16651] = { i = 12692, dn = 98, dz = { "Blackrock Spire", "Felwood", "Stratholme" }, dzn = 23, o = true }
-S[16652] = { i = 12693, dn = 519, dz = { "Eastern Plaguelands", "Blackrock Spire", "Winterspring" }, dzn = 31, o = true }
-S[16653] = { i = 12694, dn = 533, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 30, o = true }
-S[16654] = { i = 12695, dn = 534, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 30, o = true }
-S[16655] = { i = 12699, q = { "Fiery Plate Gauntlets" } }
-S[16656] = { i = 12697, dn = 533, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 31, o = true }
-S[16657] = { i = 12700, q = { "Imperial Plate Boots" } }
-S[16658] = { i = 12701, q = { "Imperial Plate Helm" } }
-S[16659] = { i = 12702, dn = 113, dz = { "Blackrock Spire", "Stratholme", "Dire Maul" }, dzn = 18, o = true }
-S[16660] = { i = 12698, d = { 11726 }, o = true, fac = "Argent Dawn", rep = "Revered" }
-S[16661] = { i = 12703, v = { 11278 }, dn = 127, dz = { "Blackrock Spire", "Stratholme", "Scholomance" }, dzn = 20, o = true }
-S[16662] = { i = 12704, dn = 536, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 33, o = true }
-S[16663] = { i = 12705, q = { "Imperial Plate Chest" } }
-S[16664] = { i = 12706, d = { 4366 } }
-S[16665] = { i = 12707, d = { 1836 } }
-S[16667] = { i = 12696, q = { "The Demon Forge" } }
-S[16724] = { i = 12711, dn = 121, dz = { "Blackrock Spire", "Stratholme", "Scholomance" }, dzn = 18, o = true }
-S[16725] = { i = 12713, dn = 455, dz = { "Blackrock Spire", "Dire Maul", "Eastern Plaguelands" }, dzn = 30, o = true }
-S[16726] = { i = 12714, d = { 4364 } }
-S[16728] = { i = 12716, dn = 8, dz = { "Molten Core", "Ruins of Ahn'Qiraj", "Ahn'Qiraj" }, dzn = 5, o = true }
-S[16729] = { i = 12717, dn = 8, dz = { "Blackrock Spire", "Alterac Valley", "Molten Core" }, dzn = 6, o = true }
-S[16730] = { i = 12715, q = { "Imperial Plate Leggings" } }
-S[16731] = { i = 12718, d = { 4368 } }
-S[16732] = { i = 12719, d = { 1885 } }
-S[16741] = { i = 12720, dn = 17, dz = { "Molten Core", "Alterac Valley", "Blackrock Spire" }, dzn = 11 }
-S[16742] = { i = 12725, q = { "Enchanted Thorium Platemail: Volume III" } }
-S[16744] = { i = 12726, q = { "Enchanted Thorium Platemail: Volume II" } }
-S[16745] = { i = 12727, q = { "Enchanted Thorium Platemail: Volume I" } }
-S[16746] = { i = 12728, dn = 21, dz = { "Blackrock Spire", "Molten Core", "Naxxramas" }, dzn = 9 }
-S[16969] = { i = 12819, v = { 11278 } }
-S[16970] = { i = 12821, q = { "Snakestone of the Shadow Huntress" } }
-S[16971] = { i = 12823, v = { 11278 } }
-S[16973] = { i = 12824, q = { "Sweet Serenity" } }
-S[16978] = { i = 12825, q = { "Corruption" } }
-S[16983] = { i = 12827, dn = 6, dz = { "Stratholme" }, dzn = 1, o = true }
-S[16984] = { i = 12828, d = { 10119 } }
-S[16985] = { i = 12830, dn = 11, dz = { "Stratholme" }, dzn = 1, o = true }
-S[16988] = { i = 12833, d = { 10438 } }
-S[16990] = { i = 12834, d = { 10899 } }
-S[16991] = { i = 12835, d = { 9736 } }
-S[16992] = { i = 12836 }
-S[16993] = { i = 12837, d = { 10899 } }
-S[16994] = { i = 12838, d = { 9596 } }
-S[16995] = { i = 12839, d = { 10997 } }
-S[17187] = { i = 12958, v = { 5594 } }
-S[17552] = { i = 13476, d = { 7027 } }
-S[17553] = { i = 13477, v = { 4226, 4610 } }
-S[17554] = { i = 13478, v = { 3348, 5178 } }
-S[17555] = { i = 13479, d = { 9449, 9450, 9451, 9452 } }
-S[17557] = { i = 13481, o = true }
-S[17559] = { i = 13482, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
-S[17560] = { i = 13483, v = { 9499 } }
-S[17561] = { i = 13484, v = { 11557 }, fac = "Timbermaw Hold", rep = "Friendly" }
-S[17562] = { i = 13485, v = { 11278 } }
-S[17563] = { i = 13486, dn = 120, dz = { "Blackrock Spire", "Blackrock Depths", "Eastern Plaguelands" }, dzn = 21, o = true }
-S[17564] = { i = 13487, dn = 115, dz = { "Blackrock Depths", "Blackrock Spire", "Stratholme" }, dzn = 21, o = true }
-S[17565] = { i = 13488, dn = 127, dz = { "Blackrock Spire", "Blackrock Depths", "Felwood" }, dzn = 22, o = true }
-S[17566] = { i = 13489, dn = 101, dz = { "Blackrock Depths", "Blackrock Spire", "Felwood" }, dzn = 23, o = true }
-S[17570] = { i = 13490, dn = 532, dz = { "Blackrock Spire", "Eastern Plaguelands", "Western Plaguelands" }, dzn = 30, o = true }
-S[17571] = { i = 13491, d = { 6201, 7106 } }
-S[17572] = { i = 13492, dn = 521, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 31, o = true }
-S[17573] = { i = 13493, dn = 137, dz = { "Blackrock Spire", "Stratholme", "Eastern Plaguelands" }, dzn = 18, o = true }
-S[17574] = { i = 13494, d = { 9262, 9264 } }
-S[17575] = { i = 13495, d = { 7428 } }
-S[17576] = { i = 13496, d = { 1812, 1813 } }
-S[17577] = { i = 13497, d = { 7437 } }
-S[17578] = { i = 13499, d = { 8546, 8550 } }
-S[17579] = { i = 13500 }
-S[17580] = { i = 13501, v = { 11278 }, d = { 1853 } }
-S[17632] = { i = 13517 }
-S[17634] = { i = 13518, dn = 122, dz = { "Stratholme", "Blackrock Spire", "Scholomance" }, dzn = 18, o = true }
-S[17635] = { i = 13519, d = { 10363 } }
-S[17636] = { i = 13520, d = { 10813 } }
-S[17637] = { i = 13521, d = { 10508 } }
-S[17638] = { i = 13522, d = { 10339 } }
-S[18238] = { i = 13939, v = { 8137 } }
-S[18239] = { i = 13940, v = { 2664 } }
-S[18240] = { i = 13942, v = { 8137 } }
-S[18241] = { i = 13941, v = { 2664 } }
-S[18242] = { i = 13943, v = { 2664 } }
-S[18243] = { i = 13945, v = { 8137 } }
-S[18244] = { i = 13946, v = { 8137 } }
-S[18245] = { i = 13947, v = { 7947, 8145 } }
-S[18246] = { i = 13948, v = { 7947, 8145 } }
-S[18247] = { i = 13949, v = { 7947, 8145 } }
-S[18403] = { i = 14466, dn = 628, dz = { "Felwood", "Eastern Plaguelands", "Blackrock Spire" }, dzn = 32, o = true }
-S[18404] = { i = 14467, dn = 610, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 33, o = true }
-S[18405] = { i = 14468, v = { 11189 } }
-S[18406] = { i = 14469, v = { 7940 } }
-S[18407] = { i = 14470, dn = 632, dz = { "Eastern Plaguelands", "Blackrock Spire", "Felwood" }, dzn = 32, o = true }
-S[18408] = { i = 14471, d = { 5861 } }
-S[18409] = { i = 14472, v = { 7940 } }
-S[18410] = { i = 14473, d = { 7864 } }
-S[18411] = { i = 14474, dn = 636, dz = { "Felwood", "Blackrock Spire", "Eastern Plaguelands" }, dzn = 34, o = true }
-S[18412] = { i = 14476, d = { 5861 } }
-S[18413] = { i = 14477, d = { 7864, 8538 } }
-S[18414] = { i = 14478, dn = 617, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 32, o = true }
-S[18415] = { i = 14479, dn = 629, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 33, o = true }
-S[18416] = { i = 14480, d = { 8538 } }
-S[18417] = { i = 14481, v = { 11189 } }
-S[18418] = { i = 14482, d = { 7037 } }
-S[18419] = { i = 14483, v = { 12022 } }
-S[18420] = { i = 14484, dn = 611, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 31, o = true }
-S[18421] = { i = 14485, d = { 8551 } }
-S[18422] = { i = 14486, d = { 9026 } }
-S[18423] = { i = 14488, v = { 7940 } }
-S[18424] = { i = 14489, dn = 518, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 30, o = true }
-S[18434] = { i = 14490, d = { 7037 } }
-S[18436] = { i = 14493, d = { 7437 } }
-S[18437] = { i = 14492, dn = 545, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 32, o = true }
-S[18438] = { i = 14491, dn = 549, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 31, o = true }
-S[18439] = { i = 14494, dn = 549, dz = { "Eastern Plaguelands", "Blackrock Spire", "Dire Maul" }, dzn = 30, o = true }
-S[18440] = { i = 14497, dn = 141, dz = { "Blackrock Spire", "Stratholme", "Scholomance" }, dzn = 19, o = true }
-S[18441] = { i = 14495, d = { 10384 } }
-S[18442] = { i = 14496, dn = 535, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 31, o = true }
-S[18444] = { i = 14498, dn = 541, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 31, o = true }
-S[18445] = { i = 14499, dn = 515, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 30, o = true }
-S[18446] = { i = 14500, d = { 8526 } }
-S[18447] = { i = 14501, dn = 114, dz = { "Blackrock Spire", "Scholomance", "Stratholme" }, dzn = 19, o = true }
-S[18448] = { i = 14507, dn = 131, dz = { "Stratholme", "Blackrock Spire", "Scholomance" }, dzn = 19, o = true }
-S[18449] = { i = 14504, dn = 452, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 27, o = true }
-S[18450] = { i = 14505, d = { 8526 } }
-S[18451] = { i = 14506, dn = 471, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 32, o = true }
-S[18452] = { i = 14509, dn = 13, dz = { "Molten Core", "Blackrock Spire", "Blackwing Lair" }, dzn = 7 }
-S[18453] = { i = 14508, dn = 473, dz = { "Blackrock Spire", "Eastern Plaguelands", "Silithus" }, dzn = 31, o = true }
-S[18454] = { i = 14511, dn = 8, dz = { "Molten Core", "Blackrock Spire", "Blackwing Lair" }, dzn = 5 }
-S[18455] = { i = 14510, dn = 11, dz = { "Molten Core", "Ahn'Qiraj", "Alterac Valley" }, dzn = 8 }
-S[18456] = { i = 14512, d = { 10813 } }
-S[18457] = { i = 14513, d = { 9264 } }
-S[18458] = { i = 14514, d = { 1853 } }
-S[18560] = { i = 14526, v = { 11189 } }
-S[19048] = { i = 15724, v = { 12956 } }
-S[19049] = { i = 15725, v = { 12942, 12943 } }
-S[19050] = { i = 15726, v = { 11874 } }
-S[19051] = { i = 15727, d = { 5981, 6005 } }
-S[19052] = { i = 15728, d = { 6201 } }
-S[19053] = { i = 15729, v = { 12957 } }
-S[19054] = { i = 15730, d = { 10363 } }
-S[19055] = { i = 15731, dn = 624, dz = { "Blackrock Spire", "Felwood", "Eastern Plaguelands" }, dzn = 34, o = true }
-S[19059] = { i = 15732, d = { 7035 } }
-S[19060] = { i = 15733, d = { 5226 } }
-S[19061] = { i = 15734, v = { 7852, 7854 } }
-S[19062] = { i = 15735, v = { 12958 } }
-S[19063] = { i = 15737, dn = 623, dz = { "Eastern Plaguelands", "Blackrock Spire", "Felwood" }, dzn = 32, o = true }
-S[19064] = { i = 15738, d = { 7025 } }
-S[19065] = { i = 15739, d = { 7112 } }
-S[19066] = { i = 15740, v = { 11189 } }
-S[19067] = { i = 15741, v = { 12942, 12943 } }
-S[19068] = { i = 15742, v = { 11557 }, dn = 69, dz = { "Blackrock Depths", "Un'Goro Crater", "Western Plaguelands" }, dzn = 21, o = true, fac = "Timbermaw Hold", rep = "Friendly" }
-S[19070] = { i = 15743, dn = 523, dz = { "Eastern Plaguelands", "Blackrock Spire", "Winterspring" }, dzn = 31, o = true }
-S[19071] = { i = 15744, d = { 7107 } }
-S[19072] = { i = 15745, dn = 514, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 30, o = true }
-S[19073] = { i = 15746, dn = 535, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 30, o = true }
-S[19074] = { i = 15747, d = { 7440 } }
-S[19075] = { i = 15748, d = { 7027 } }
-S[19076] = { i = 15749, d = { 9259 } }
-S[19077] = { i = 15751, v = { 12957 } }
-S[19078] = { i = 15752, d = { 7158 } }
-S[19079] = { i = 15753, d = { 6138 } }
-S[19080] = { i = 20254, v = { 11557 }, fac = "Timbermaw Hold", rep = "Friendly" }
-S[19081] = { i = 15755, dn = 528, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 31, o = true }
-S[19082] = { i = 15756, v = { 12941 } }
-S[19083] = { i = 15757, dn = 530, dz = { "Eastern Plaguelands", "Blackrock Spire", "Winterspring" }, dzn = 33, o = true }
-S[19084] = { i = 15758, v = { 12959 } }
-S[19085] = { i = 15759, v = { 9499 } }
-S[19086] = { i = 15760, d = { 2644 } }
-S[19087] = { i = 15761, d = { 7441 } }
-S[19088] = { i = 15762, v = { 12956 } }
-S[19089] = { i = 15763, d = { 6146 } }
-S[19090] = { i = 15764, d = { 6144 } }
-S[19091] = { i = 15765, dn = 458, dz = { "Blackrock Spire", "Eastern Plaguelands", "Silithus" }, dzn = 32, o = true }
-S[19092] = { i = 15768, d = { 10406 } }
-S[19094] = { i = 15770, d = { 8898 } }
-S[19095] = { i = 15771, d = { 1813 } }
-S[19097] = { i = 15772, d = { 6556, 6557, 6559, 9477 } }
-S[19098] = { i = 15773, d = { 10499 } }
-S[19100] = { i = 15774, d = { 7029 } }
-S[19101] = { i = 15775, d = { 9260 } }
-S[19102] = { i = 15776, d = { 11582 } }
-S[19103] = { i = 15777, d = { 10425 } }
-S[19104] = { i = 15779, d = { 7438 } }
-S[19107] = { i = 15781, d = { 8903 } }
-S[19790] = { i = 16041, v = { 5175 } }
-S[19791] = { i = 16042, v = { 5175 } }
-S[19792] = { i = 16043, dn = 608, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 34, o = true }
-S[19793] = { i = 16044, dn = 114, dz = { "Blackrock Spire", "Blackrock Depths", "Felwood" }, dzn = 21, o = true }
-S[19794] = { i = 16045, d = { 6195 } }
-S[19795] = { i = 16047, v = { 11185 } }
-S[19796] = { i = 16048, d = { 8897 } }
-S[19799] = { i = 16049, d = { 8920 } }
-S[19800] = { i = 16051, dn = 507, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 31, o = true }
-S[19814] = { i = 16046, v = { 11185 } }
-S[19815] = { i = 16050, v = { 11185 } }
-S[19819] = { i = 16052, d = { 10426 } }
-S[19825] = { i = 16053, d = { 8900 } }
-S[19830] = { i = 16054, d = { 7437 } }
-S[19831] = { i = 16055, dn = 119, dz = { "Stratholme", "Blackrock Spire", "Dire Maul" }, dzn = 19, o = true }
-S[19833] = { i = 16056, d = { 8561 } }
-S[20008] = { i = 16214, d = { 2642 } }
-S[20009] = { i = 16218, dn = 609, dz = { "Blackrock Spire", "Eastern Plaguelands", "Western Plaguelands" }, dzn = 33, o = true }
-S[20010] = { i = 16246, d = { 7372 } }
-S[20011] = { i = 16251, dn = 469, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 28, o = true }
-S[20012] = { i = 16219, d = { 6201 } }
-S[20013] = { i = 16244, d = { 9198 } }
-S[20014] = { i = 16216, d = { 5259 } }
-S[20015] = { i = 16224, v = { 12022 } }
-S[20016] = { i = 16222, d = { 9447 } }
-S[20017] = { i = 16217, v = { 4229, 4561 } }
-S[20020] = { i = 16215, dn = 602, dz = { "Eastern Plaguelands", "Blackrock Spire", "Felwood" }, dzn = 33, o = true }
-S[20023] = { i = 16245, dn = 495, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 35, o = true }
-S[20024] = { i = 16220, dn = 629, dz = { "Eastern Plaguelands", "Blackrock Spire", "Felwood" }, dzn = 35, o = true }
-S[20025] = { i = 16253, dn = 13, dz = { "Blackrock Spire", "Molten Core", "Ruins of Ahn'Qiraj" }, dzn = 8 }
-S[20026] = { i = 16221, v = { 11189 } }
-S[20028] = { i = 16242, d = { 9452 } }
-S[20029] = { i = 16223, d = { 7524 } }
-S[20030] = { i = 16247, d = { 10317 } }
-S[20031] = { i = 16250, dn = 58, dz = { "Blackrock Spire" }, dzn = 1 }
-S[20032] = { i = 16254, d = { 10499 } }
-S[20033] = { i = 16248, d = { 10398 } }
-S[20034] = { i = 16252, d = { 4494, 9451 } }
-S[20035] = { i = 16255, d = { 10469 } }
-S[20036] = { i = 16249, d = { 10422 } }
-S[20051] = { i = 16243, v = { 12022 } }
-S[20626] = { i = 16767, v = { 8139 } }
-S[20848] = { i = 17017, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
-S[20849] = { i = 17018, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
-S[20853] = { i = 17022, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
-S[20854] = { i = 17023, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
-S[20855] = { i = 17025, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
-S[20872] = { i = 17049, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
-S[20873] = { i = 17053, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
-S[20874] = { i = 17051, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
-S[20876] = { i = 17052, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
-S[20890] = { i = 17059, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
-S[20897] = { i = 17060, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
-S[20916] = { i = 17062, v = { 2383, 2664, 3178, 3333, 4307, 4574, 5162, 12033, 12962 } }
-S[21143] = { i = 17200, v = { 13420, 13429, 13432, 13433, 13435 } }
-S[21144] = { i = 17201, v = { 13420, 13429, 13432, 13433, 13435 } }
-S[21161] = { i = 18592, q = { "A Binding Contract" } }
-S[21913] = { i = 17706, d = { 445 }, o = true }
-S[21923] = { i = 17709, d = { 8598 }, o = true }
-S[21931] = { i = 17725, o = true }
-S[21940] = { i = 17720, o = true }
-S[21943] = { i = 17722, d = { 7856 }, o = true }
-S[21945] = { i = 17724, o = true }
-S[22480] = { i = 18046, v = { 4782, 7733, 8125 } }
-S[22704] = { i = 18235 }
-S[22711] = { i = 18239, v = { 2699 } }
-S[22727] = { i = 18252 }
-S[22732] = { i = 18257 }
-S[22749] = { i = 18259 }
-S[22750] = { i = 18260 }
-S[22757] = { i = 18264 }
-S[22759] = { i = 18265 }
-S[22761] = { i = 18267, d = { 14354 } }
-S[22793] = { i = 18290 }
-S[22795] = { i = 18292 }
-S[22797] = { i = 18291 }
-S[22866] = { i = 18414, d = { 417, 11448, 11450 }, o = true }
-S[22867] = { i = 18415, d = { 11450 }, o = true }
-S[22868] = { i = 18416, d = { 417, 11448, 11450 }, o = true }
-S[22869] = { i = 18417, d = { 14351 }, o = true }
-S[22870] = { i = 18418, d = { 417, 11448, 11450 }, o = true }
-S[22902] = { i = 18487, v = { 14371 } }
-S[22921] = { i = 18514, d = { 417, 11448 }, o = true }
-S[22922] = { i = 18515, o = true }
-S[22923] = { i = 18516, d = { 417, 11448, 11450, 14351 }, o = true }
-S[22926] = { i = 18517, d = { 417 }, o = true }
-S[22927] = { i = 18518, d = { 417, 11448 }, o = true }
-S[22928] = { i = 18519, d = { 417 }, o = true }
-S[23066] = { i = 18647, v = { 3413 } }
-S[23067] = { i = 18649, v = { 1304, 5175 } }
-S[23068] = { i = 18648, v = { 2838, 3495 } }
-S[23069] = { i = 18650, v = { 8131 } }
-S[23071] = { i = 18651, v = { 2685 } }
-S[23077] = { i = 18652, v = { 11185 } }
-S[23078] = { i = 18653, d = { 9499 } }
-S[23079] = { i = 18655 }
-S[23080] = { i = 18656, v = { 11185 } }
-S[23081] = { i = 18657, d = { 10264 } }
-S[23082] = { i = 18658, d = { 10426 } }
-S[23096] = { i = 18654, d = { 8920 } }
-S[23129] = { i = 18661, d = { 8920 } }
-S[23190] = { i = 18731, v = { 3366, 5128 } }
-S[23399] = { i = 18949, v = { 4225, 4589 } }
-S[23507] = { i = 19027, v = { 14637 } }
-S[23628] = { i = 19202, v = { 11557 }, fac = "Timbermaw Hold", rep = "Honored" }
-S[23629] = { i = 19204, v = { 11557 }, fac = "Timbermaw Hold", rep = "Revered" }
-S[23632] = { i = 19203, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
-S[23633] = { i = 19205, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Revered" }
-S[23636] = { i = 19206, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
-S[23637] = { i = 19207, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
-S[23638] = { i = 19208, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
-S[23639] = { i = 19209, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
-S[23650] = { i = 19210, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Exalted" }
-S[23652] = { i = 19211, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Exalted" }
-S[23653] = { i = 19212, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Exalted" }
-S[23662] = { i = 19215, v = { 11557 }, fac = "Timbermaw Hold", rep = "Honored" }
-S[23663] = { i = 19218, v = { 11557 }, fac = "Timbermaw Hold", rep = "Revered" }
-S[23664] = { i = 19216, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
-S[23665] = { i = 19217, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Revered" }
-S[23666] = { i = 19219, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
-S[23667] = { i = 19220, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
-S[23703] = { i = 19326, v = { 11557 }, fac = "Timbermaw Hold", rep = "Honored" }
-S[23704] = { i = 19327, v = { 11557 }, fac = "Timbermaw Hold", rep = "Revered" }
-S[23705] = { i = 19328, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
-S[23706] = { i = 19329, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Revered" }
-S[23707] = { i = 19330, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
-S[23708] = { i = 19331, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
-S[23709] = { i = 19332, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
-S[23710] = { i = 19333, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
-S[23787] = { i = 19442, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
-S[23799] = { i = 19444, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
-S[23800] = { i = 19445, v = { 11557 }, fac = "Timbermaw Hold", rep = "Honored" }
-S[23801] = { i = 19446, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
-S[23802] = { i = 19447, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Revered" }
-S[23803] = { i = 19448, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
-S[23804] = { i = 19449, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
-S[24091] = { i = 19764, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
-S[24092] = { i = 19765, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
-S[24093] = { i = 19766, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
-S[24121] = { i = 19769, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
-S[24122] = { i = 19770, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
-S[24123] = { i = 19771, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
-S[24124] = { i = 19772, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
-S[24125] = { i = 19773, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
-S[24136] = { i = 19776, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
-S[24137] = { i = 19777, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
-S[24138] = { i = 19778, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
-S[24139] = { i = 19779, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
-S[24140] = { i = 19780, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
-S[24141] = { i = 19781, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
-S[24356] = { i = 20000, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
-S[24357] = { i = 20001, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
-S[24365] = { i = 20011, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
-S[24366] = { i = 20012, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
-S[24367] = { i = 20013, v = { 14921 }, fac = "Zandalar Tribe", rep = "Exalted" }
-S[24368] = { i = 20014, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
-S[24399] = { i = 20040, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Exalted" }
-S[24418] = { i = 20075, v = { 4879 } }
-S[24901] = { i = 20546, d = { 11881 }, o = true }
-S[24902] = { i = 20548, o = true }
-S[24903] = { i = 20547, o = true }
-S[24912] = { i = 20553, o = true }
-S[24913] = { i = 20555, o = true }
-S[24914] = { i = 20554, o = true }
-S[24940] = { i = 20576, v = { 777 } }
-S[25072] = { i = 20726, d = { 15275 } }
-S[25073] = { i = 20727 }
-S[25074] = { i = 20728 }
-S[25078] = { i = 20729 }
-S[25079] = { i = 20730 }
-S[25080] = { i = 20731 }
-S[25081] = { i = 20732, v = { 15419 }, fac = "Cenarion Circle", rep = "Friendly" }
-S[25082] = { i = 20733, v = { 15419 }, fac = "Cenarion Circle", rep = "Honored" }
-S[25083] = { i = 20734 }
-S[25084] = { i = 20735, d = { 15276 } }
-S[25086] = { i = 20736 }
-S[25124] = { i = 20758, v = { 1318, 3012, 3346, 4228, 4617, 5158, 5757, 5758, 15419 } }
-S[25125] = { i = 20752, v = { 1318, 3012, 3346, 4228, 4617, 5158, 5757, 5758, 15419 } }
-S[25126] = { i = 20753, v = { 1318, 3012, 3346, 4228, 4617, 5158, 5757, 5758, 15419 } }
-S[25127] = { i = 20754, v = { 15419 } }
-S[25128] = { i = 20755, v = { 15419 } }
-S[25129] = { i = 20756, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
-S[25130] = { i = 20757, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
-S[25146] = { i = 20761, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
+S[2158] = { i = 2406, req = 65, o = true }
+S[2163] = { i = 2407, req = 40, o = true }
+S[2164] = { i = 2408, req = 50, o = true }
+S[2169] = { i = 2409, req = 75, dn = 562, dz = { "The Barrens", "Darkshore", "Silverpine Forest" }, dzn = 28, o = true }
+S[2333] = { i = 3396, req = 140, dn = 401, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 31, o = true }
+S[2335] = { i = 2555, req = 60, o = true }
+S[2389] = { i = 2598, req = 25, o = true }
+S[2403] = { i = 2601, req = 80, dn = 451, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
+S[2542] = { i = 2697, req = 50, v = { 340 }, q = { "Goretusk Liver Pie" } }
+S[2543] = { i = 728, req = 75, v = { 340 }, q = { "Westfall Stew" } }
+S[2545] = { i = 2698, req = 85, v = { 340 }, dn = 113, dz = { "Darkshore", "Westfall", "Silverpine Forest" }, dzn = 3 }
+S[2547] = { i = 2699, req = 100, v = { 340 }, q = { "Redridge Goulash" } }
+S[2548] = { i = 2700, req = 110, v = { 340 }, dn = 91, dz = { "Loch Modan", "Redridge Mountains" }, dzn = 2 }
+S[2549] = { i = 2701, req = 100, v = { 340 }, q = { "Seasoned Wolf Kabobs" } }
+S[2667] = { i = 2881, req = 55, dn = 568, dz = { "The Barrens", "Westfall", "Darkshore" }, dzn = 29, o = true }
+S[2673] = { i = 5578, req = 105, dn = 471, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 26, o = true }
+S[2795] = { i = 2889, req = 25, v = { 340 }, q = { "Beer Basted Boar Ribs" } }
+S[3172] = { i = 3393, req = 110, dn = 401, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 27, o = true }
+S[3174] = { i = 3394, req = 120, dn = 408, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 28, o = true }
+S[3175] = { i = 3395, req = 250, dn = 520, dz = { "Feralas", "Tanaris", "Felwood" }, dzn = 30, o = true }
+S[3188] = { i = 6211, req = 150, dn = 398, dz = { "Ashenvale", "Wetlands", "Thousand Needles" }, dzn = 29, o = true }
+S[3230] = { i = 2553, req = 50, o = true }
+S[3295] = { i = 2883, req = 100, dn = 451, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
+S[3297] = { i = 3608, req = 120, dn = 406, dz = { "Wetlands", "Ashenvale", "Thousand Needles" }, dzn = 30, o = true }
+S[3321] = { i = 3609, req = 30, q = { "Supplying the Front" }, o = true }
+S[3325] = { i = 3610, req = 35, o = true }
+S[3330] = { i = 2882, req = 100, dn = 451, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
+S[3334] = { i = 3611, req = 120, dn = 411, dz = { "Ashenvale", "Thousand Needles", "Wetlands" }, dzn = 29, o = true }
+S[3336] = { i = 3612, req = 125, dn = 414, dz = { "Ashenvale", "Wetlands", "Thousand Needles" }, dzn = 29, o = true }
+S[3370] = { i = 3678, req = 80, v = { 340 }, q = { "Crocolisk Hunting" } }
+S[3371] = { i = 3679, req = 60, v = { 340 }, q = { "Thelsamar Blood Sausages" } }
+S[3372] = { i = 3680, req = 90, v = { 340 }, q = { "Selling Fish" } }
+S[3373] = { i = 3681, req = 120, v = { 340 }, q = { "Apprentice's Duties" } }
+S[3376] = { i = 3682, req = 130, v = { 340, 1148, 2821 }, q = { "Ormer's Revenge" } }
+S[3377] = { i = 3683, req = 110, v = { 340 }, q = { "Dusky Crab Cakes" } }
+S[3397] = { i = 3734, req = 110, v = { 3960, 12246 }, q = { "The Rescue" } }
+S[3398] = { i = 3735, req = 125, v = { 3489, 12245 }, q = { "Elixir of Pain" } }
+S[3399] = { i = 3736, req = 150, q = { "Costly Menace" } }
+S[3400] = { i = 3737, req = 175, q = { "Soothing Turtle Bisque" } }
+S[3449] = { i = 6068, req = 165, v = { 2481, 4878 } }
+S[3450] = { i = 3830, req = 175, dn = 330, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
+S[3451] = { i = 3831, req = 180, dn = 333, dz = { "Stranglethorn Vale", "Arathi Highlands", "Desolace" }, dzn = 27, o = true }
+S[3453] = { i = 3832, req = 195, dn = 395, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 31, o = true }
+S[3454] = { i = 14634, req = 200, v = { 2480 } }
+S[3492] = { i = 12162, req = 135, v = { 2843, 3356, 5512 } }
+S[3493] = { i = 3866, req = 150, dn = 377, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 28, o = true }
+S[3494] = { i = 10858, req = 130, v = { 1471, 8878, 9179 } }
+S[3495] = { i = 3867, req = 145, dn = 367, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 27, o = true }
+S[3496] = { i = 12163, req = 155, v = { 2482 } }
+S[3497] = { i = 3868, req = 175, dn = 387, dz = { "Stranglethorn Vale", "Arathi Highlands", "Desolace" }, dzn = 29, o = true }
+S[3498] = { i = 12164, req = 160, v = { 1146, 2483 } }
+S[3500] = { i = 3869, req = 175, dn = 407, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 28, o = true }
+S[3503] = { i = 6047, req = 165, v = { 5411 } }
+S[3504] = { i = 3870, req = 135, dn = 380, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
+S[3505] = { i = 3871, req = 150, dn = 122, dz = { "Scarlet Monastery", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 23, o = true }
+S[3507] = { i = 3872, req = 145, dn = 405, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 30, o = true }
+S[3511] = { i = 3873, req = 170, dn = 390, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
+S[3513] = { i = 3874, req = 160, dn = 407, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 28, o = true }
+S[3515] = { i = 3875, req = 175, dn = 31, dz = { "Scarlet Monastery", "Arathi Highlands", "Stranglethorn Vale" }, dzn = 13, o = true }
+S[3758] = { i = 4292, req = 75, dn = 559, dz = { "The Barrens", "Darkshore", "Westfall" }, dzn = 28, o = true }
+S[3762] = { i = 4293, req = 75, dn = 554, dz = { "The Barrens", "Westfall", "Darkshore" }, dzn = 26, o = true }
+S[3765] = { i = 7360, req = 95, dn = 418, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 29, o = true }
+S[3767] = { i = 4294, req = 95, dn = 457, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 28, o = true }
+S[3769] = { i = 4296, req = 115, dn = 413, dz = { "Ashenvale", "Wetlands", "Thousand Needles" }, dzn = 29, o = true }
+S[3771] = { i = 4297, req = 125, dn = 399, dz = { "Wetlands", "Ashenvale", "Thousand Needles" }, dzn = 29, o = true }
+S[3772] = { i = 7613, req = 130, v = { 2679, 2698 } }
+S[3773] = { i = 4299, req = 150, dn = 386, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 30, o = true }
+S[3775] = { i = 4298, req = 145, dn = 124, dz = { "Scarlet Monastery", "Stranglethorn Vale", "Alterac Mountains" }, dzn = 24, o = true }
+S[3777] = { i = 4300, req = 170, dn = 392, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 29, o = true }
+S[3778] = { i = 14635, req = 160, v = { 2699 } }
+S[3779] = { i = 4301, req = 175, dn = 32, dz = { "Scarlet Monastery", "Arathi Highlands", "Stranglethorn Vale" }, dzn = 11, o = true }
+S[3844] = { i = 4346, req = 80, dn = 573, dz = { "The Barrens", "Darkshore", "Westfall" }, dzn = 29, o = true }
+S[3847] = { i = 4345, req = 75, dn = 572, dz = { "The Barrens", "Silverpine Forest", "Darkshore" }, dzn = 28, o = true }
+S[3849] = { i = 4347, req = 95, dn = 453, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 28, o = true }
+S[3851] = { i = 4349, req = 100, dn = 454, dz = { "The Barrens", "Ashenvale", "Redridge Mountains" }, dzn = 29, o = true }
+S[3854] = { i = 7114, req = 120, v = { 2679, 9636 } }
+S[3856] = { i = 4350, req = 115, dn = 412, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 29, o = true }
+S[3857] = { i = 14630, req = 130, v = { 2670 } }
+S[3858] = { i = 4351, req = 135, dn = 113, dz = { "Scarlet Monastery", "Alterac Mountains", "Arathi Highlands" }, dzn = 20, o = true }
+S[3860] = { i = 4352, req = 140, dn = 387, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 30, o = true }
+S[3862] = { i = 4355, req = 165, v = { 2381, 6567 } }
+S[3863] = { i = 4353, req = 145, dn = 402, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 30, o = true }
+S[3864] = { i = 4356, req = 165, dn = 25, dz = { "Scarlet Monastery", "Stranglethorn Vale", "Swamp of Sorrows" }, dzn = 12 }
+S[3868] = { i = 4348, req = 100, dn = 473, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
+S[3869] = { i = 14627, req = 110, v = { 2668 } }
+S[3870] = { i = 6401, req = 120, v = { 2394, 2669 } }
+S[3872] = { i = 4354, req = 150, dn = 45, dz = { "Scarlet Monastery", "Arathi Highlands", "Stranglethorn Vale" }, dzn = 13, o = true }
+S[3873] = { i = 10728, req = 165, v = { 2663 } }
+S[3928] = { i = 4408, req = 75, o = true }
+S[3933] = { i = 4409, req = 100, dn = 564, dz = { "The Barrens", "Silverpine Forest", "Ashenvale" }, dzn = 27, o = true }
+S[3939] = { i = 13309, req = 120, v = { 2682, 6730 } }
+S[3940] = { i = 4410, req = 120, dn = 468, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 30, o = true }
+S[3944] = { i = 4411, req = 125, d = { 7800 } }
+S[3952] = { i = 14639, req = 140, v = { 2682, 2683, 3495 } }
+S[3954] = { i = 4412, req = 145, dn = 442, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 30, o = true }
+S[3957] = { i = 13308, req = 155, v = { 2684 } }
+S[3959] = { i = 4413, req = 160, d = { 7800 } }
+S[3960] = { i = 4414, req = 165, dn = 397, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 27, o = true }
+S[3966] = { i = 4415, req = 185, dn = 43, dz = { "Scarlet Monastery", "Arathi Highlands", "Alterac Mountains" }, dzn = 19, o = true }
+S[3968] = { i = 4416, req = 195, dn = 404, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 27, o = true }
+S[3969] = { i = 13311, req = 200, v = { 2687 } }
+S[3971] = { i = 7742, req = 200, v = { 6777 }, d = { 7800 } }
+S[3972] = { i = 4417, req = 200, dn = 419, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 27, o = true }
+S[3979] = { i = 13310, req = 180, v = { 2685 } }
+S[4094] = { i = 4609, req = 175, v = { 2814, 12246 }, q = { "Barbecued Buzzard Wings" } }
+S[4096] = { i = 13287, req = 140, v = { 2819 } }
+S[4097] = { i = 13288, req = 140, v = { 2816 } }
+S[4508] = { i = 4597, req = 50, q = { "Wild Hearts" } }
+S[4942] = { i = 4624, req = 215, q = { "Liquid Stone" } }
+S[5244] = { i = 5083, req = 35, q = { "Kodo Hide Bag" } }
+S[6412] = { i = 5482, req = 10, q = { "Recipe of the Kaldorei" } }
+S[6413] = { i = 5483, req = 20, v = { 3881 } }
+S[6414] = { i = 5484, req = 35, v = { 3081 } }
+S[6415] = { i = 5485, req = 50, v = { 4200 } }
+S[6416] = { i = 5486, req = 50, v = { 3482 }, q = { "Easy Strider Living" } }
+S[6417] = { i = 5487, req = 90, q = { "Dig Rat Stew" } }
+S[6418] = { i = 5488, req = 100, v = { 3482 } }
+S[6419] = { i = 5489, req = 110, v = { 3960, 12245 } }
+S[6501] = { i = 5528, req = 90, v = { 4305, 4307 } }
+S[6518] = { i = 5543, req = 115, dn = 430, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 29, o = true }
+S[6617] = { i = 5640, req = 60, v = { 1669, 1685, 3335, 3499 } }
+S[6618] = { i = 5643, req = 175, v = { 3335, 4226 } }
+S[6624] = { i = 5642, req = 150, v = { 3348, 4226, 5178 } }
+S[6686] = { i = 5771, req = 50, v = { 843, 3005, 3556, 4189 }, d = { 590, 3530, 3531 } }
+S[6688] = { i = 5772, req = 90, v = { 777, 1454, 1474, 3005, 3364, 3485, 3537, 3683, 4189, 4577, 5944 }, d = { 450, 2264 } }
+S[6692] = { i = 5773, req = 125, d = { 910, 2337, 10760 } }
+S[6693] = { i = 5774, req = 140, dn = 386, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 29, o = true }
+S[6695] = { i = 5775, req = 150, d = { 2242, 2434, 4834 } }
+S[6702] = { i = 5786, req = 65, v = { 843, 3556, 4186 }, d = { 1732, 3385 } }
+S[6703] = { i = 5787, req = 70, v = { 843, 3556, 4186 }, d = { 657, 3386 } }
+S[6704] = { i = 5788, req = 145, v = { 2381, 2393, 2846 }, d = { 938, 1160 } }
+S[6705] = { i = 5789, req = 165, v = { 2846, 4897 }, d = { 1561, 2636 } }
+S[7133] = { i = 5972, req = 80, dn = 469, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 28, o = true }
+S[7149] = { i = 5973, req = 145, v = { 2810, 2821, 3958, 4877 } }
+S[7153] = { i = 5974, req = 160, dn = 400, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 26, o = true }
+S[7213] = { i = 6039, req = 175, v = { 2664 } }
+S[7221] = { i = 6044, req = 125, dn = 411, dz = { "Wetlands", "Thousand Needles", "Ashenvale" }, dzn = 31, o = true }
+S[7222] = { i = 6045, req = 140, dn = 369, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
+S[7224] = { i = 6046, req = 165, dn = 29, dz = { "Scarlet Monastery", "Desolace", "Arathi Highlands" }, dzn = 13, o = true }
+S[7255] = { i = 6053, req = 100, v = { 1685, 3134, 3490 } }
+S[7256] = { i = 6054, req = 135, v = { 2393, 3956 } }
+S[7257] = { i = 6055, req = 165, v = { 2380, 4083 } }
+S[7258] = { i = 6056, req = 190, v = { 2812, 2848 } }
+S[7259] = { i = 6057, req = 190, v = { 2848, 5594, 8157, 8158 } }
+S[7443] = { i = 6342, req = 20, v = { 1318, 3012, 3346, 4228, 4617, 5158, 5757, 5758, 15419 }, d = { 2186 }, o = true }
+S[7629] = { i = 6271, req = 35, o = true }
+S[7630] = { i = 6270, req = 35, v = { 66, 3364, 3522, 4189 } }
+S[7633] = { i = 6272, req = 45, v = { 1250, 3485, 3499, 3556, 4168 } }
+S[7639] = { i = 6274, req = 75, v = { 843, 1347, 2394, 3364 } }
+S[7643] = { i = 6275, req = 90, v = { 1454, 1474, 2669, 4168, 4577 } }
+S[7751] = { i = 6325, req = 1, v = { 66, 1684, 3029, 3550, 4265, 4574, 5494, 5940, 8508 } }
+S[7752] = { i = 6326, req = 1, v = { 3550, 4305, 5162, 5942, 10118 } }
+S[7753] = { i = 6328, req = 50, v = { 66, 1684, 3027, 4265, 4574, 5162, 5748, 5940 } }
+S[7754] = { i = 6329, req = 50, v = { 1684 } }
+S[7755] = { i = 6330, req = 100, v = { 2383, 2397, 3027, 3029, 3497, 4553, 5494 } }
+S[7766] = { i = 6344, req = 60, dn = 563, dz = { "The Barrens", "Darkshore", "Westfall" }, dzn = 27, o = true }
+S[7771] = { i = 6345, req = 90 }
+S[7776] = { i = 6346, req = 80, v = { 3346, 5757 } }
+S[7782] = { i = 6347, req = 80, dn = 560, dz = { "The Barrens", "Darkshore", "Westfall" }, dzn = 28, o = true }
+S[7786] = { i = 6348, req = 90, dn = 559, dz = { "The Barrens", "Darkshore", "Westfall" }, dzn = 28, o = true }
+S[7793] = { i = 6349, req = 100, v = { 3012, 3346, 5158 } }
+S[7827] = { i = 6368, req = 50, v = { 3178, 3333, 3497, 4305, 4307, 4553, 5494, 5748, 5942, 10118 } }
+S[7828] = { i = 6369, req = 175, v = { 2383, 2664, 3178, 3333, 4307, 4574, 5162, 12033, 12962 } }
+S[7859] = { i = 6375, req = 120, dn = 467, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 27, o = true }
+S[7863] = { i = 6376, req = 125 }
+S[7867] = { i = 6377, req = 125, v = { 3012, 3537 } }
+S[7892] = { i = 6390, req = 95, dn = 475, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 29, o = true }
+S[7893] = { i = 6391, req = 95, dn = 458, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
+S[7929] = { i = 16112, req = 180, v = { 2805, 13476 } }
+S[7935] = { i = 6454, req = 130, dn = 420, dz = { "Ashenvale", "Wetlands", "Hillsbrad Foothills" }, dzn = 31, o = true }
+S[7953] = { i = 6474, req = 65, v = { 5783 } }
+S[7954] = { i = 6475, req = 80, v = { 5783 } }
+S[7955] = { i = 6476, req = 90, q = { "Deviate Eradication" } }
+S[8238] = { i = 6661, req = 85, dn = 123, dz = { "The Barrens" }, dzn = 1 }
+S[8240] = { i = 6663, req = 90, dn = 113, dz = { "The Barrens" }, dzn = 1 }
+S[8243] = { i = 6672, req = 185, d = { 7800 }, q = { "Flash Bomb Recipe" } }
+S[8322] = { i = 6710, req = 65, q = { "Moonglow Vest" } }
+S[8339] = { i = 6716, req = 100, dn = 551, dz = { "The Barrens", "Westfall", "Darkshore" }, dzn = 28, o = true }
+S[8367] = { i = 6735, req = 100, q = { "Gearing Redridge" } }
+S[8607] = { i = 6892, req = 40, v = { 1465, 3556 } }
+S[8780] = { i = 7092, req = 120, dn = 413, dz = { "Ashenvale", "Wetlands", "Thousand Needles" }, dzn = 29, o = true }
+S[8782] = { i = 7091, req = 125, dn = 432, dz = { "Wetlands", "Ashenvale", "Thousand Needles" }, dzn = 29, o = true }
+S[8784] = { i = 7090, req = 130, dn = 386, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
+S[8786] = { i = 7089, req = 140, v = { 6574, 6576 } }
+S[8789] = { i = 7087, req = 145, v = { 2670 } }
+S[8793] = { i = 7084, req = 155, dn = 394, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 27, o = true }
+S[8795] = { i = 7085, req = 155, dn = 408, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 29, o = true }
+S[8797] = { i = 7086, req = 160, dn = 408, dz = { "Stranglethorn Vale", "Arathi Highlands", "Desolace" }, dzn = 30, o = true }
+S[8802] = { i = 7088, req = 170, v = { 6568 } }
+S[8895] = { i = 7192, req = 130, d = { 7800 } }
+S[9064] = { i = 7288, req = 30, o = true }
+S[9070] = { i = 7289, req = 75, v = { 2697 } }
+S[9072] = { i = 7290, req = 95, v = { 2679 } }
+S[9146] = { i = 7361, req = 110, v = { 6731 } }
+S[9147] = { i = 7362, req = 110, v = { 3537 } }
+S[9148] = { i = 7363, req = 115, dn = 410, dz = { "Wetlands", "Ashenvale", "Hillsbrad Foothills" }, dzn = 29, o = true }
+S[9149] = { i = 7364, req = 120, dn = 428, dz = { "Ashenvale", "Wetlands", "Duskwood" }, dzn = 29, o = true }
+S[9195] = { i = 7449, req = 140, dn = 390, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 31, o = true }
+S[9197] = { i = 7450, req = 150, dn = 378, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
+S[9202] = { i = 7451, req = 165, v = { 4225, 7852, 7854 } }
+S[9207] = { i = 7452, req = 175, dn = 58, dz = { "Scarlet Monastery", "Stranglethorn Vale", "Badlands" }, dzn = 17, o = true }
+S[9208] = { i = 7453, req = 175, dn = 393, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 29, o = true }
+S[9269] = { i = 7560, req = 125, v = { 5175, 6730 }, d = { 7800 } }
+S[9273] = { i = 7561, req = 165, v = { 3134, 3537, 4086 }, d = { 7800 } }
+S[9513] = { i = 7678, req = 60, v = { 6779 }, q = { "Klaven's Tower", "Mission: Possible But Not Probable" } }
+S[9811] = { i = 7978, req = 135, q = { "On Iron Pauldrons" } }
+S[9813] = { i = 7979, req = 135, q = { "Barbaric Battlements" } }
+S[9814] = { i = 7980, req = 150, q = { "Horns of Frenzy" } }
+S[9818] = { i = 7981, req = 155, q = { "Trampled Under Foot" } }
+S[9820] = { i = 7982, req = 160, q = { "Joys of Omosh" } }
+S[9933] = { i = 7975, req = 185, dn = 407, dz = { "Stranglethorn Vale", "Feralas", "Tanaris" }, dzn = 27, o = true }
+S[9937] = { i = 7995, req = 190, v = { 8161, 8176 } }
+S[9939] = { i = 7976, req = 190, dn = 169, dz = { "Tanaris", "Feralas", "Uldaman" }, dzn = 25, o = true }
+S[9945] = { i = 7983, req = 195, q = { "Smelt On, Smelt Off" } }
+S[9950] = { i = 7984, req = 195, q = { "The Great Silver Deceiver" } }
+S[9952] = { i = 7985, req = 200, q = { "The Art of the Imbue" } }
+S[9964] = { i = 7989, req = 210, dn = 546, dz = { "Feralas", "Tanaris", "Felwood" }, dzn = 33, o = true }
+S[9966] = { i = 7991, req = 210, dn = 80, dz = { "Blackrock Depths", "Tanaris", "Un'Goro Crater" }, dzn = 22, o = true }
+S[9970] = { i = 7990, req = 220, dn = 533, dz = { "Feralas", "Tanaris", "Azshara" }, dzn = 33, o = true }
+S[9995] = { i = 7992, req = 195, dn = 407, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
+S[9997] = { i = 8029, req = 200, dn = 462, dz = { "Stranglethorn Vale", "Feralas", "Tanaris" }, dzn = 29, o = true }
+S[10005] = { i = 7993, req = 215, dn = 538, dz = { "Feralas", "Tanaris", "Felwood" }, dzn = 31, o = true }
+S[10009] = { i = 8028, req = 220, dn = 90, dz = { "Felwood", "Tanaris", "Blackrock Depths" }, dzn = 22, o = true }
+S[10013] = { i = 8030, req = 230, v = { 11278 } }
+S[10490] = { i = 8384, req = 175, dn = 29, dz = { "Scarlet Monastery", "Alterac Mountains", "Razorfen Downs" }, dzn = 17, o = true }
+S[10509] = { i = 8385, req = 180, v = { 7852, 7854 }, dn = 370, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
+S[10516] = { i = 8409, req = 185, v = { 7854, 8160 } }
+S[10520] = { i = 8386, req = 190, dn = 421, dz = { "Stranglethorn Vale", "Feralas", "The Hinterlands" }, dzn = 27, o = true }
+S[10525] = { i = 8395, req = 195, d = { 5618 } }
+S[10529] = { i = 8403, req = 195, q = { "Wild Leather Shoulders" } }
+S[10531] = { i = 8387, req = 195, dn = 427, dz = { "Feralas", "Stranglethorn Vale", "The Hinterlands" }, dzn = 29, o = true }
+S[10533] = { i = 8397, req = 195, d = { 5617 } }
+S[10542] = { i = 8398, req = 200, d = { 5616 } }
+S[10544] = { i = 8404, req = 200, q = { "Wild Leather Vest" } }
+S[10546] = { i = 8405, req = 200, q = { "Wild Leather Helmet" } }
+S[10550] = { i = 8388, req = 205 }
+S[10554] = { i = 8399, req = 210, d = { 5615 } }
+S[10560] = { i = 8389, req = 215, dn = 570, dz = { "Feralas", "Tanaris", "Felwood" }, dzn = 31, o = true }
+S[10562] = { i = 8390, req = 215, dn = 538, dz = { "Feralas", "Tanaris", "Azshara" }, dzn = 30, o = true }
+S[10564] = { i = 8400, req = 215, d = { 5623, 7805, 7883 } }
+S[10566] = { i = 8406, req = 220, q = { "Wild Leather Boots" } }
+S[10568] = { i = 8401, req = 220, d = { 5615 } }
+S[10570] = { i = 8402, req = 225, d = { 5623, 7805, 7883 } }
+S[10572] = { i = 8407, req = 225, q = { "Wild Leather Leggings" } }
+S[10574] = { i = 8408, req = 225, q = { "Master of the Wild Leather" } }
+S[10840] = { i = 16113, req = 210, v = { 2805, 13476 } }
+S[11453] = { i = 9293, req = 210, dn = 428, dz = { "Stranglethorn Vale", "Feralas", "Tanaris" }, dzn = 27, o = true }
+S[11454] = { i = 10713, req = 200 }
+S[11456] = { i = 10644, req = 210 }
+S[11458] = { i = 9294, req = 225, dn = 48, dz = { "The Hinterlands", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 3 }
+S[11459] = { i = 9303, req = 225, v = { 5594 } }
+S[11464] = { i = 9295, req = 235, dn = 559, dz = { "Feralas", "Tanaris", "Azshara" }, dzn = 32, o = true }
+S[11466] = { i = 9296, req = 240, d = { 1783, 1791 } }
+S[11468] = { i = 9297, req = 240, dn = 74, dz = { "Azshara", "Blackrock Depths", "Zul'Farrak" }, dzn = 21, o = true }
+S[11472] = { i = 9298, req = 245, dn = 552, dz = { "Tanaris", "Feralas", "Felwood" }, dzn = 32, o = true }
+S[11473] = { i = 9302, req = 245, v = { 8157, 8158 } }
+S[11476] = { i = 9301, req = 250, v = { 1313, 4610 } }
+S[11477] = { i = 9300, req = 250, v = { 8177, 8178 } }
+S[11479] = { i = 9304, req = 225, v = { 5594 } }
+S[11480] = { i = 9305, req = 225, v = { 5594 } }
+S[11643] = { i = 9367, req = 180, q = { "The Origins of Smithing" } }
+S[12047] = { i = 10316, req = 70, dn = 457, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 29, o = true }
+S[12056] = { i = 10300, req = 180, dn = 445, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
+S[12059] = { i = 10301, req = 180, dn = 442, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 29, o = true }
+S[12060] = { i = 10302, req = 180, dn = 417, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
+S[12062] = { i = 254681, req = 185 }
+S[12063] = { i = 254682, req = 185 }
+S[12064] = { i = 10311, req = 185, v = { 3005, 4168 } }
+S[12066] = { i = 10312, req = 190, dn = 421, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
+S[12068] = { i = 254683, req = 190 }
+S[12075] = { i = 10314, req = 190, v = { 3364, 8681 } }
+S[12078] = { i = 10315, req = 195, dn = 545, dz = { "Feralas", "The Hinterlands", "Tanaris" }, dzn = 33, o = true }
+S[12080] = { i = 10317, req = 195, v = { 3364, 8681 } }
+S[12081] = { i = 10318, req = 200, v = { 2672 } }
+S[12083] = { i = 254684, req = 200 }
+S[12084] = { i = 10320, req = 200, dn = 559, dz = { "Feralas", "Felwood", "Tanaris" }, dzn = 32, o = true }
+S[12085] = { i = 10321, req = 200, v = { 4577, 8681 } }
+S[12086] = { i = 10463, req = 200, q = { "The Undermarket" } }
+S[12087] = { i = 254685, req = 200 }
+S[12089] = { i = 10323, req = 140, v = { 4577, 8681 } }
+S[12090] = { i = 254686, req = 205 }
+S[12091] = { i = 10325, req = 140, v = { 1347, 3005 } }
+S[12093] = { i = 10326, req = 140, v = { 4577, 8681 } }
+S[12259] = { i = 10424, req = 130, dn = 431, dz = { "Wetlands", "Ashenvale", "Hillsbrad Foothills" }, dzn = 29, o = true }
+S[12587] = { i = 10601, req = 175, dn = 367, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 30, o = true }
+S[12597] = { i = 10602, req = 210, v = { 8679, 9544 } }
+S[12607] = { i = 10603, req = 220, dn = 415, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
+S[12614] = { i = 10604, req = 220, dn = 412, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 26, o = true }
+S[12615] = { i = 10605, req = 225, dn = 156, dz = { "Tanaris", "Stranglethorn Vale", "Maraudon" }, dzn = 23, o = true }
+S[12616] = { i = 10606, req = 225, dn = 426, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
+S[12617] = { i = 10607, req = 230, v = { 8678 } }
+S[12620] = { i = 10608, req = 240, dn = 87, dz = { "Blackrock Depths", "Tanaris", "Un'Goro Crater" }, dzn = 21, o = true }
+S[12624] = { i = 10609, req = 250, v = { 2688 } }
+S[12717] = { i = 221336, req = 205 }
+S[13380] = { i = 11038, req = 110, dn = 465, dz = { "Ashenvale", "The Barrens", "Wetlands" }, dzn = 28, o = true }
+S[13419] = { i = 11039, req = 110, v = { 3954, 12043 }, dn = 450, dz = { "Ashenvale", "The Barrens", "Redridge Mountains" }, dzn = 29, o = true }
+S[13464] = { i = 11081, req = 115, dn = 444, dz = { "The Barrens", "Ashenvale", "Wetlands" }, dzn = 27, o = true }
+S[13522] = { i = 11098, req = 135, dn = 413, dz = { "Ashenvale", "Hillsbrad Foothills", "Wetlands" }, dzn = 31, o = true }
+S[13536] = { i = 11101, req = 140, v = { 3954, 12043 } }
+S[13612] = { i = 11150, req = 145, d = { 1051, 1052, 1053, 1054, 1364 } }
+S[13617] = { i = 11151, req = 145, d = { 3834, 3919, 4028, 4029, 4030 } }
+S[13620] = { i = 11152, req = 145, d = { 2374, 2375, 2376, 2377, 14276 } }
+S[13646] = { i = 11163, req = 170, v = { 2381, 2821 } }
+S[13653] = { i = 11164, req = 175, dn = 388, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 29, o = true }
+S[13655] = { i = 11165, req = 175, dn = 372, dz = { "Desolace", "Stranglethorn Vale", "Arathi Highlands" }, dzn = 29, o = true }
+S[13687] = { i = 11167, req = 190, dn = 405, dz = { "Stranglethorn Vale", "Desolace", "Arathi Highlands" }, dzn = 28, o = true }
+S[13689] = { i = 11168, req = 195, dn = 42, dz = { "Scarlet Monastery", "Uldaman", "Arathi Highlands" }, dzn = 18, o = true }
+S[13698] = { i = 11166, req = 200, d = { 2556, 2557, 2558, 2605, 2606 } }
+S[13817] = { i = 11202, req = 210, dn = 427, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 27, o = true }
+S[13841] = { i = 11203, req = 215, d = { 674 } }
+S[13846] = { i = 11204, req = 220, dn = 421, dz = { "Feralas", "Stranglethorn Vale", "Tanaris" }, dzn = 28, o = true }
+S[13868] = { i = 11205, req = 225, d = { 764, 765, 766, 1081, 14448 } }
+S[13882] = { i = 11206, req = 225, d = { 2246, 5623, 7805 } }
+S[13898] = { i = 11207, req = 265, d = { 9024 } }
+S[13915] = { i = 11208, req = 230, dn = 546, dz = { "Feralas", "Tanaris", "Felwood" }, dzn = 31, o = true }
+S[13931] = { i = 11223, req = 235, v = { 989, 4229 } }
+S[13933] = { i = 11224, req = 235, dn = 81, dz = { "The Hinterlands", "Western Plaguelands", "Felwood" }, dzn = 19, o = true }
+S[13945] = { i = 11225, req = 245, dn = 534, dz = { "Feralas", "Felwood", "Tanaris" }, dzn = 32, o = true }
+S[13947] = { i = 11226, req = 250, dn = 67, dz = { "Felwood", "Maraudon", "Tanaris" }, dzn = 22, o = true }
+S[15292] = { i = 11610, req = 240, d = { 9028 } }
+S[15293] = { i = 11614, req = 245, dn = 8, dz = { "Blackrock Depths" }, dzn = 1, o = true }
+S[15294] = { i = 11611, req = 250, d = { 9554, 10043 } }
+S[15295] = { i = 11615, req = 255, dn = 14, dz = { "Blackrock Depths" }, dzn = 1, o = true }
+S[15296] = { i = 11612, req = 260, d = { 9543 } }
+S[15596] = { i = 11813, req = 265, d = { 9025 } }
+S[15628] = { i = 11828, req = 205, d = { 7800 }, o = true }
+S[15633] = { i = 11827, req = 205, d = { 6229 }, o = true }
+S[15853] = { i = 12227, req = 125, v = { 12246 } }
+S[15855] = { i = 12228, req = 175, v = { 734, 1148, 2810, 2821, 4879, 4897, 12245 } }
+S[15856] = { i = 12229, req = 175, v = { 7947, 8145, 12246 } }
+S[15861] = { i = 12231, req = 175, v = { 734, 1148, 12245 } }
+S[15863] = { i = 12232, req = 175, v = { 989, 4879, 9636, 12245 } }
+S[15865] = { i = 12233, req = 175, v = { 4897, 8150, 12246 } }
+S[15906] = { i = 12239, req = 200, v = { 4879, 4897, 12246 } }
+S[15910] = { i = 12240, req = 200, v = { 8150, 9636, 12245 } }
+S[15915] = { i = 16111, req = 225, v = { 989, 1149, 4305 } }
+S[15933] = { i = 16110, req = 225, v = { 2803, 2806, 11187 } }
+S[15935] = { i = 12226, req = 1, v = { 2118 } }
+S[15973] = { i = 12261, req = 165, dn = 26, dz = { "Uldaman", "Scarlet Monastery", "Desolace" }, dzn = 12, o = true }
+S[16642] = { i = 12682, req = 225, dn = 591, dz = { "Eastern Plaguelands", "Blackrock Spire", "Felwood" }, dzn = 34, o = true }
+S[16643] = { i = 12683, req = 225, dn = 637, dz = { "Blackrock Spire", "Felwood", "Eastern Plaguelands" }, dzn = 31, o = true }
+S[16644] = { i = 12684, req = 230, dn = 604, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 31, o = true }
+S[16645] = { i = 12685, req = 235, dn = 109, dz = { "Blackrock Spire", "Stratholme", "Blackrock Depths" }, dzn = 23, o = true }
+S[16646] = { i = 12687, req = 240, q = { "Imperial Plate Shoulders" } }
+S[16647] = { i = 12688, req = 240, q = { "Imperial Plate Belt" } }
+S[16648] = { i = 12689, req = 245, dn = 623, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 32, o = true }
+S[16649] = { i = 12690, req = 245, q = { "Imperial Plate Bracer" } }
+S[16650] = { i = 12691, req = 245, dn = 609, dz = { "Blackrock Spire", "Eastern Plaguelands", "Western Plaguelands" }, dzn = 33, o = true }
+S[16651] = { i = 12692, req = 250, dn = 98, dz = { "Blackrock Spire", "Felwood", "Stratholme" }, dzn = 23, o = true }
+S[16652] = { i = 12693, req = 255, dn = 519, dz = { "Eastern Plaguelands", "Blackrock Spire", "Winterspring" }, dzn = 31, o = true }
+S[16653] = { i = 12694, req = 255, dn = 533, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 30, o = true }
+S[16654] = { i = 12695, req = 260, dn = 534, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 30, o = true }
+S[16655] = { i = 12699, req = 265, q = { "Fiery Plate Gauntlets" } }
+S[16656] = { i = 12697, req = 265, dn = 533, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 31, o = true }
+S[16657] = { i = 12700, req = 270, q = { "Imperial Plate Boots" } }
+S[16658] = { i = 12701, req = 270, q = { "Imperial Plate Helm" } }
+S[16659] = { i = 12702, req = 270, dn = 113, dz = { "Blackrock Spire", "Stratholme", "Dire Maul" }, dzn = 18, o = true }
+S[16660] = { i = 12698, req = 265, d = { 11726 }, o = true, fac = "Argent Dawn", rep = "Revered" }
+S[16661] = { i = 12703, req = 270, v = { 11278 }, dn = 127, dz = { "Blackrock Spire", "Stratholme", "Scholomance" }, dzn = 20, o = true }
+S[16662] = { i = 12704, req = 275, dn = 536, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 33, o = true }
+S[16663] = { i = 12705, req = 275, q = { "Imperial Plate Chest" } }
+S[16664] = { i = 12706, req = 275, d = { 4366 } }
+S[16665] = { i = 12707, req = 275, d = { 1836 } }
+S[16667] = { i = 12696, req = 260, q = { "The Demon Forge" } }
+S[16724] = { i = 12711, req = 290, dn = 121, dz = { "Blackrock Spire", "Stratholme", "Scholomance" }, dzn = 18, o = true }
+S[16725] = { i = 12713, req = 280, dn = 455, dz = { "Blackrock Spire", "Dire Maul", "Eastern Plaguelands" }, dzn = 30, o = true }
+S[16726] = { i = 12714, req = 280, d = { 4364 } }
+S[16728] = { i = 12716, req = 290, dn = 8, dz = { "Molten Core", "Ruins of Ahn'Qiraj", "Ahn'Qiraj" }, dzn = 5, o = true }
+S[16729] = { i = 12717, req = 300, dn = 8, dz = { "Blackrock Spire", "Alterac Valley", "Molten Core" }, dzn = 6, o = true }
+S[16730] = { i = 12715, req = 280, q = { "Imperial Plate Leggings" } }
+S[16731] = { i = 12718, req = 285, d = { 4368 } }
+S[16732] = { i = 12719, req = 285, d = { 1885 } }
+S[16741] = { i = 12720, req = 300, dn = 17, dz = { "Molten Core", "Alterac Valley", "Blackrock Spire" }, dzn = 11 }
+S[16742] = { i = 12725, req = 300, q = { "Enchanted Thorium Platemail: Volume III" } }
+S[16744] = { i = 12726, req = 300, q = { "Enchanted Thorium Platemail: Volume II" } }
+S[16745] = { i = 12727, req = 300, q = { "Enchanted Thorium Platemail: Volume I" } }
+S[16746] = { i = 12728, req = 295, dn = 21, dz = { "Blackrock Spire", "Molten Core", "Naxxramas" }, dzn = 9 }
+S[16969] = { i = 12819, req = 250, v = { 11278 } }
+S[16970] = { i = 12821, req = 250, q = { "Snakestone of the Shadow Huntress" } }
+S[16971] = { i = 12823, req = 255, v = { 11278 } }
+S[16973] = { i = 12824, req = 255, q = { "Sweet Serenity" } }
+S[16978] = { i = 12825, req = 255, q = { "Corruption" } }
+S[16983] = { i = 12827, req = 260, dn = 6, dz = { "Stratholme" }, dzn = 1, o = true }
+S[16984] = { i = 12828, req = 265, d = { 10119 } }
+S[16985] = { i = 12830, req = 265, dn = 11, dz = { "Stratholme" }, dzn = 1, o = true }
+S[16988] = { i = 12833, req = 300, d = { 10438 } }
+S[16990] = { i = 12834, req = 300, d = { 10899 } }
+S[16991] = { i = 12835, req = 300, d = { 9736 } }
+S[16992] = { i = 12836, req = 300 }
+S[16993] = { i = 12837, req = 300, d = { 10899 } }
+S[16994] = { i = 12838, req = 300, d = { 9596 } }
+S[16995] = { i = 12839, req = 300, d = { 10997 } }
+S[17187] = { i = 12958, req = 275, v = { 5594 } }
+S[17552] = { i = 13476, req = 255, d = { 7027 } }
+S[17553] = { i = 13477, req = 260, v = { 4226, 4610 } }
+S[17554] = { i = 13478, req = 265, v = { 3348, 5178 } }
+S[17555] = { i = 13479, req = 270, d = { 9449, 9450, 9451, 9452 } }
+S[17557] = { i = 13481, req = 275, o = true }
+S[17559] = { i = 13482, req = 275, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
+S[17560] = { i = 13483, req = 275, v = { 9499 } }
+S[17561] = { i = 13484, req = 275, v = { 11557 }, fac = "Timbermaw Hold", rep = "Friendly" }
+S[17562] = { i = 13485, req = 275, v = { 11278 } }
+S[17563] = { i = 13486, req = 275, dn = 120, dz = { "Blackrock Spire", "Blackrock Depths", "Eastern Plaguelands" }, dzn = 21, o = true }
+S[17564] = { i = 13487, req = 275, dn = 115, dz = { "Blackrock Depths", "Blackrock Spire", "Stratholme" }, dzn = 21, o = true }
+S[17565] = { i = 13488, req = 275, dn = 127, dz = { "Blackrock Spire", "Blackrock Depths", "Felwood" }, dzn = 22, o = true }
+S[17566] = { i = 13489, req = 275, dn = 101, dz = { "Blackrock Depths", "Blackrock Spire", "Felwood" }, dzn = 23, o = true }
+S[17570] = { i = 13490, req = 280, dn = 532, dz = { "Blackrock Spire", "Eastern Plaguelands", "Western Plaguelands" }, dzn = 30, o = true }
+S[17571] = { i = 13491, req = 280, d = { 6201, 7106 } }
+S[17572] = { i = 13492, req = 285, dn = 521, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 31, o = true }
+S[17573] = { i = 13493, req = 285, dn = 137, dz = { "Blackrock Spire", "Stratholme", "Eastern Plaguelands" }, dzn = 18, o = true }
+S[17574] = { i = 13494, req = 290, d = { 9262, 9264 } }
+S[17575] = { i = 13495, req = 290, d = { 7428 } }
+S[17576] = { i = 13496, req = 290, d = { 1812, 1813 } }
+S[17577] = { i = 13497, req = 290, d = { 7437 } }
+S[17578] = { i = 13499, req = 290, d = { 8546, 8550 } }
+S[17579] = { i = 13500, req = 290 }
+S[17580] = { i = 13501, req = 295, v = { 11278 }, d = { 1853 } }
+S[17632] = { i = 13517, req = 275 }
+S[17634] = { i = 13518, req = 300, dn = 122, dz = { "Stratholme", "Blackrock Spire", "Scholomance" }, dzn = 18, o = true }
+S[17635] = { i = 13519, req = 300, d = { 10363 } }
+S[17636] = { i = 13520, req = 300, d = { 10813 } }
+S[17637] = { i = 13521, req = 300, d = { 10508 } }
+S[17638] = { i = 13522, req = 300, d = { 10339 } }
+S[18238] = { i = 13939, req = 225, v = { 8137 } }
+S[18239] = { i = 13940, req = 225, v = { 2664 } }
+S[18240] = { i = 13942, req = 240, v = { 8137 } }
+S[18241] = { i = 13941, req = 225, v = { 2664 } }
+S[18242] = { i = 13943, req = 240, v = { 2664 } }
+S[18243] = { i = 13945, req = 250, v = { 8137 } }
+S[18244] = { i = 13946, req = 250, v = { 8137 } }
+S[18245] = { i = 13947, req = 275, v = { 7947, 8145 } }
+S[18246] = { i = 13948, req = 275, v = { 7947, 8145 } }
+S[18247] = { i = 13949, req = 275, v = { 7947, 8145 } }
+S[18403] = { i = 14466, req = 210, dn = 628, dz = { "Felwood", "Eastern Plaguelands", "Blackrock Spire" }, dzn = 32, o = true }
+S[18404] = { i = 14467, req = 210, dn = 610, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 33, o = true }
+S[18405] = { i = 14468, req = 215, v = { 11189 } }
+S[18406] = { i = 14469, req = 215, v = { 7940 } }
+S[18407] = { i = 14470, req = 215, dn = 632, dz = { "Eastern Plaguelands", "Blackrock Spire", "Felwood" }, dzn = 32, o = true }
+S[18408] = { i = 14471, req = 215, d = { 5861 } }
+S[18409] = { i = 14472, req = 220, v = { 7940 } }
+S[18410] = { i = 14473, req = 220, d = { 7864 } }
+S[18411] = { i = 14474, req = 215, dn = 636, dz = { "Felwood", "Blackrock Spire", "Eastern Plaguelands" }, dzn = 34, o = true }
+S[18412] = { i = 14476, req = 225, d = { 5861 } }
+S[18413] = { i = 14477, req = 225, d = { 7864, 8538 } }
+S[18414] = { i = 14478, req = 225, dn = 617, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 32, o = true }
+S[18415] = { i = 14479, req = 225, dn = 629, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 33, o = true }
+S[18416] = { i = 14480, req = 225, d = { 8538 } }
+S[18417] = { i = 14481, req = 230, v = { 11189 } }
+S[18418] = { i = 14482, req = 230, d = { 7037 } }
+S[18419] = { i = 14483, req = 230, v = { 12022 } }
+S[18420] = { i = 14484, req = 230, dn = 611, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 31, o = true }
+S[18421] = { i = 14485, req = 230, d = { 8551 } }
+S[18422] = { i = 14486, req = 235, d = { 9026 } }
+S[18423] = { i = 14488, req = 235, v = { 7940 } }
+S[18424] = { i = 14489, req = 235, dn = 518, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 30, o = true }
+S[18434] = { i = 14490, req = 235, d = { 7037 } }
+S[18436] = { i = 14493, req = 245, d = { 7437 } }
+S[18437] = { i = 14492, req = 240, dn = 545, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 32, o = true }
+S[18438] = { i = 14491, req = 240, dn = 549, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 31, o = true }
+S[18439] = { i = 14494, req = 245, dn = 549, dz = { "Eastern Plaguelands", "Blackrock Spire", "Dire Maul" }, dzn = 30, o = true }
+S[18440] = { i = 14497, req = 245, dn = 141, dz = { "Blackrock Spire", "Stratholme", "Scholomance" }, dzn = 19, o = true }
+S[18441] = { i = 14495, req = 245, d = { 10384 } }
+S[18442] = { i = 14496, req = 245, dn = 535, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 31, o = true }
+S[18444] = { i = 14498, req = 250, dn = 541, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 31, o = true }
+S[18445] = { i = 14499, req = 255, dn = 515, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 30, o = true }
+S[18446] = { i = 14500, req = 255, d = { 8526 } }
+S[18447] = { i = 14501, req = 270, dn = 114, dz = { "Blackrock Spire", "Scholomance", "Stratholme" }, dzn = 19, o = true }
+S[18448] = { i = 14507, req = 275, dn = 131, dz = { "Stratholme", "Blackrock Spire", "Scholomance" }, dzn = 19, o = true }
+S[18449] = { i = 14504, req = 260, dn = 452, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 27, o = true }
+S[18450] = { i = 14505, req = 260, d = { 8526 } }
+S[18451] = { i = 14506, req = 260, dn = 471, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 32, o = true }
+S[18452] = { i = 14509, req = 280, dn = 13, dz = { "Molten Core", "Blackrock Spire", "Blackwing Lair" }, dzn = 7 }
+S[18453] = { i = 14508, req = 265, dn = 473, dz = { "Blackrock Spire", "Eastern Plaguelands", "Silithus" }, dzn = 31, o = true }
+S[18454] = { i = 14511, req = 295, dn = 8, dz = { "Molten Core", "Blackrock Spire", "Blackwing Lair" }, dzn = 5 }
+S[18455] = { i = 14510, req = 300, dn = 11, dz = { "Molten Core", "Ahn'Qiraj", "Alterac Valley" }, dzn = 8 }
+S[18456] = { i = 14512, req = 295, d = { 10813 } }
+S[18457] = { i = 14513, req = 295, d = { 9264 } }
+S[18458] = { i = 14514, req = 295, d = { 1853 } }
+S[18560] = { i = 14526, req = 230, v = { 11189 } }
+S[19048] = { i = 15724, req = 255, v = { 12956 } }
+S[19049] = { i = 15725, req = 235, v = { 12942, 12943 } }
+S[19050] = { i = 15726, req = 235, v = { 11874 } }
+S[19051] = { i = 15727, req = 240, d = { 5981, 6005 } }
+S[19052] = { i = 15728, req = 240, d = { 6201 } }
+S[19053] = { i = 15729, req = 240, v = { 12957 } }
+S[19054] = { i = 15730, req = 290, d = { 10363 } }
+S[19055] = { i = 15731, req = 245, dn = 624, dz = { "Blackrock Spire", "Felwood", "Eastern Plaguelands" }, dzn = 34, o = true }
+S[19059] = { i = 15732, req = 245, d = { 7035 } }
+S[19060] = { i = 15733, req = 245, d = { 5226 } }
+S[19061] = { i = 15734, req = 245, v = { 7852, 7854 } }
+S[19062] = { i = 15735, req = 245, v = { 12958 } }
+S[19063] = { i = 15737, req = 250, dn = 623, dz = { "Eastern Plaguelands", "Blackrock Spire", "Felwood" }, dzn = 32, o = true }
+S[19064] = { i = 15738, req = 250, d = { 7025 } }
+S[19065] = { i = 15739, req = 250, d = { 7112 } }
+S[19066] = { i = 15740, req = 250, v = { 11189 } }
+S[19067] = { i = 15741, req = 250, v = { 12942, 12943 } }
+S[19068] = { i = 15742, req = 250, v = { 11557 }, dn = 69, dz = { "Blackrock Depths", "Un'Goro Crater", "Western Plaguelands" }, dzn = 21, o = true, fac = "Timbermaw Hold", rep = "Friendly" }
+S[19070] = { i = 15743, req = 255, dn = 523, dz = { "Eastern Plaguelands", "Blackrock Spire", "Winterspring" }, dzn = 31, o = true }
+S[19071] = { i = 15744, req = 255, d = { 7107 } }
+S[19072] = { i = 15745, req = 255, dn = 514, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 30, o = true }
+S[19073] = { i = 15746, req = 255, dn = 535, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 30, o = true }
+S[19074] = { i = 15747, req = 260, d = { 7440 } }
+S[19075] = { i = 15748, req = 260, d = { 7027 } }
+S[19076] = { i = 15749, req = 260, d = { 9259 } }
+S[19077] = { i = 15751, req = 260, v = { 12957 } }
+S[19078] = { i = 15752, req = 260, d = { 7158 } }
+S[19079] = { i = 15753, req = 260, d = { 6138 } }
+S[19080] = { i = 20254, req = 260, v = { 11557 }, fac = "Timbermaw Hold", rep = "Friendly" }
+S[19081] = { i = 15755, req = 265, dn = 528, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 31, o = true }
+S[19082] = { i = 15756, req = 265, v = { 12941 } }
+S[19083] = { i = 15757, req = 265, dn = 530, dz = { "Eastern Plaguelands", "Blackrock Spire", "Winterspring" }, dzn = 33, o = true }
+S[19084] = { i = 15758, req = 265, v = { 12959 } }
+S[19085] = { i = 15759, req = 265, v = { 9499 } }
+S[19086] = { i = 15760, req = 265, d = { 2644 } }
+S[19087] = { i = 15761, req = 270, d = { 7441 } }
+S[19088] = { i = 15762, req = 270, v = { 12956 } }
+S[19089] = { i = 15763, req = 270, d = { 6146 } }
+S[19090] = { i = 15764, req = 270, d = { 6144 } }
+S[19091] = { i = 15765, req = 275, dn = 458, dz = { "Blackrock Spire", "Eastern Plaguelands", "Silithus" }, dzn = 32, o = true }
+S[19092] = { i = 15768, req = 275, d = { 10406 } }
+S[19094] = { i = 15770, req = 270, d = { 8898 } }
+S[19095] = { i = 15771, req = 290, d = { 1813 } }
+S[19097] = { i = 15772, req = 290, d = { 6556, 6557, 6559, 9477 } }
+S[19098] = { i = 15773, req = 280, d = { 10499 } }
+S[19100] = { i = 15774, req = 280, d = { 7029 } }
+S[19101] = { i = 15775, req = 280, d = { 9260 } }
+S[19102] = { i = 15776, req = 285, d = { 11582 } }
+S[19103] = { i = 15777, req = 285, d = { 10425 } }
+S[19104] = { i = 15779, req = 290, d = { 7438 } }
+S[19107] = { i = 15781, req = 290, d = { 8903 } }
+S[19790] = { i = 16041, req = 260, v = { 5175 } }
+S[19791] = { i = 16042, req = 260, v = { 5175 } }
+S[19792] = { i = 16043, req = 260, dn = 608, dz = { "Blackrock Spire", "Eastern Plaguelands", "Felwood" }, dzn = 34, o = true }
+S[19793] = { i = 16044, req = 265, dn = 114, dz = { "Blackrock Spire", "Blackrock Depths", "Felwood" }, dzn = 21, o = true }
+S[19794] = { i = 16045, req = 270, d = { 6195 } }
+S[19795] = { i = 16047, req = 275, v = { 11185 } }
+S[19796] = { i = 16048, req = 275, d = { 8897 } }
+S[19799] = { i = 16049, req = 285, d = { 8920 } }
+S[19800] = { i = 16051, req = 285, dn = 507, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 31, o = true }
+S[19814] = { i = 16046, req = 275, v = { 11185 } }
+S[19815] = { i = 16050, req = 285, v = { 11185 } }
+S[19819] = { i = 16052, req = 290, d = { 10426 } }
+S[19825] = { i = 16053, req = 290, d = { 8900 } }
+S[19830] = { i = 16054, req = 300, d = { 7437 } }
+S[19831] = { i = 16055, req = 300, dn = 119, dz = { "Stratholme", "Blackrock Spire", "Dire Maul" }, dzn = 19, o = true }
+S[19833] = { i = 16056, req = 300, d = { 8561 } }
+S[20008] = { i = 16214, req = 255, d = { 2642 } }
+S[20009] = { i = 16218, req = 270, dn = 609, dz = { "Blackrock Spire", "Eastern Plaguelands", "Western Plaguelands" }, dzn = 33, o = true }
+S[20010] = { i = 16246, req = 295, d = { 7372 } }
+S[20011] = { i = 16251, req = 300, dn = 469, dz = { "Blackrock Spire", "Eastern Plaguelands", "Winterspring" }, dzn = 28, o = true }
+S[20012] = { i = 16219, req = 270, d = { 6201 } }
+S[20013] = { i = 16244, req = 295, d = { 9198 } }
+S[20014] = { i = 16216, req = 265, d = { 5259 } }
+S[20015] = { i = 16224, req = 285, v = { 12022 } }
+S[20016] = { i = 16222, req = 280, d = { 9447 } }
+S[20017] = { i = 16217, req = 265, v = { 4229, 4561 } }
+S[20020] = { i = 16215, req = 260, dn = 602, dz = { "Eastern Plaguelands", "Blackrock Spire", "Felwood" }, dzn = 33, o = true }
+S[20023] = { i = 16245, req = 295, dn = 495, dz = { "Blackrock Spire", "Eastern Plaguelands", "Dire Maul" }, dzn = 35, o = true }
+S[20024] = { i = 16220, req = 275, dn = 629, dz = { "Eastern Plaguelands", "Blackrock Spire", "Felwood" }, dzn = 35, o = true }
+S[20025] = { i = 16253, req = 300, dn = 13, dz = { "Blackrock Spire", "Molten Core", "Ruins of Ahn'Qiraj" }, dzn = 8 }
+S[20026] = { i = 16221, req = 275, v = { 11189 } }
+S[20028] = { i = 16242, req = 290, d = { 9452 } }
+S[20029] = { i = 16223, req = 285, d = { 7524 } }
+S[20030] = { i = 16247, req = 295, d = { 10317 } }
+S[20031] = { i = 16250, req = 300, dn = 58, dz = { "Blackrock Spire" }, dzn = 1 }
+S[20032] = { i = 16254, req = 300, d = { 10499 } }
+S[20033] = { i = 16248, req = 295, d = { 10398 } }
+S[20034] = { i = 16252, req = 300, d = { 4494, 9451 } }
+S[20035] = { i = 16255, req = 300, d = { 10469 } }
+S[20036] = { i = 16249, req = 300, d = { 10422 } }
+S[20051] = { i = 16243, req = 290, v = { 12022 } }
+S[20626] = { i = 16767, req = 225, v = { 8139 } }
+S[20848] = { i = 17017, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
+S[20849] = { i = 17018, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
+S[20853] = { i = 17022, req = 295, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
+S[20854] = { i = 17023, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
+S[20855] = { i = 17025, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
+S[20872] = { i = 17049, req = 270, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
+S[20873] = { i = 17053, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
+S[20874] = { i = 17051, req = 270, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
+S[20876] = { i = 17052, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
+S[20890] = { i = 17059, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
+S[20897] = { i = 17060, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
+S[20916] = { i = 17062, req = 175, v = { 2383, 2664, 3178, 3333, 4307, 4574, 5162, 12033, 12962 } }
+S[21143] = { i = 17200, req = 1, v = { 13420, 13429, 13432, 13433, 13435 } }
+S[21144] = { i = 17201, req = 35, v = { 13420, 13429, 13432, 13433, 13435 } }
+S[21161] = { i = 18592, req = 300, q = { "A Binding Contract" } }
+S[21913] = { i = 17706, req = 165, d = { 445 }, o = true }
+S[21923] = { i = 17709, req = 190, d = { 8598 }, o = true }
+S[21931] = { i = 17725, req = 190, o = true }
+S[21940] = { i = 17720, req = 190, o = true }
+S[21943] = { i = 17722, req = 165, d = { 7856 }, o = true }
+S[21945] = { i = 17724, req = 155, o = true }
+S[22480] = { i = 18046, req = 225, v = { 4782, 7733, 8125 } }
+S[22704] = { i = 18235, req = 300 }
+S[22711] = { i = 18239, req = 175, v = { 2699 } }
+S[22727] = { i = 18252, req = 300 }
+S[22732] = { i = 18257, req = 300 }
+S[22749] = { i = 18259, req = 300 }
+S[22750] = { i = 18260, req = 300 }
+S[22757] = { i = 18264, req = 300 }
+S[22759] = { i = 18265, req = 300 }
+S[22761] = { i = 18267, req = 275, d = { 14354 } }
+S[22793] = { i = 18290, req = 300 }
+S[22795] = { i = 18292, req = 300 }
+S[22797] = { i = 18291, req = 300 }
+S[22866] = { i = 18414, req = 295, d = { 417, 11448, 11450 }, o = true }
+S[22867] = { i = 18415, req = 280, d = { 11450 }, o = true }
+S[22868] = { i = 18416, req = 280, d = { 417, 11448, 11450 }, o = true }
+S[22869] = { i = 18417, req = 280, d = { 14351 }, o = true }
+S[22870] = { i = 18418, req = 280, d = { 417, 11448, 11450 }, o = true }
+S[22902] = { i = 18487, req = 275, v = { 14371 } }
+S[22921] = { i = 18514, req = 290, d = { 417, 11448 }, o = true }
+S[22922] = { i = 18515, req = 290, o = true }
+S[22923] = { i = 18516, req = 290, d = { 417, 11448, 11450, 14351 }, o = true }
+S[22926] = { i = 18517, req = 300, d = { 417 }, o = true }
+S[22927] = { i = 18518, req = 300, d = { 417, 11448 }, o = true }
+S[22928] = { i = 18519, req = 300, d = { 417 }, o = true }
+S[23066] = { i = 18647, req = 150, v = { 3413 } }
+S[23067] = { i = 18649, req = 150, v = { 1304, 5175 } }
+S[23068] = { i = 18648, req = 150, v = { 2838, 3495 } }
+S[23069] = { i = 18650, req = 200, v = { 8131 } }
+S[23071] = { i = 18651, req = 260, v = { 2685 } }
+S[23077] = { i = 18652, req = 260, v = { 11185 } }
+S[23078] = { i = 18653, req = 265, d = { 9499 } }
+S[23079] = { i = 18655, req = 275 }
+S[23080] = { i = 18656, req = 275, v = { 11185 } }
+S[23081] = { i = 18657, req = 290, d = { 10264 } }
+S[23082] = { i = 18658, req = 300, d = { 10426 } }
+S[23096] = { i = 18654, req = 265, d = { 8920 } }
+S[23129] = { i = 18661, req = 260, d = { 8920 } }
+S[23190] = { i = 18731, req = 125, v = { 3366, 5128 } }
+S[23399] = { i = 18949, req = 130, v = { 4225, 4589 } }
+S[23507] = { i = 19027, req = 250, v = { 14637 } }
+S[23628] = { i = 19202, req = 265, v = { 11557 }, fac = "Timbermaw Hold", rep = "Honored" }
+S[23629] = { i = 19204, req = 295, v = { 11557 }, fac = "Timbermaw Hold", rep = "Revered" }
+S[23632] = { i = 19203, req = 265, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
+S[23633] = { i = 19205, req = 300, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Revered" }
+S[23636] = { i = 19206, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
+S[23637] = { i = 19207, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
+S[23638] = { i = 19208, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
+S[23639] = { i = 19209, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
+S[23650] = { i = 19210, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Exalted" }
+S[23652] = { i = 19211, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Exalted" }
+S[23653] = { i = 19212, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Exalted" }
+S[23662] = { i = 19215, req = 255, v = { 11557 }, fac = "Timbermaw Hold", rep = "Honored" }
+S[23663] = { i = 19218, req = 290, v = { 11557 }, fac = "Timbermaw Hold", rep = "Revered" }
+S[23664] = { i = 19216, req = 255, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
+S[23665] = { i = 19217, req = 290, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Revered" }
+S[23666] = { i = 19219, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
+S[23667] = { i = 19220, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
+S[23703] = { i = 19326, req = 265, v = { 11557 }, fac = "Timbermaw Hold", rep = "Honored" }
+S[23704] = { i = 19327, req = 295, v = { 11557 }, fac = "Timbermaw Hold", rep = "Revered" }
+S[23705] = { i = 19328, req = 265, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
+S[23706] = { i = 19329, req = 295, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Revered" }
+S[23707] = { i = 19330, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
+S[23708] = { i = 19331, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
+S[23709] = { i = 19332, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
+S[23710] = { i = 19333, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
+S[23787] = { i = 19442, req = 300, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
+S[23799] = { i = 19444, req = 290, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
+S[23800] = { i = 19445, req = 290, v = { 11557 }, fac = "Timbermaw Hold", rep = "Honored" }
+S[23801] = { i = 19446, req = 290, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Honored" }
+S[23802] = { i = 19447, req = 300, v = { 10856, 10857, 11536 }, fac = "Argent Dawn", rep = "Revered" }
+S[23803] = { i = 19448, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Honored" }
+S[23804] = { i = 19449, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Revered" }
+S[24091] = { i = 19764, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
+S[24092] = { i = 19765, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
+S[24093] = { i = 19766, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
+S[24121] = { i = 19769, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
+S[24122] = { i = 19770, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
+S[24123] = { i = 19771, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
+S[24124] = { i = 19772, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
+S[24125] = { i = 19773, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
+S[24136] = { i = 19776, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
+S[24137] = { i = 19777, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
+S[24138] = { i = 19778, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
+S[24139] = { i = 19779, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
+S[24140] = { i = 19780, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
+S[24141] = { i = 19781, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
+S[24356] = { i = 20000, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
+S[24357] = { i = 20001, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
+S[24365] = { i = 20011, req = 275, v = { 14921 }, fac = "Zandalar Tribe", rep = "Revered" }
+S[24366] = { i = 20012, req = 275, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
+S[24367] = { i = 20013, req = 285, v = { 14921 }, fac = "Zandalar Tribe", rep = "Exalted" }
+S[24368] = { i = 20014, req = 290, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
+S[24399] = { i = 20040, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Exalted" }
+S[24418] = { i = 20075, req = 150, v = { 4879 } }
+S[24901] = { i = 20546, req = 285, d = { 11881 }, o = true }
+S[24902] = { i = 20548, req = 285, o = true }
+S[24903] = { i = 20547, req = 285, o = true }
+S[24912] = { i = 20553, req = 300, o = true }
+S[24913] = { i = 20555, req = 300, o = true }
+S[24914] = { i = 20554, req = 300, o = true }
+S[24940] = { i = 20576, req = 75, v = { 777 } }
+S[25072] = { i = 20726, req = 300, d = { 15275 } }
+S[25073] = { i = 20727, req = 300 }
+S[25074] = { i = 20728, req = 300 }
+S[25078] = { i = 20729, req = 300 }
+S[25079] = { i = 20730, req = 300 }
+S[25080] = { i = 20731, req = 300 }
+S[25081] = { i = 20732, req = 300, v = { 15419 }, fac = "Cenarion Circle", rep = "Friendly" }
+S[25082] = { i = 20733, req = 300, v = { 15419 }, fac = "Cenarion Circle", rep = "Honored" }
+S[25083] = { i = 20734, req = 300 }
+S[25084] = { i = 20735, req = 300, d = { 15276 } }
+S[25086] = { i = 20736, req = 300 }
+S[25124] = { i = 20758, req = 5, v = { 1318, 3012, 3346, 4228, 4617, 5158, 5757, 5758, 15419 } }
+S[25125] = { i = 20752, req = 150, v = { 1318, 3012, 3346, 4228, 4617, 5158, 5757, 5758, 15419 } }
+S[25126] = { i = 20753, req = 200, v = { 1318, 3012, 3346, 4228, 4617, 5158, 5757, 5758, 15419 } }
+S[25127] = { i = 20754, req = 250, v = { 15419 } }
+S[25128] = { i = 20755, req = 275, v = { 15419 } }
+S[25129] = { i = 20756, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Honored" }
+S[25130] = { i = 20757, req = 300, v = { 14921 }, fac = "Zandalar Tribe", rep = "Friendly" }
+S[25146] = { i = 20761, req = 300, v = { 12944 }, fac = "Thorium Brotherhood", rep = "Friendly" }
 S[25347] = { i = 21302 }
-S[25659] = { i = 21025, q = { "Dirge's Kickin' Chimaerok Chops" } }
-S[25704] = { i = 21099, v = { 2381, 2397, 2664, 3027, 3085, 3400, 4223, 4265, 4553, 5160, 5483, 8307, 12033, 14738 } }
-S[25954] = { i = 21219, v = { 2381, 2397, 2664, 3027, 3085, 3400, 4223, 4265, 4553, 5160, 5483, 8307, 12033, 14738 } }
-S[26085] = { i = 21358, v = { 6568 } }
-S[26087] = { i = 21371 }
-S[26277] = { i = 21547, d = { 5844, 5846, 8637 } }
-S[26279] = { i = 21548, d = { 14454, 14457 } }
-S[26403] = { i = 21722, q = { "Festive Recipes" } }
-S[26407] = { i = 21723, q = { "Festive Recipes" } }
-S[26416] = { i = 21724, o = true }
-S[26417] = { i = 21725, o = true }
-S[26418] = { i = 21726, o = true }
-S[26420] = { i = 21727, o = true }
-S[26421] = { i = 21728, o = true }
-S[26422] = { i = 21729, o = true }
-S[26423] = { i = 21730, o = true }
-S[26424] = { i = 21731, o = true }
-S[26425] = { i = 21732, o = true }
-S[26426] = { i = 21733, o = true }
-S[26427] = { i = 21734, o = true }
-S[26428] = { i = 21735, o = true }
-S[26442] = { i = 21738, q = { "Firework Launcher" } }
-S[26443] = { i = 21737, q = { "Cluster Launcher" } }
-S[27586] = { i = 22219, fac = "Cenarion Circle", rep = "Revered" }
-S[27587] = { i = 22222, d = { 15263 } }
-S[27589] = { i = 22220, d = { 15340 } }
-S[27590] = { i = 22221, fac = "Cenarion Circle", rep = "Exalted" }
-S[27658] = { i = 22307, v = { 1318, 3012, 3346, 4228, 4617, 5158, 5757, 5758, 15419 } }
-S[27659] = { i = 22308, v = { 15419 } }
-S[27660] = { i = 22309, d = { 11487 } }
-S[27724] = { i = 22310, v = { 15179 }, fac = "Cenarion Circle", rep = "Friendly" }
-S[27725] = { i = 22312, v = { 15179 }, fac = "Cenarion Circle", rep = "Revered" }
-S[27829] = { i = 22388, dn = 8, dz = { "Scholomance", "Blackrock Depths", "Naxxramas" }, dzn = 5, o = true }
-S[27830] = { i = 22390, dn = 8, dz = { "Ahn'Qiraj", "Naxxramas", "Alterac Valley" }, dzn = 6 }
-S[27832] = { i = 22389, dn = 8, dz = { "Molten Core", "Ahn'Qiraj", "Naxxramas" }, dzn = 5 }
-S[27837] = { i = 22392, v = { 11557 }, fac = "Timbermaw Hold", rep = "Friendly" }
-S[28210] = { i = 22683, v = { 15179 }, fac = "Cenarion Circle", rep = "Revered" }
-S[28242] = { i = 22703, fac = "Argent Dawn", rep = "Exalted" }
-S[28243] = { i = 22704, fac = "Argent Dawn", rep = "Revered" }
-S[28244] = { i = 22705, fac = "Hydraxian Waterlords", rep = "Revered" }
-S[28327] = { i = 22729 }
-S[28480] = { i = 22774, v = { 15179 }, fac = "Cenarion Circle", rep = "Revered" }
-S[28481] = { i = 22773, v = { 15179 }, fac = "Cenarion Circle", rep = "Honored" }
-S[28482] = { i = 22772, v = { 15179 }, fac = "Cenarion Circle", rep = "Friendly" }
-S[44950] = { i = 34261 }
-S[44953] = { i = 34262 }
-S[44958] = { i = 34319 }
-S[424641] = { i = 210178 }
-S[426607] = { i = 210709 }
-S[427061] = { i = 210779 }
-S[428424] = { i = 211247 }
-S[431362] = { i = 212230 }
-S[435481] = { i = 215129 }
-S[435610] = { i = 215149 }
-S[435819] = { i = 215367 }
-S[435827] = { i = 215368 }
-S[435841] = { i = 215369 }
-S[435848] = { i = 215370 }
-S[435903] = { i = 215138 }
-S[435904] = { i = 215152 }
-S[435906] = { i = 215383 }
-S[435908] = { i = 215155 }
-S[435910] = { i = 215384 }
-S[435949] = { i = 215422 }
-S[435951] = { i = 215423 }
-S[435953] = { i = 215424 }
-S[435956] = { i = 215429 }
-S[435958] = { i = 215153 }
-S[435960] = { i = 215156 }
-S[435964] = { i = 215431 }
-S[435966] = { i = 215432 }
-S[435969] = { i = 215433 }
-S[435971] = { i = 215163 }
-S[439085] = { i = 217244 }
-S[439091] = { i = 217249 }
-S[439093] = { i = 217251 }
-S[439097] = { i = 217254 }
-S[439102] = { i = 217258 }
-S[439105] = { i = 217260 }
-S[439108] = { i = 217262 }
-S[439110] = { i = 217264 }
-S[439112] = { i = 217266 }
-S[439118] = { i = 217271 }
-S[439120] = { i = 217274 }
-S[439122] = { i = 217276 }
-S[439124] = { i = 217278 }
-S[439126] = { i = 217280 }
-S[439128] = { i = 217282 }
-S[439130] = { i = 217284 }
-S[439132] = { i = 217286 }
-S[439156] = { i = 215141 }
-S[439960] = { i = 217399 }
-S[448624] = { i = 223163 }
-S[460460] = { i = 227727 }
-S[461645] = { i = 227899 }
-S[461647] = { i = 227905 }
-S[461649] = { i = 227900 }
-S[461651] = { i = 227909 }
-S[461653] = { i = 227910 }
-S[461655] = { i = 227902 }
-S[461657] = { i = 227903 }
-S[461659] = { i = 227904 }
-S[461661] = { i = 227906 }
-S[461663] = { i = 227907 }
-S[461665] = { i = 227908 }
-S[461667] = { i = 227901 }
-S[461669] = { i = 228117 }
-S[461671] = { i = 228250 }
-S[461673] = { i = 227898 }
-S[461675] = { i = 228114 }
-S[461677] = { i = 228251 }
-S[461690] = { i = 228276 }
-S[461706] = { i = 228301 }
-S[461708] = { i = 228303 }
-S[461720] = { i = 228309 }
-S[461722] = { i = 228119 }
-S[461724] = { i = 228120 }
-S[461727] = { i = 228121 }
-S[461730] = { i = 228310 }
-S[461733] = { i = 228311 }
-S[461735] = { i = 228312 }
-S[461737] = { i = 228313 }
-S[461739] = { i = 228314 }
-S[461743] = { i = 228315 }
-S[461747] = { i = 228316 }
-S[461750] = { i = 228317 }
-S[461752] = { i = 228318 }
-S[461754] = { i = 228319 }
-S[462282] = { i = 228477 }
-S[463866] = { i = 228979, fac = "Hydraxian Waterlords", rep = "Revered" }
-S[463869] = { i = 228981 }
-S[463871] = { i = 228982, fac = "Timbermaw Hold", rep = "Revered" }
-S[463972] = { i = 228993 }
-S[470349] = { i = 232434 }
-S[470359] = { i = 232437 }
-S[470370] = { i = 232443 }
-S[471400] = { i = 232610, fac = "Zandalar Tribe", rep = "Honored" }
-S[1213622] = { i = 249536 }
-S[1213626] = { i = 249534 }
-S[1219577] = { i = 274391 }
-S[1219578] = { i = 274392 }
-S[1219579] = { i = 274393 }
-S[1219580] = { i = 274394 }
-S[1219581] = { i = 274395 }
-S[1219587] = { i = 274399 }
-S[1220623] = { i = 274400 }
-S[1220624] = { i = 274401 }
-S[1221012] = { i = 236872 }
-S[1224607] = { i = 238298 }
-S[1224608] = { i = 238299 }
-S[1224609] = { i = 238300 }
-S[1224610] = { i = 238301 }
-S[1224611] = { i = 238302 }
-S[1224612] = { i = 238303 }
-S[1224613] = { i = 238304 }
-S[1224614] = { i = 238305 }
-S[1224615] = { i = 238306 }
-S[1224616] = { i = 238307 }
-S[1224617] = { i = 238308 }
-S[1224618] = { i = 238309 }
-S[1224619] = { i = 238310 }
-S[1224620] = { i = 238311 }
-S[1224621] = { i = 238312 }
-S[1224622] = { i = 238313 }
-S[1224623] = { i = 238314 }
-S[1224624] = { i = 238315 }
-S[1224625] = { i = 238316 }
-S[1224626] = { i = 238317 }
-S[1224627] = { i = 238318 }
-S[1224628] = { i = 238319 }
-S[1224629] = { i = 238320 }
-S[1224630] = { i = 238321 }
-S[1224631] = { i = 238322 }
-S[1224632] = { i = 238323 }
-S[1224633] = { i = 238324 }
-S[1224635] = { i = 238325 }
-S[1224636] = { i = 238326 }
-S[1224637] = { i = 238327 }
-S[1224638] = { i = 238328 }
-S[1224639] = { i = 238329 }
-S[1225758] = { i = 238645 }
-S[1225759] = { i = 238646 }
-S[1225760] = { i = 238647 }
-S[1225762] = { i = 238649 }
-S[1225763] = { i = 238650 }
-S[1226213] = { i = 238789 }
-S[1226689] = { i = 238927 }
-S[1226690] = { i = 238928 }
-S[1227723] = { i = 239149 }
-S[1227724] = { i = 239150 }
-S[1228088] = { i = 239222 }
-S[1231128] = { i = 241191 }
-S[1231139] = { i = 241195 }
-S[1231164] = { i = 241201 }
-S[1231583] = { i = 241651 }
-S[1232172] = { i = 242361 }
-S[1244421] = { i = 236754 }
-S[1244434] = { i = 255723 }
-S[1244435] = { i = 255725 }
-S[1244436] = { i = 255729 }
-S[1248458] = { i = 249474 }
-S[1248459] = { i = 249475 }
-S[1248460] = { i = 249486 }
-S[1248461] = { i = 249487 }
-S[1248497] = { i = 249488 }
-S[1248498] = { i = 249489 }
-S[1248500] = { i = 249514 }
-S[1248505] = { i = 249515 }
-S[1248509] = { i = 249512 }
-S[1248510] = { i = 249511 }
-S[1248511] = { i = 249513 }
-S[1248515] = { i = 249522 }
-S[1248528] = { i = 249516 }
-S[1248599] = { i = 249524 }
-S[1248607] = { i = 249525 }
-S[1248636] = { i = 249526 }
-S[1248640] = { i = 274398 }
-S[1248645] = { i = 249535 }
-S[1248650] = { i = 249537 }
-S[1248661] = { i = 249538 }
-S[1248665] = { i = 249539 }
-S[1248668] = { i = 249523 }
-S[1248703] = { i = 249482 }
-S[1248739] = { i = 249483 }
-S[1248745] = { i = 249484 }
-S[1248748] = { i = 249485 }
-S[1248752] = { i = 249476 }
-S[1248754] = { i = 249477 }
-S[1248755] = { i = 249478 }
-S[1248757] = { i = 249479 }
-S[1248760] = { i = 249480 }
-S[1248805] = { i = 249481 }
-S[1248974] = { i = 249493 }
-S[1249006] = { i = 249494 }
-S[1249015] = { i = 249495 }
-S[1249019] = { i = 249496 }
-S[1249057] = { i = 249502 }
-S[1249058] = { i = 249503 }
-S[1249059] = { i = 249504 }
-S[1249060] = { i = 249505 }
-S[1249061] = { i = 249506 }
-S[1249064] = { i = 249507 }
-S[1249069] = { i = 249508 }
-S[1249070] = { i = 249509 }
-S[1249071] = { i = 249510 }
-S[1249107] = { i = 249519 }
-S[1249112] = { i = 249520 }
-S[1249114] = { i = 249521 }
-S[1249128] = { i = 249529 }
-S[1249152] = { i = 249530 }
-S[1249154] = { i = 249532 }
-S[1249957] = { i = 249879 }
-S[1249958] = { i = 249880 }
-S[1249959] = { i = 249881 }
-S[1249960] = { i = 249882 }
-S[1249961] = { i = 249883 }
-S[1249962] = { i = 249884 }
-S[1249963] = { i = 249885 }
-S[1249964] = { i = 249886 }
-S[1249965] = { i = 249887 }
-S[1249966] = { i = 249888 }
-S[1249967] = { i = 249889 }
-S[1249968] = { i = 249890 }
-S[1250142] = { i = 250173 }
-S[1250143] = { i = 250174 }
-S[1250144] = { i = 250175 }
-S[1250145] = { i = 250176 }
-S[1250146] = { i = 250177 }
-S[1250147] = { i = 250178 }
-S[1250148] = { i = 250179 }
-S[1250149] = { i = 250180 }
-S[1250150] = { i = 250181 }
-S[1250151] = { i = 250182 }
-S[1250152] = { i = 250183 }
-S[1250153] = { i = 250184 }
-S[1250154] = { i = 250185 }
-S[1250155] = { i = 250186 }
-S[1250156] = { i = 250187 }
-S[1250157] = { i = 250188 }
-S[1250158] = { i = 250189 }
-S[1250776] = { i = 250363 }
-S[1250777] = { i = 250364 }
-S[1250778] = { i = 250365 }
-S[1250779] = { i = 250366 }
-S[1250780] = { i = 250367 }
-S[1250781] = { i = 250368 }
-S[1250782] = { i = 250369 }
-S[1250783] = { i = 250370 }
-S[1250784] = { i = 250371 }
-S[1250785] = { i = 250372 }
-S[1250786] = { i = 250373 }
-S[1250787] = { i = 250374 }
-S[1250788] = { i = 250375 }
-S[1250789] = { i = 250376 }
-S[1250790] = { i = 250377 }
-S[1250791] = { i = 250378 }
-S[1250792] = { i = 250379 }
-S[1250793] = { i = 250380 }
-S[1250794] = { i = 250381 }
-S[1250795] = { i = 250382 }
-S[1250796] = { i = 250383 }
-S[1250797] = { i = 250384 }
-S[1250798] = { i = 250385 }
-S[1250799] = { i = 250386 }
-S[1250800] = { i = 250387 }
-S[1250801] = { i = 250388 }
-S[1250802] = { i = 250389 }
-S[1251729] = { i = 250976 }
-S[1251730] = { i = 250977 }
-S[1251731] = { i = 250978 }
-S[1251732] = { i = 250979 }
-S[1251733] = { i = 250980 }
-S[1251734] = { i = 250981 }
-S[1251735] = { i = 250982 }
-S[1251736] = { i = 250983 }
-S[1251737] = { i = 250984 }
-S[1251738] = { i = 250985 }
-S[1251739] = { i = 250986 }
-S[1251740] = { i = 250987 }
-S[1251741] = { i = 250988 }
-S[1251742] = { i = 250989 }
-S[1251743] = { i = 250990 }
-S[1251744] = { i = 250991 }
-S[1251745] = { i = 250992 }
-S[1251747] = { i = 250993 }
-S[1251748] = { i = 250994 }
-S[1251749] = { i = 250995 }
-S[1251751] = { i = 250997 }
-S[1251752] = { i = 250998 }
-S[1251753] = { i = 250999 }
-S[1252229] = { i = 251332 }
-S[1252230] = { i = 251333 }
-S[1252231] = { i = 251334 }
-S[1252232] = { i = 251335 }
-S[1252233] = { i = 251336 }
-S[1252234] = { i = 251337 }
-S[1252235] = { i = 251338 }
-S[1252236] = { i = 251339 }
-S[1252237] = { i = 251340 }
-S[1252238] = { i = 251341 }
-S[1252239] = { i = 251342 }
-S[1252240] = { i = 251343 }
-S[1252241] = { i = 251344 }
-S[1252242] = { i = 251345 }
-S[1252243] = { i = 251346 }
-S[1252244] = { i = 251347 }
-S[1252245] = { i = 251348 }
-S[1252246] = { i = 251349 }
-S[1252247] = { i = 251350 }
-S[1252248] = { i = 251351 }
-S[1252249] = { i = 251352 }
-S[1252250] = { i = 251353 }
-S[1252251] = { i = 251354 }
-S[1252252] = { i = 251355 }
-S[1252253] = { i = 251356 }
-S[1252254] = { i = 251357 }
-S[1252255] = { i = 251358 }
-S[1252256] = { i = 251359 }
-S[1252257] = { i = 251360 }
-S[1252258] = { i = 251361 }
-S[1252259] = { i = 251362 }
-S[1252260] = { i = 251363 }
-S[1252261] = { i = 251364 }
-S[1252262] = { i = 251365 }
-S[1252263] = { i = 251366 }
-S[1252264] = { i = 251367 }
-S[1252265] = { i = 251368 }
-S[1252266] = { i = 251369 }
-S[1252267] = { i = 251370 }
-S[1252268] = { i = 251371 }
-S[1252269] = { i = 251372 }
-S[1252270] = { i = 251373 }
-S[1252271] = { i = 251374 }
-S[1252272] = { i = 251375 }
-S[1252273] = { i = 251376 }
-S[1252274] = { i = 251377 }
-S[1252275] = { i = 251378 }
-S[1252276] = { i = 251379 }
-S[1252277] = { i = 251380 }
-S[1252278] = { i = 251381 }
-S[1252279] = { i = 251382 }
-S[1252280] = { i = 251383 }
-S[1252281] = { i = 251384 }
-S[1252282] = { i = 251385 }
-S[1252283] = { i = 251386 }
-S[1252284] = { i = 251387 }
-S[1252285] = { i = 251388 }
-S[1252286] = { i = 251389 }
-S[1252287] = { i = 251390 }
-S[1252288] = { i = 251391 }
-S[1252289] = { i = 251392 }
-S[1252290] = { i = 251393 }
-S[1252291] = { i = 251394 }
-S[1252292] = { i = 251395 }
-S[1252293] = { i = 251396 }
-S[1252294] = { i = 251397 }
-S[1252295] = { i = 251398 }
-S[1252296] = { i = 251399 }
-S[1252297] = { i = 251400 }
-S[1252298] = { i = 251401 }
-S[1252299] = { i = 251402 }
-S[1252300] = { i = 251403 }
-S[1252301] = { i = 251404 }
-S[1252302] = { i = 251405 }
-S[1252303] = { i = 251406 }
-S[1252304] = { i = 251407 }
-S[1252305] = { i = 251408 }
-S[1252306] = { i = 251409 }
-S[1252307] = { i = 251410 }
-S[1252308] = { i = 251411 }
-S[1252309] = { i = 251412 }
-S[1252310] = { i = 251413 }
-S[1252311] = { i = 251414 }
-S[1252312] = { i = 251415 }
-S[1252313] = { i = 251416 }
-S[1252314] = { i = 251417 }
-S[1252315] = { i = 251418 }
-S[1252316] = { i = 251419 }
-S[1252317] = { i = 251420 }
-S[1252318] = { i = 251421 }
-S[1252319] = { i = 251422 }
-S[1252320] = { i = 251423 }
-S[1252321] = { i = 251424 }
-S[1252322] = { i = 251425 }
-S[1252323] = { i = 251426 }
-S[1252324] = { i = 251427 }
-S[1252325] = { i = 251428 }
-S[1252326] = { i = 251429 }
-S[1252327] = { i = 251430 }
-S[1252328] = { i = 251431 }
-S[1252329] = { i = 251432 }
-S[1252330] = { i = 251433 }
-S[1252331] = { i = 251434 }
-S[1252332] = { i = 251435 }
-S[1252333] = { i = 251436 }
-S[1252334] = { i = 251437 }
-S[1252335] = { i = 251438 }
-S[1252336] = { i = 251439 }
-S[1252337] = { i = 251440 }
-S[1252338] = { i = 251441 }
-S[1252339] = { i = 251442 }
-S[1252340] = { i = 251443 }
-S[1252341] = { i = 251444 }
-S[1252342] = { i = 251445 }
-S[1252343] = { i = 251446 }
-S[1252344] = { i = 251447 }
-S[1252345] = { i = 251448 }
-S[1252346] = { i = 251449 }
-S[1252347] = { i = 251450 }
-S[1252348] = { i = 251451 }
-S[1252349] = { i = 251452 }
-S[1252350] = { i = 251453 }
-S[1252351] = { i = 251454 }
-S[1252352] = { i = 251455 }
-S[1252353] = { i = 251456 }
-S[1252354] = { i = 251457 }
-S[1252355] = { i = 251458 }
-S[1252356] = { i = 251459 }
-S[1252357] = { i = 251460 }
-S[1252358] = { i = 251461 }
-S[1252359] = { i = 251462 }
-S[1252360] = { i = 251463 }
-S[1252361] = { i = 251464 }
-S[1252362] = { i = 251465 }
-S[1252363] = { i = 251466 }
-S[1252364] = { i = 251467 }
-S[1252365] = { i = 251468 }
-S[1252366] = { i = 251469, fac = "Timbermaw Hold", rep = "Revered" }
-S[1252367] = { i = 251470, fac = "Timbermaw Hold", rep = "Revered" }
-S[1252368] = { i = 251471 }
-S[1252566] = { i = 251526 }
-S[1254965] = { i = 252942 }
-S[1254966] = { i = 252941 }
-S[1254967] = { i = 252940 }
-S[1254968] = { i = 252939 }
-S[1254969] = { i = 252938 }
-S[1254970] = { i = 252937 }
-S[1254971] = { i = 252936 }
-S[1254972] = { i = 252935 }
-S[1254973] = { i = 252934 }
-S[1254974] = { i = 252933 }
-S[1254975] = { i = 252932 }
-S[1254976] = { i = 252931 }
-S[1254977] = { i = 252930 }
-S[1254978] = { i = 252929 }
-S[1254979] = { i = 252928 }
-S[1254980] = { i = 252927 }
-S[1254981] = { i = 252926 }
-S[1254982] = { i = 252925 }
-S[1254983] = { i = 252924 }
-S[1254984] = { i = 252923 }
-S[1254985] = { i = 252922 }
-S[1254986] = { i = 252921 }
-S[1254987] = { i = 252920 }
-S[1254988] = { i = 252919 }
-S[1254989] = { i = 252918 }
-S[1254990] = { i = 252917 }
-S[1254991] = { i = 252916 }
-S[1254992] = { i = 252915 }
-S[1254993] = { i = 252914 }
-S[1254994] = { i = 252913 }
-S[1254995] = { i = 252912 }
-S[1254996] = { i = 252911 }
-S[1254997] = { i = 252910 }
-S[1254998] = { i = 252909 }
-S[1254999] = { i = 252908 }
-S[1255000] = { i = 252907 }
-S[1255001] = { i = 252906 }
-S[1255002] = { i = 252905 }
-S[1255003] = { i = 252904 }
-S[1255004] = { i = 252903 }
-S[1255005] = { i = 252902 }
-S[1255006] = { i = 252901 }
-S[1255007] = { i = 252900 }
-S[1255008] = { i = 252899 }
-S[1255009] = { i = 252898 }
-S[1255010] = { i = 252897 }
-S[1255011] = { i = 252896 }
-S[1255012] = { i = 252895 }
-S[1255013] = { i = 252894 }
-S[1255014] = { i = 252893 }
-S[1255015] = { i = 252892 }
-S[1255016] = { i = 252891 }
-S[1255017] = { i = 252890 }
-S[1255018] = { i = 252889 }
-S[1255019] = { i = 252888 }
-S[1255020] = { i = 252887 }
-S[1255021] = { i = 252886 }
-S[1255022] = { i = 252885 }
-S[1255023] = { i = 252884 }
-S[1255024] = { i = 252883 }
-S[1255025] = { i = 252882 }
-S[1255026] = { i = 252881 }
-S[1255027] = { i = 252880 }
-S[1255028] = { i = 252879 }
-S[1255029] = { i = 252878 }
-S[1255030] = { i = 252877 }
-S[1255031] = { i = 252876 }
-S[1255032] = { i = 252875 }
-S[1255033] = { i = 252874 }
-S[1255034] = { i = 252873 }
-S[1255035] = { i = 252872 }
-S[1255036] = { i = 252871 }
-S[1255037] = { i = 252870 }
-S[1255038] = { i = 252869 }
-S[1255039] = { i = 252868 }
-S[1255040] = { i = 252867 }
-S[1255041] = { i = 252866 }
-S[1255042] = { i = 252865 }
-S[1255043] = { i = 252864 }
-S[1255044] = { i = 252863 }
-S[1255045] = { i = 252862 }
-S[1255046] = { i = 252861 }
-S[1255047] = { i = 252860 }
-S[1255048] = { i = 252859 }
-S[1255049] = { i = 252858 }
-S[1255050] = { i = 252857 }
-S[1255051] = { i = 252856 }
-S[1255052] = { i = 252855 }
-S[1255053] = { i = 252854 }
-S[1255054] = { i = 252853 }
-S[1255055] = { i = 252852 }
-S[1255056] = { i = 252851 }
-S[1255057] = { i = 252850 }
-S[1255058] = { i = 252849 }
-S[1255059] = { i = 252848 }
-S[1255060] = { i = 252847 }
-S[1255061] = { i = 252846 }
-S[1255062] = { i = 252845 }
-S[1255063] = { i = 252844 }
-S[1255064] = { i = 252843 }
-S[1255065] = { i = 252842 }
-S[1255066] = { i = 252841 }
-S[1255067] = { i = 252840 }
-S[1255068] = { i = 252839 }
-S[1255069] = { i = 252838 }
-S[1255070] = { i = 252837 }
-S[1255071] = { i = 252836 }
-S[1255073] = { i = 252834 }
-S[1255074] = { i = 252833 }
-S[1255075] = { i = 252832 }
-S[1255076] = { i = 252831 }
-S[1255077] = { i = 252830 }
-S[1255078] = { i = 252829 }
-S[1255079] = { i = 252828 }
-S[1255080] = { i = 252827 }
-S[1255081] = { i = 252826 }
-S[1255082] = { i = 252825 }
-S[1255083] = { i = 252824 }
-S[1255084] = { i = 252823 }
-S[1255085] = { i = 252822 }
-S[1255086] = { i = 252821 }
-S[1255087] = { i = 252820 }
-S[1255088] = { i = 252819 }
-S[1255089] = { i = 252818 }
-S[1255090] = { i = 252817 }
-S[1255091] = { i = 252816 }
-S[1255092] = { i = 252815 }
-S[1255093] = { i = 252814 }
-S[1255095] = { i = 252812 }
-S[1255096] = { i = 252811 }
-S[1255097] = { i = 252810 }
-S[1255098] = { i = 252809 }
-S[1255099] = { i = 252808 }
-S[1255100] = { i = 252807 }
-S[1255101] = { i = 252806 }
-S[1255102] = { i = 252805 }
-S[1255103] = { i = 252804 }
-S[1255104] = { i = 252803 }
-S[1255105] = { i = 252802 }
-S[1255106] = { i = 252801 }
-S[1255107] = { i = 252800 }
-S[1255108] = { i = 252799 }
-S[1255109] = { i = 252798 }
-S[1255110] = { i = 252797 }
-S[1255111] = { i = 252796 }
-S[1255112] = { i = 252795 }
-S[1255113] = { i = 252794 }
-S[1255114] = { i = 252793 }
-S[1255115] = { i = 252792 }
-S[1255116] = { i = 252791 }
-S[1255117] = { i = 252790 }
-S[1255118] = { i = 252789 }
-S[1255119] = { i = 252788 }
-S[1255120] = { i = 252787 }
-S[1255121] = { i = 252786 }
-S[1255123] = { i = 252784 }
-S[1255124] = { i = 252783 }
-S[1255125] = { i = 252782 }
-S[1255126] = { i = 252781 }
-S[1255127] = { i = 252780 }
-S[1255128] = { i = 252779 }
-S[1255129] = { i = 252778 }
-S[1255130] = { i = 252777 }
-S[1255131] = { i = 252776 }
-S[1255132] = { i = 252775 }
-S[1255133] = { i = 252774 }
-S[1255134] = { i = 252773 }
-S[1255135] = { i = 252772 }
-S[1255136] = { i = 252771 }
-S[1255137] = { i = 252770 }
-S[1255138] = { i = 252769 }
-S[1255139] = { i = 252768 }
-S[1255140] = { i = 252767 }
-S[1255141] = { i = 252766 }
-S[1255142] = { i = 252765 }
-S[1255143] = { i = 252764 }
-S[1255144] = { i = 252763 }
-S[1255145] = { i = 252762 }
-S[1255146] = { i = 252761 }
-S[1257013] = { i = 253665 }
-S[1257017] = { i = 253668 }
-S[1257368] = { i = 253886 }
-S[1257369] = { i = 253888 }
-S[1257370] = { i = 253890 }
-S[1257371] = { i = 253892 }
-S[1257372] = { i = 253894 }
-S[1257373] = { i = 253896 }
-S[1257374] = { i = 253898 }
-S[1257375] = { i = 253900 }
-S[1257376] = { i = 253902 }
-S[1257377] = { i = 253904 }
-S[1257378] = { i = 253906 }
-S[1257379] = { i = 253908 }
-S[1257380] = { i = 253910 }
-S[1257381] = { i = 253912 }
-S[1257382] = { i = 253914 }
-S[1257383] = { i = 253916 }
-S[1257384] = { i = 253918 }
-S[1257385] = { i = 253920 }
-S[1257386] = { i = 253922 }
-S[1257387] = { i = 253924 }
-S[1257388] = { i = 253926 }
-S[1257389] = { i = 253928 }
-S[1257390] = { i = 253930 }
-S[1257391] = { i = 253932 }
-S[1257392] = { i = 253934 }
-S[1257393] = { i = 253936 }
-S[1257394] = { i = 253938 }
-S[1257395] = { i = 253940 }
-S[1257396] = { i = 253942 }
-S[1257397] = { i = 253944 }
-S[1257398] = { i = 253946 }
-S[1257399] = { i = 253948 }
-S[1257400] = { i = 253950 }
-S[1257401] = { i = 253952 }
-S[1257402] = { i = 253954 }
-S[1257403] = { i = 253956 }
-S[1257404] = { i = 253958 }
-S[1257405] = { i = 253960 }
-S[1257406] = { i = 253962 }
-S[1257407] = { i = 253964 }
-S[1257408] = { i = 253966 }
-S[1257409] = { i = 253968 }
-S[1257410] = { i = 253970 }
-S[1257411] = { i = 253972 }
-S[1257412] = { i = 253974 }
-S[1257413] = { i = 253976 }
-S[1257414] = { i = 253978 }
-S[1257415] = { i = 253980 }
-S[1257416] = { i = 253982 }
-S[1257417] = { i = 253984 }
-S[1257418] = { i = 253986 }
-S[1257419] = { i = 253988 }
-S[1257420] = { i = 253990 }
-S[1257421] = { i = 253992 }
-S[1257422] = { i = 253994 }
-S[1257423] = { i = 253996 }
-S[1257424] = { i = 253998 }
-S[1257425] = { i = 254000 }
-S[1257426] = { i = 254002 }
-S[1257427] = { i = 254004 }
-S[1257428] = { i = 254006 }
-S[1257429] = { i = 254008 }
-S[1257430] = { i = 254010 }
-S[1257431] = { i = 254012 }
-S[1257432] = { i = 254014 }
-S[1257433] = { i = 254016 }
-S[1257434] = { i = 254018 }
-S[1257435] = { i = 254020 }
-S[1257436] = { i = 254022 }
-S[1257437] = { i = 254024 }
-S[1257438] = { i = 254026 }
-S[1257439] = { i = 254028 }
-S[1257440] = { i = 254030 }
-S[1257441] = { i = 254032 }
-S[1257442] = { i = 254034 }
-S[1257443] = { i = 254036 }
-S[1257444] = { i = 254038 }
-S[1257445] = { i = 254040 }
-S[1257446] = { i = 254042 }
-S[1257447] = { i = 254044 }
-S[1257448] = { i = 254046 }
-S[1257449] = { i = 254048 }
-S[1257450] = { i = 254050 }
-S[1257451] = { i = 254052 }
-S[1257452] = { i = 254054 }
-S[1257453] = { i = 254056 }
-S[1257454] = { i = 254058 }
-S[1257455] = { i = 254060 }
-S[1257456] = { i = 254062 }
-S[1257457] = { i = 254064 }
-S[1257458] = { i = 254066 }
-S[1257459] = { i = 254068 }
-S[1257460] = { i = 254070 }
-S[1257461] = { i = 254072 }
-S[1257462] = { i = 254074 }
-S[1257463] = { i = 254076 }
-S[1257464] = { i = 254078 }
-S[1257465] = { i = 254080 }
-S[1257466] = { i = 254082 }
-S[1257467] = { i = 254084 }
-S[1257468] = { i = 254086 }
-S[1257469] = { i = 254088 }
-S[1257470] = { i = 254090 }
-S[1257471] = { i = 254092 }
-S[1257472] = { i = 254094 }
-S[1257473] = { i = 254096 }
-S[1257474] = { i = 254098 }
-S[1257475] = { i = 254100 }
-S[1257476] = { i = 254102 }
-S[1257477] = { i = 254104 }
-S[1257478] = { i = 254106 }
-S[1257479] = { i = 254108 }
-S[1257480] = { i = 254110 }
-S[1257481] = { i = 254112 }
-S[1257482] = { i = 254114 }
-S[1257483] = { i = 254116 }
-S[1257484] = { i = 254118 }
-S[1257485] = { i = 254120 }
-S[1257486] = { i = 254122 }
-S[1257487] = { i = 254124 }
-S[1257488] = { i = 254126 }
-S[1257489] = { i = 254128 }
-S[1257490] = { i = 254130 }
-S[1257491] = { i = 254132 }
-S[1257492] = { i = 254134 }
-S[1257493] = { i = 254136 }
-S[1257494] = { i = 254138 }
-S[1257495] = { i = 254140 }
-S[1259341] = { i = 255728 }
-S[1259343] = { i = 255724 }
-S[1259344] = { i = 255727 }
-S[1259345] = { i = 255731 }
-S[1259348] = { i = 255726 }
-S[1259349] = { i = 255730 }
-S[1262975] = { i = 273097 }
-S[1262978] = { i = 273102 }
-S[1262980] = { i = 273106 }
-S[1262982] = { i = 273109 }
-S[1262985] = { i = 273098 }
-S[1262990] = { i = 273141 }
-S[1262996] = { i = 273105 }
-S[1262998] = { i = 273119 }
-S[1263001] = { i = 273118 }
-S[1263005] = { i = 273085 }
-S[1263031] = { i = 273096 }
-S[1263032] = { i = 273099 }
-S[1263034] = { i = 273092 }
-S[1263041] = { i = 273086 }
-S[1263056] = { i = 273103 }
-S[1263067] = { i = 273115 }
-S[1263070] = { i = 273120 }
-S[1263071] = { i = 273122 }
-S[1263073] = { i = 273113 }
-S[1263078] = { i = 273112 }
-S[1263079] = { i = 273121 }
-S[1263080] = { i = 273124 }
-S[1263082] = { i = 273116 }
-S[1263083] = { i = 273117 }
-S[1266893] = { i = 264201 }
-S[1266905] = { i = 264202 }
-S[1266906] = { i = 264203 }
-S[1266907] = { i = 264204 }
-S[1266908] = { i = 264205 }
-S[1266909] = { i = 264206 }
-S[1266910] = { i = 264207 }
-S[1266911] = { i = 264208 }
-S[1266912] = { i = 264209 }
-S[1266913] = { i = 264210 }
-S[1266914] = { i = 264211 }
-S[1266915] = { i = 264212 }
-S[1266916] = { i = 264213 }
-S[1266917] = { i = 264214 }
-S[1266918] = { i = 264215 }
-S[1266919] = { i = 264216 }
-S[1266920] = { i = 264217 }
-S[1266921] = { i = 264218 }
-S[1266922] = { i = 264219 }
-S[1266923] = { i = 264220 }
-S[1266924] = { i = 264221 }
-S[1266925] = { i = 264222 }
-S[1266926] = { i = 264223 }
-S[1266927] = { i = 264224 }
-S[1266928] = { i = 264225 }
-S[1266929] = { i = 264226 }
-S[1266930] = { i = 264227 }
-S[1266931] = { i = 264228 }
-S[1266932] = { i = 264229 }
-S[1266933] = { i = 264230 }
-S[1266934] = { i = 264231 }
-S[1266935] = { i = 264232 }
-S[1266936] = { i = 264233 }
-S[1266937] = { i = 264234 }
-S[1266938] = { i = 264235 }
-S[1266939] = { i = 264236 }
-S[1266940] = { i = 264237 }
-S[1266941] = { i = 264238 }
-S[1266942] = { i = 264239 }
-S[1266943] = { i = 264240 }
-S[1270633] = { i = 263511 }
-S[1270635] = { i = 263513 }
-S[1283400] = { i = 273087 }
-S[1286792] = { i = 269901 }
-S[1286796] = { i = 269903 }
-S[1291341] = { i = 273101 }
-S[1292920] = { i = 273952 }
-S[1292921] = { i = 273953 }
-S[1292923] = { i = 273954 }
-S[1292924] = { i = 273955 }
-S[1292925] = { i = 273956 }
-S[1292926] = { i = 273957 }
-S[1292927] = { i = 273958 }
-S[1292928] = { i = 273959 }
-S[1292929] = { i = 273960 }
-S[1292930] = { i = 273961 }
-S[1292931] = { i = 273962 }
-S[1292932] = { i = 273963 }
-S[1292933] = { i = 273964 }
-S[1292934] = { i = 273965 }
-S[1292935] = { i = 273966 }
-S[1292936] = { i = 273967 }
-S[1292937] = { i = 273968 }
-S[1292938] = { i = 273969 }
-S[1292939] = { i = 273970 }
-S[1292940] = { i = 273971 }
-S[1292941] = { i = 273972 }
-S[1292942] = { i = 273973 }
-S[1292943] = { i = 273974 }
-S[1292944] = { i = 273975 }
-S[1292945] = { i = 273976 }
-S[1292946] = { i = 273977 }
-S[1292947] = { i = 273978 }
-S[1292948] = { i = 273979 }
-S[1292949] = { i = 273980 }
-S[1292950] = { i = 273981 }
-S[1292951] = { i = 273982 }
-S[1292952] = { i = 273983 }
-S[1292953] = { i = 273984 }
-S[1292954] = { i = 273985 }
-S[1292955] = { i = 273986 }
-S[1292956] = { i = 273987 }
-S[1292957] = { i = 273988 }
-S[1292958] = { i = 273989 }
-S[1292959] = { i = 273990 }
-S[1292960] = { i = 273991 }
-S[1292961] = { i = 273992 }
-S[1292962] = { i = 273993 }
-S[1292963] = { i = 273994 }
-S[1292964] = { i = 273995 }
-S[1292965] = { i = 273996 }
-S[1292966] = { i = 273997 }
-S[1292967] = { i = 273998 }
-S[1292968] = { i = 273999 }
-S[1292969] = { i = 274000 }
-S[1292970] = { i = 274001 }
-S[1292971] = { i = 274002 }
-S[1292972] = { i = 274003 }
-S[1292973] = { i = 274004 }
-S[1292974] = { i = 274005 }
-S[1292975] = { i = 274006 }
-S[1292976] = { i = 274007 }
-S[1292977] = { i = 274008 }
-S[1292978] = { i = 274009 }
-S[1292979] = { i = 274010 }
-S[1292980] = { i = 274011 }
-S[1292981] = { i = 274012 }
-S[1292982] = { i = 274013 }
-S[1292983] = { i = 274014 }
-S[1292984] = { i = 274015 }
-S[1292985] = { i = 274016 }
-S[1292986] = { i = 274017 }
-S[1292987] = { i = 274018 }
-S[1292988] = { i = 274019 }
-S[1293559] = { i = 274277 }
-S[1293560] = { i = 274278 }
-S[1293561] = { i = 274279 }
-S[1293562] = { i = 274280 }
-S[1293849] = { i = 274389 }
-S[1293850] = { i = 274390 }
-S[1294014] = { i = 274415 }
-S[1294054] = { i = 274424 }
-S[1295805] = { i = 274972 }
-S[1295834] = { i = 274977 }
-S[1297120] = { i = 275580, fac = "Cenarion Circle", rep = "Friendly" }
-S[1297121] = { i = 275581, fac = "Cenarion Circle", rep = "Honored" }
-S[1297122] = { i = 275582, fac = "Cenarion Circle", rep = "Honored" }
-S[1297123] = { i = 275583, fac = "Cenarion Circle", rep = "Friendly" }
-S[1297124] = { i = 275584, fac = "Cenarion Circle", rep = "Honored" }
-S[1297125] = { i = 275585, fac = "Cenarion Circle", rep = "Honored" }
-S[1297126] = { i = 275586, fac = "Cenarion Circle", rep = "Friendly" }
-S[1297127] = { i = 275587, fac = "Cenarion Circle", rep = "Honored" }
-S[1297128] = { i = 275588, fac = "Cenarion Circle", rep = "Honored" }
-S[1297129] = { i = 275589, fac = "Cenarion Circle", rep = "Friendly" }
-S[1297130] = { i = 275590, fac = "Cenarion Circle", rep = "Honored" }
-S[1297131] = { i = 275591, fac = "Cenarion Circle", rep = "Honored" }
-S[1297132] = { i = 275592, fac = "Cenarion Circle", rep = "Friendly" }
-S[1297133] = { i = 275593, fac = "Cenarion Circle", rep = "Honored" }
-S[1297134] = { i = 275594, fac = "Cenarion Circle", rep = "Honored" }
-S[1297135] = { i = 275595, fac = "Cenarion Circle", rep = "Friendly" }
-S[1297136] = { i = 275596, fac = "Cenarion Circle", rep = "Honored" }
-S[1297137] = { i = 275597, fac = "Cenarion Circle", rep = "Honored" }
-S[1297138] = { i = 275598, fac = "Cenarion Circle", rep = "Friendly" }
-S[1297139] = { i = 275599, fac = "Cenarion Circle", rep = "Honored" }
-S[1297140] = { i = 275600, fac = "Cenarion Circle", rep = "Honored" }
-S[1297141] = { i = 275601, fac = "Cenarion Circle", rep = "Friendly" }
-S[1297142] = { i = 275602, fac = "Cenarion Circle", rep = "Honored" }
-S[1297143] = { i = 275603, fac = "Cenarion Circle", rep = "Honored" }
-S[1299914] = { i = 276542 }
-S[1299915] = { i = 276543 }
-S[1299916] = { i = 276544 }
-S[1299917] = { i = 276545 }
-S[1301421] = { i = 276928, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301422] = { i = 276929, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301423] = { i = 276930, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301424] = { i = 276931, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301425] = { i = 276932, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301426] = { i = 276933, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301427] = { i = 276934, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301428] = { i = 276935, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301429] = { i = 276936, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301430] = { i = 276937, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301431] = { i = 276938, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301432] = { i = 276939, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301433] = { i = 276940, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301434] = { i = 276941, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301435] = { i = 276942, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301436] = { i = 276943, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301437] = { i = 276944, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301438] = { i = 276945, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301439] = { i = 276946, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301440] = { i = 276947, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301441] = { i = 276948, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301442] = { i = 276949, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301443] = { i = 276950, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301444] = { i = 276951, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301445] = { i = 276952, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301446] = { i = 276953, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301447] = { i = 276954, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301448] = { i = 276955, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301449] = { i = 276956, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301450] = { i = 276957, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301451] = { i = 276958, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301452] = { i = 276959, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301453] = { i = 276960, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301454] = { i = 276961, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301455] = { i = 276962, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301456] = { i = 276963, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301457] = { i = 276964, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301458] = { i = 276965, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301459] = { i = 276966, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301460] = { i = 276967, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301461] = { i = 276968, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301462] = { i = 276969, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301463] = { i = 276970, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301464] = { i = 276971, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301465] = { i = 276972, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301466] = { i = 276973, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301468] = { i = 276974, fac = "Nightclaw Druids", rep = "Honored" }
-S[1301469] = { i = 276975, fac = "Nightclaw Druids", rep = "Friendly" }
-S[1301526] = { i = 276976, fac = "Earthen Ring", rep = "Friendly" }
-S[1301527] = { i = 276977, fac = "Earthen Ring", rep = "Friendly" }
-S[1301528] = { i = 276978, fac = "Earthen Ring", rep = "Friendly" }
-S[1301529] = { i = 276979, fac = "Earthen Ring", rep = "Friendly" }
-S[1301530] = { i = 276980, fac = "Earthen Ring", rep = "Friendly" }
-S[1301531] = { i = 276981, fac = "Earthen Ring", rep = "Friendly" }
-S[1301532] = { i = 276982, fac = "Earthen Ring", rep = "Friendly" }
-S[1301533] = { i = 276983, fac = "Earthen Ring", rep = "Friendly" }
-S[1301534] = { i = 276984, fac = "Kirin Tor", rep = "Friendly" }
-S[1301535] = { i = 276985, fac = "Kirin Tor", rep = "Friendly" }
-S[1301536] = { i = 276986, fac = "Kirin Tor", rep = "Friendly" }
-S[1301537] = { i = 276987, fac = "Kirin Tor", rep = "Friendly" }
-S[1301538] = { i = 276988, fac = "Kirin Tor", rep = "Friendly" }
-S[1301539] = { i = 276989, fac = "Kirin Tor", rep = "Friendly" }
-S[1301540] = { i = 276990, fac = "Kirin Tor", rep = "Friendly" }
-S[1301541] = { i = 276991, fac = "Kirin Tor", rep = "Friendly" }
-S[1302161] = { i = 277470 }
-S[1302598] = { i = 277673 }
-S[1302604] = { i = 277716 }
-S[1306520] = { i = 279295 }
-S[1306521] = { i = 279296 }
-S[1306522] = { i = 279297 }
-S[1306523] = { i = 279298 }
-S[1306524] = { i = 279299 }
-S[1306525] = { i = 279300 }
-S[1306526] = { i = 279301 }
-S[1306527] = { i = 279302 }
-S[1306528] = { i = 279303 }
-S[1306529] = { i = 279304 }
-S[1306530] = { i = 279305 }
-S[1306531] = { i = 279306 }
-S[1306532] = { i = 279307 }
-S[1306533] = { i = 279308 }
-S[1306534] = { i = 279309 }
-S[1306535] = { i = 279310 }
-S[1306536] = { i = 279311 }
-S[1306537] = { i = 279312 }
-S[1306538] = { i = 279313 }
-S[1306539] = { i = 279314 }
-S[1306540] = { i = 279315 }
-S[1306541] = { i = 279316 }
-S[1306542] = { i = 279317 }
-S[1306543] = { i = 279318 }
-S[1306544] = { i = 279319 }
-S[1306545] = { i = 279320 }
-S[1306546] = { i = 279321 }
-S[1306547] = { i = 279322 }
-S[1308178] = { i = 280321 }
-S[1308179] = { i = 280322 }
-S[1308180] = { i = 280323 }
-S[1308182] = { i = 280324 }
-S[1308183] = { i = 280325 }
-S[1308184] = { i = 280326 }
-S[1308185] = { i = 280327 }
-S[1308186] = { i = 280328 }
-S[1317270] = { i = 284870 }
-S[1317279] = { i = 284871 }
-S[1317958] = { i = 285285 }
-S[1317959] = { i = 285286 }
-S[1317960] = { i = 285287 }
-S[1317961] = { i = 285288 }
-S[1317962] = { i = 285289 }
-S[1317963] = { i = 285290 }
-S[1317964] = { i = 285291 }
-S[1319154] = { i = 286076 }
-S[1319155] = { i = 286077 }
-S[1319156] = { i = 286078 }
-S[1319157] = { i = 286079 }
-S[1319158] = { i = 286080 }
-S[1319159] = { i = 286081 }
-S[1319160] = { i = 286082 }
-S[1319161] = { i = 286083 }
-S[1319162] = { i = 286084 }
-S[1319163] = { i = 286085 }
-S[1319164] = { i = 286086 }
-S[1319165] = { i = 286087 }
-S[1319313] = { i = 286153 }
-S[1328948] = { i = 289560 }
+S[25659] = { i = 21025, req = 300, q = { "Dirge's Kickin' Chimaerok Chops" } }
+S[25704] = { i = 21099, req = 80, v = { 2381, 2397, 2664, 3027, 3085, 3400, 4223, 4265, 4553, 5160, 5483, 8307, 12033, 14738 } }
+S[25954] = { i = 21219, req = 175, v = { 2381, 2397, 2664, 3027, 3085, 3400, 4223, 4265, 4553, 5160, 5483, 8307, 12033, 14738 } }
+S[26085] = { i = 21358, req = 215, v = { 6568 } }
+S[26087] = { i = 21371, req = 300 }
+S[26277] = { i = 21547, req = 250, d = { 5844, 5846, 8637 } }
+S[26279] = { i = 21548, req = 290, d = { 14454, 14457 } }
+S[26403] = { i = 21722, req = 205, q = { "Festive Recipes" } }
+S[26407] = { i = 21723, req = 205, q = { "Festive Recipes" } }
+S[26416] = { i = 21724, req = 125, o = true }
+S[26417] = { i = 21725, req = 125, o = true }
+S[26418] = { i = 21726, req = 125, o = true }
+S[26420] = { i = 21727, req = 175, o = true }
+S[26421] = { i = 21728, req = 175, o = true }
+S[26422] = { i = 21729, req = 175, o = true }
+S[26423] = { i = 21730, req = 225, o = true }
+S[26424] = { i = 21731, req = 225, o = true }
+S[26425] = { i = 21732, req = 225, o = true }
+S[26426] = { i = 21733, req = 275, o = true }
+S[26427] = { i = 21734, req = 275, o = true }
+S[26428] = { i = 21735, req = 275, o = true }
+S[26442] = { i = 21738, req = 225, q = { "Firework Launcher" } }
+S[26443] = { i = 21737, req = 275, q = { "Cluster Launcher" } }
+S[27586] = { i = 22219, req = 300, fac = "Cenarion Circle", rep = "Revered" }
+S[27587] = { i = 22222, req = 300, d = { 15263 } }
+S[27589] = { i = 22220, req = 300, d = { 15340 } }
+S[27590] = { i = 22221, req = 300, fac = "Cenarion Circle", rep = "Exalted" }
+S[27658] = { i = 22307, req = 190, v = { 1318, 3012, 3346, 4228, 4617, 5158, 5757, 5758, 15419 } }
+S[27659] = { i = 22308, req = 230, v = { 15419 } }
+S[27660] = { i = 22309, req = 255, d = { 11487 } }
+S[27724] = { i = 22310, req = 230, v = { 15179 }, fac = "Cenarion Circle", rep = "Friendly" }
+S[27725] = { i = 22312, req = 255, v = { 15179 }, fac = "Cenarion Circle", rep = "Revered" }
+S[27829] = { i = 22388, req = 300, dn = 8, dz = { "Scholomance", "Blackrock Depths", "Naxxramas" }, dzn = 5, o = true }
+S[27830] = { i = 22390, req = 300, dn = 8, dz = { "Ahn'Qiraj", "Naxxramas", "Alterac Valley" }, dzn = 6 }
+S[27832] = { i = 22389, req = 300, dn = 8, dz = { "Molten Core", "Ahn'Qiraj", "Naxxramas" }, dzn = 5 }
+S[27837] = { i = 22392, req = 290, v = { 11557 }, fac = "Timbermaw Hold", rep = "Friendly" }
+S[28210] = { i = 22683, req = 300, v = { 15179 }, fac = "Cenarion Circle", rep = "Revered" }
+S[28242] = { i = 22703, req = 300, fac = "Argent Dawn", rep = "Exalted" }
+S[28243] = { i = 22704, req = 300, fac = "Argent Dawn", rep = "Revered" }
+S[28244] = { i = 22705, req = 300, fac = "Hydraxian Waterlords", rep = "Revered" }
+S[28327] = { i = 22729, req = 275 }
+S[28480] = { i = 22774, req = 300, v = { 15179 }, fac = "Cenarion Circle", rep = "Revered" }
+S[28481] = { i = 22773, req = 300, v = { 15179 }, fac = "Cenarion Circle", rep = "Honored" }
+S[28482] = { i = 22772, req = 300, v = { 15179 }, fac = "Cenarion Circle", rep = "Friendly" }
+S[44950] = { i = 34261, req = 250 }
+S[44953] = { i = 34262, req = 285 }
+S[44958] = { i = 34319, req = 250 }
+S[424641] = { i = 210178, req = 135 }
+S[426607] = { i = 210709, req = 90 }
+S[427061] = { i = 210779, req = 150 }
+S[428424] = { i = 211247, req = 125 }
+S[431362] = { i = 212230, req = 205 }
+S[435481] = { i = 215129, req = 225 }
+S[435610] = { i = 215149, req = 225 }
+S[435819] = { i = 215367, req = 200 }
+S[435827] = { i = 215368, req = 200 }
+S[435841] = { i = 215369, req = 150 }
+S[435848] = { i = 215370, req = 150 }
+S[435903] = { i = 215138, req = 225 }
+S[435904] = { i = 215152, req = 225 }
+S[435906] = { i = 215383, req = 225 }
+S[435908] = { i = 215155, req = 225 }
+S[435910] = { i = 215384, req = 200 }
+S[435949] = { i = 215422, req = 225 }
+S[435951] = { i = 215423, req = 225 }
+S[435953] = { i = 215424, req = 225 }
+S[435956] = { i = 215429, req = 200 }
+S[435958] = { i = 215153, req = 225 }
+S[435960] = { i = 215156, req = 225 }
+S[435964] = { i = 215431, req = 225 }
+S[435966] = { i = 215432, req = 225 }
+S[435969] = { i = 215433, req = 200 }
+S[435971] = { i = 215163, req = 225 }
+S[439085] = { i = 217244, req = 205 }
+S[439091] = { i = 217249, req = 195 }
+S[439093] = { i = 217251, req = 190 }
+S[439097] = { i = 217254, req = 175 }
+S[439102] = { i = 217258, req = 165 }
+S[439105] = { i = 217260, req = 220 }
+S[439108] = { i = 217262, req = 215 }
+S[439110] = { i = 217264, req = 195 }
+S[439112] = { i = 217266, req = 170 }
+S[439118] = { i = 217271, req = 205 }
+S[439120] = { i = 217274, req = 205 }
+S[439122] = { i = 217276, req = 200 }
+S[439124] = { i = 217278, req = 195 }
+S[439126] = { i = 217280, req = 190 }
+S[439128] = { i = 217282, req = 180 }
+S[439130] = { i = 217284, req = 175 }
+S[439132] = { i = 217286, req = 170 }
+S[439156] = { i = 215141, req = 225 }
+S[439960] = { i = 217399, req = 190 }
+S[448624] = { i = 223163, req = 120 }
+S[460460] = { i = 227727, req = 300 }
+S[461645] = { i = 227899, req = 295 }
+S[461647] = { i = 227905, req = 300 }
+S[461649] = { i = 227900, req = 270 }
+S[461651] = { i = 227909, req = 290 }
+S[461653] = { i = 227910, req = 300 }
+S[461655] = { i = 227902, req = 290 }
+S[461657] = { i = 227903, req = 300 }
+S[461659] = { i = 227904, req = 300 }
+S[461661] = { i = 227906, req = 285 }
+S[461663] = { i = 227907, req = 300 }
+S[461665] = { i = 227908, req = 270 }
+S[461667] = { i = 227901, req = 285 }
+S[461669] = { i = 228117, req = 300 }
+S[461671] = { i = 228250, req = 300 }
+S[461673] = { i = 227898, req = 285 }
+S[461675] = { i = 228114, req = 300 }
+S[461677] = { i = 228251, req = 270 }
+S[461690] = { i = 228276, req = 300 }
+S[461706] = { i = 228301, req = 300 }
+S[461708] = { i = 228303, req = 300 }
+S[461720] = { i = 228309, req = 260 }
+S[461722] = { i = 228119, req = 290 }
+S[461724] = { i = 228120, req = 300 }
+S[461727] = { i = 228121, req = 300 }
+S[461730] = { i = 228310, req = 300 }
+S[461733] = { i = 228311, req = 280 }
+S[461735] = { i = 228312, req = 300 }
+S[461737] = { i = 228313, req = 295 }
+S[461739] = { i = 228314, req = 300 }
+S[461743] = { i = 228315, req = 300 }
+S[461747] = { i = 228316, req = 300 }
+S[461750] = { i = 228317, req = 300 }
+S[461752] = { i = 228318, req = 290 }
+S[461754] = { i = 228319, req = 300 }
+S[462282] = { i = 228477, req = 300 }
+S[463866] = { i = 228979, req = 290, fac = "Hydraxian Waterlords", rep = "Revered" }
+S[463869] = { i = 228981, req = 275 }
+S[463871] = { i = 228982, req = 300, fac = "Timbermaw Hold", rep = "Revered" }
+S[463972] = { i = 228993, req = 300 }
+S[470349] = { i = 232434, req = 300 }
+S[470359] = { i = 232437, req = 300 }
+S[470370] = { i = 232443, req = 300 }
+S[471400] = { i = 232610, req = 300, fac = "Zandalar Tribe", rep = "Honored" }
+S[1213622] = { i = 249536, req = 300 }
+S[1213626] = { i = 249534, req = 300 }
+S[1219577] = { i = 274391, req = 300 }
+S[1219578] = { i = 274392, req = 300 }
+S[1219579] = { i = 274393, req = 300 }
+S[1219580] = { i = 274394, req = 300 }
+S[1219581] = { i = 274395, req = 300 }
+S[1219587] = { i = 274399, req = 300 }
+S[1220623] = { i = 274400, req = 300 }
+S[1220624] = { i = 274401, req = 300 }
+S[1221012] = { i = 236872, req = 250 }
+S[1224607] = { i = 238298, req = 280 }
+S[1224608] = { i = 238299, req = 280 }
+S[1224609] = { i = 238300, req = 280 }
+S[1224610] = { i = 238301, req = 250 }
+S[1224611] = { i = 238302, req = 260 }
+S[1224612] = { i = 238303, req = 250 }
+S[1224613] = { i = 238304, req = 270 }
+S[1224614] = { i = 238305, req = 260 }
+S[1224615] = { i = 238306, req = 280 }
+S[1224616] = { i = 238307, req = 280 }
+S[1224617] = { i = 238308, req = 280 }
+S[1224618] = { i = 238309, req = 250 }
+S[1224619] = { i = 238310, req = 260 }
+S[1224620] = { i = 238311, req = 250 }
+S[1224621] = { i = 238312, req = 270 }
+S[1224622] = { i = 238313, req = 260 }
+S[1224623] = { i = 238314, req = 280 }
+S[1224624] = { i = 238315, req = 280 }
+S[1224625] = { i = 238316, req = 280 }
+S[1224626] = { i = 238317, req = 250 }
+S[1224627] = { i = 238318, req = 260 }
+S[1224628] = { i = 238319, req = 250 }
+S[1224629] = { i = 238320, req = 270 }
+S[1224630] = { i = 238321, req = 260 }
+S[1224631] = { i = 238322, req = 280 }
+S[1224632] = { i = 238323, req = 280 }
+S[1224633] = { i = 238324, req = 280 }
+S[1224635] = { i = 238325, req = 250 }
+S[1224636] = { i = 238326, req = 260 }
+S[1224637] = { i = 238327, req = 250 }
+S[1224638] = { i = 238328, req = 270 }
+S[1224639] = { i = 238329, req = 260 }
+S[1225758] = { i = 238645, req = 250 }
+S[1225759] = { i = 238646, req = 250 }
+S[1225760] = { i = 238647, req = 250 }
+S[1225762] = { i = 238649, req = 280 }
+S[1225763] = { i = 238650, req = 280 }
+S[1226213] = { i = 238789, req = 300 }
+S[1226689] = { i = 238927, req = 275 }
+S[1226690] = { i = 238928, req = 275 }
+S[1227723] = { i = 239149, req = 250 }
+S[1227724] = { i = 239150, req = 290 }
+S[1228088] = { i = 239222, req = 250 }
+S[1231128] = { i = 241191, req = 280 }
+S[1231139] = { i = 241195, req = 280 }
+S[1231164] = { i = 241201, req = 280 }
+S[1231583] = { i = 241651, req = 250 }
+S[1232172] = { i = 242361, req = 280 }
+S[1244421] = { i = 236754, req = 250 }
+S[1244434] = { i = 255723, req = 155 }
+S[1244435] = { i = 255725, req = 215 }
+S[1244436] = { i = 255729, req = 275 }
+S[1248458] = { i = 249474, req = 70 }
+S[1248459] = { i = 249475, req = 90 }
+S[1248460] = { i = 249486, req = 140 }
+S[1248461] = { i = 249487, req = 185 }
+S[1248497] = { i = 249488, req = 190 }
+S[1248498] = { i = 249489, req = 205 }
+S[1248500] = { i = 249514, req = 240 }
+S[1248505] = { i = 249515, req = 245 }
+S[1248509] = { i = 249512, req = 215 }
+S[1248510] = { i = 249511, req = 210 }
+S[1248511] = { i = 249513, req = 220 }
+S[1248515] = { i = 249522, req = 275 }
+S[1248528] = { i = 249516, req = 250 }
+S[1248599] = { i = 249524, req = 295 }
+S[1248607] = { i = 249525, req = 300 }
+S[1248636] = { i = 249526, req = 300 }
+S[1248640] = { i = 274398, req = 300 }
+S[1248645] = { i = 249535, req = 300 }
+S[1248650] = { i = 249537, req = 275 }
+S[1248661] = { i = 249538, req = 300 }
+S[1248665] = { i = 249539, req = 300 }
+S[1248668] = { i = 249523, req = 290 }
+S[1248703] = { i = 249482, req = 140 }
+S[1248739] = { i = 249483, req = 140 }
+S[1248745] = { i = 249484, req = 140 }
+S[1248748] = { i = 249485, req = 140 }
+S[1248752] = { i = 249476, req = 130 }
+S[1248754] = { i = 249477, req = 130 }
+S[1248755] = { i = 249478, req = 130 }
+S[1248757] = { i = 249479, req = 140 }
+S[1248760] = { i = 249480, req = 140 }
+S[1248805] = { i = 249481, req = 140 }
+S[1248974] = { i = 249493, req = 210 }
+S[1249006] = { i = 249494, req = 210 }
+S[1249015] = { i = 249495, req = 210 }
+S[1249019] = { i = 249496, req = 210 }
+S[1249057] = { i = 249502, req = 210 }
+S[1249058] = { i = 249503, req = 210 }
+S[1249059] = { i = 249504, req = 210 }
+S[1249060] = { i = 249505, req = 210 }
+S[1249061] = { i = 249506, req = 220 }
+S[1249064] = { i = 249507, req = 220 }
+S[1249069] = { i = 249508, req = 220 }
+S[1249070] = { i = 249509, req = 220 }
+S[1249071] = { i = 249510, req = 220 }
+S[1249107] = { i = 249519, req = 265 }
+S[1249112] = { i = 249520, req = 265 }
+S[1249114] = { i = 249521, req = 265 }
+S[1249128] = { i = 249529, req = 300 }
+S[1249152] = { i = 249530, req = 300 }
+S[1249154] = { i = 249532, req = 300 }
+S[1249957] = { i = 249879, req = 25 }
+S[1249958] = { i = 249880, req = 100 }
+S[1249959] = { i = 249881, req = 125 }
+S[1249960] = { i = 249882, req = 180 }
+S[1249961] = { i = 249883, req = 200 }
+S[1249962] = { i = 249884, req = 250 }
+S[1249963] = { i = 249885, req = 25 }
+S[1249964] = { i = 249886, req = 100 }
+S[1249965] = { i = 249887, req = 125 }
+S[1249966] = { i = 249888, req = 180 }
+S[1249967] = { i = 249889, req = 200 }
+S[1249968] = { i = 249890, req = 250 }
+S[1250142] = { i = 250173, req = 225 }
+S[1250143] = { i = 250174, req = 275 }
+S[1250144] = { i = 250175, req = 275 }
+S[1250145] = { i = 250176, req = 275 }
+S[1250146] = { i = 250177, req = 275 }
+S[1250147] = { i = 250178, req = 275 }
+S[1250148] = { i = 250179, req = 275 }
+S[1250149] = { i = 250180, req = 275 }
+S[1250150] = { i = 250181, req = 180 }
+S[1250151] = { i = 250182, req = 175 }
+S[1250152] = { i = 250183, req = 275 }
+S[1250153] = { i = 250184, req = 225 }
+S[1250154] = { i = 250185, req = 75 }
+S[1250155] = { i = 250186, req = 175 }
+S[1250156] = { i = 250187, req = 25 }
+S[1250157] = { i = 250188, req = 75 }
+S[1250158] = { i = 250189, req = 275 }
+S[1250776] = { i = 250363, req = 195 }
+S[1250777] = { i = 250364, req = 275 }
+S[1250778] = { i = 250365, req = 250 }
+S[1250779] = { i = 250366, req = 45 }
+S[1250780] = { i = 250367, req = 95 }
+S[1250781] = { i = 250368, req = 145 }
+S[1250782] = { i = 250369, req = 195 }
+S[1250783] = { i = 250370, req = 150 }
+S[1250784] = { i = 250371, req = 200 }
+S[1250785] = { i = 250372, req = 285 }
+S[1250786] = { i = 250373, req = 280 }
+S[1250787] = { i = 250374, req = 275 }
+S[1250788] = { i = 250375, req = 25 }
+S[1250789] = { i = 250376, req = 75 }
+S[1250790] = { i = 250377, req = 175 }
+S[1250791] = { i = 250378, req = 120 }
+S[1250792] = { i = 250379, req = 285 }
+S[1250793] = { i = 250380, req = 15 }
+S[1250794] = { i = 250381, req = 65 }
+S[1250795] = { i = 250382, req = 115 }
+S[1250796] = { i = 250383, req = 165 }
+S[1250797] = { i = 250384, req = 275 }
+S[1250798] = { i = 250385, req = 150 }
+S[1250799] = { i = 250386, req = 275 }
+S[1250800] = { i = 250387, req = 300 }
+S[1250801] = { i = 250388, req = 95 }
+S[1250802] = { i = 250389, req = 135 }
+S[1251729] = { i = 250976, req = 35 }
+S[1251730] = { i = 250977, req = 85 }
+S[1251731] = { i = 250978, req = 135 }
+S[1251732] = { i = 250979, req = 185 }
+S[1251733] = { i = 250980, req = 235 }
+S[1251734] = { i = 250981, req = 285 }
+S[1251735] = { i = 250982, req = 40 }
+S[1251736] = { i = 250983, req = 90 }
+S[1251737] = { i = 250984, req = 140 }
+S[1251738] = { i = 250985, req = 190 }
+S[1251739] = { i = 250986, req = 240 }
+S[1251740] = { i = 250987, req = 290 }
+S[1251741] = { i = 250988, req = 30 }
+S[1251742] = { i = 250989, req = 80 }
+S[1251743] = { i = 250990, req = 130 }
+S[1251744] = { i = 250991, req = 180 }
+S[1251745] = { i = 250992, req = 230 }
+S[1251747] = { i = 250993, req = 280 }
+S[1251748] = { i = 250994, req = 275 }
+S[1251749] = { i = 250995, req = 265 }
+S[1251751] = { i = 250997, req = 245 }
+S[1251752] = { i = 250998, req = 280 }
+S[1251753] = { i = 250999, req = 280 }
+S[1252229] = { i = 251332, req = 35 }
+S[1252230] = { i = 251333, req = 35 }
+S[1252231] = { i = 251334, req = 35 }
+S[1252232] = { i = 251335, req = 100 }
+S[1252233] = { i = 251336, req = 105 }
+S[1252234] = { i = 251337, req = 105 }
+S[1252235] = { i = 251338, req = 110 }
+S[1252236] = { i = 251339, req = 125 }
+S[1252237] = { i = 251340, req = 80 }
+S[1252238] = { i = 251341, req = 80 }
+S[1252239] = { i = 251342, req = 80 }
+S[1252240] = { i = 251343, req = 80 }
+S[1252241] = { i = 251344, req = 80 }
+S[1252242] = { i = 251345, req = 95 }
+S[1252243] = { i = 251346, req = 95 }
+S[1252244] = { i = 251347, req = 95 }
+S[1252245] = { i = 251348, req = 95 }
+S[1252246] = { i = 251349, req = 95 }
+S[1252247] = { i = 251350, req = 125 }
+S[1252248] = { i = 251351, req = 125 }
+S[1252249] = { i = 251352, req = 125 }
+S[1252250] = { i = 251353, req = 125 }
+S[1252251] = { i = 251354, req = 125 }
+S[1252252] = { i = 251355, req = 85 }
+S[1252253] = { i = 251356, req = 85 }
+S[1252254] = { i = 251357, req = 85 }
+S[1252255] = { i = 251358, req = 85 }
+S[1252256] = { i = 251359, req = 85 }
+S[1252257] = { i = 251360, req = 80 }
+S[1252258] = { i = 251361, req = 80 }
+S[1252259] = { i = 251362, req = 80 }
+S[1252260] = { i = 251363, req = 80 }
+S[1252261] = { i = 251364, req = 80 }
+S[1252262] = { i = 251365, req = 45 }
+S[1252263] = { i = 251366, req = 45 }
+S[1252264] = { i = 251367, req = 45 }
+S[1252265] = { i = 251368, req = 45 }
+S[1252266] = { i = 251369, req = 45 }
+S[1252267] = { i = 251370, req = 110 }
+S[1252268] = { i = 251371, req = 110 }
+S[1252269] = { i = 251372, req = 110 }
+S[1252270] = { i = 251373, req = 110 }
+S[1252271] = { i = 251374, req = 110 }
+S[1252272] = { i = 251375, req = 125 }
+S[1252273] = { i = 251376, req = 125 }
+S[1252274] = { i = 251377, req = 125 }
+S[1252275] = { i = 251378, req = 125 }
+S[1252276] = { i = 251379, req = 125 }
+S[1252277] = { i = 251380, req = 95 }
+S[1252278] = { i = 251381, req = 95 }
+S[1252279] = { i = 251382, req = 95 }
+S[1252280] = { i = 251383, req = 95 }
+S[1252281] = { i = 251384, req = 95 }
+S[1252282] = { i = 251385, req = 145 }
+S[1252283] = { i = 251386, req = 150 }
+S[1252284] = { i = 251387, req = 160 }
+S[1252285] = { i = 251388, req = 165 }
+S[1252286] = { i = 251389, req = 170 }
+S[1252287] = { i = 251390, req = 175 }
+S[1252288] = { i = 251391, req = 175 }
+S[1252289] = { i = 251392, req = 195 }
+S[1252290] = { i = 251393, req = 195 }
+S[1252291] = { i = 251394, req = 200 }
+S[1252292] = { i = 251395, req = 215 }
+S[1252293] = { i = 251396, req = 220 }
+S[1252294] = { i = 251397, req = 220 }
+S[1252295] = { i = 251398, req = 200 }
+S[1252296] = { i = 251399, req = 200 }
+S[1252297] = { i = 251400, req = 200 }
+S[1252298] = { i = 251401, req = 200 }
+S[1252299] = { i = 251402, req = 200 }
+S[1252300] = { i = 251403, req = 250 }
+S[1252301] = { i = 251404, req = 250 }
+S[1252302] = { i = 251405, req = 250 }
+S[1252303] = { i = 251406, req = 250 }
+S[1252304] = { i = 251407, req = 250 }
+S[1252305] = { i = 251408, req = 150 }
+S[1252306] = { i = 251409, req = 150 }
+S[1252307] = { i = 251410, req = 150 }
+S[1252308] = { i = 251411, req = 150 }
+S[1252309] = { i = 251412, req = 150 }
+S[1252310] = { i = 251413, req = 240 }
+S[1252311] = { i = 251414, req = 240 }
+S[1252312] = { i = 251415, req = 240 }
+S[1252313] = { i = 251416, req = 240 }
+S[1252314] = { i = 251417, req = 240 }
+S[1252315] = { i = 251418, req = 175 }
+S[1252316] = { i = 251419, req = 175 }
+S[1252317] = { i = 251420, req = 175 }
+S[1252318] = { i = 251421, req = 175 }
+S[1252319] = { i = 251422, req = 175 }
+S[1252320] = { i = 251423, req = 250 }
+S[1252321] = { i = 251424, req = 250 }
+S[1252322] = { i = 251425, req = 250 }
+S[1252323] = { i = 251426, req = 250 }
+S[1252324] = { i = 251427, req = 250 }
+S[1252325] = { i = 251428, req = 210 }
+S[1252326] = { i = 251429, req = 210 }
+S[1252327] = { i = 251430, req = 210 }
+S[1252328] = { i = 251431, req = 210 }
+S[1252329] = { i = 251432, req = 210 }
+S[1252330] = { i = 251433, req = 225 }
+S[1252331] = { i = 251434, req = 225 }
+S[1252332] = { i = 251435, req = 225 }
+S[1252333] = { i = 251436, req = 225 }
+S[1252334] = { i = 251437, req = 225 }
+S[1252335] = { i = 251438, req = 240 }
+S[1252336] = { i = 251439, req = 240 }
+S[1252337] = { i = 251440, req = 245 }
+S[1252338] = { i = 251441, req = 255 }
+S[1252339] = { i = 251442, req = 255 }
+S[1252340] = { i = 251443, req = 270 }
+S[1252341] = { i = 251444, req = 270 }
+S[1252342] = { i = 251445, req = 275 }
+S[1252343] = { i = 251446, req = 280 }
+S[1252344] = { i = 251447, req = 300 }
+S[1252345] = { i = 251448, req = 300 }
+S[1252346] = { i = 251449, req = 300 }
+S[1252347] = { i = 251450, req = 300 }
+S[1252348] = { i = 251451, req = 300 }
+S[1252349] = { i = 251452, req = 300 }
+S[1252350] = { i = 251453, req = 300 }
+S[1252351] = { i = 251454, req = 80 }
+S[1252352] = { i = 251455, req = 95 }
+S[1252353] = { i = 251456, req = 130 }
+S[1252354] = { i = 251457, req = 160 }
+S[1252355] = { i = 251458, req = 165 }
+S[1252356] = { i = 251459, req = 180 }
+S[1252357] = { i = 251460, req = 190 }
+S[1252358] = { i = 251461, req = 195 }
+S[1252359] = { i = 251462, req = 195 }
+S[1252360] = { i = 251463, req = 210 }
+S[1252361] = { i = 251464, req = 215 }
+S[1252362] = { i = 251465, req = 250 }
+S[1252363] = { i = 251466, req = 250 }
+S[1252364] = { i = 251467, req = 260 }
+S[1252365] = { i = 251468, req = 270 }
+S[1252366] = { i = 251469, req = 300, fac = "Timbermaw Hold", rep = "Revered" }
+S[1252367] = { i = 251470, req = 300, fac = "Timbermaw Hold", rep = "Revered" }
+S[1252368] = { i = 251471, req = 300 }
+S[1252566] = { i = 251526, req = 85 }
+S[1254965] = { i = 252942, req = 235 }
+S[1254966] = { i = 252941, req = 235 }
+S[1254967] = { i = 252940, req = 300 }
+S[1254968] = { i = 252939, req = 300 }
+S[1254969] = { i = 252938, req = 300 }
+S[1254970] = { i = 252937, req = 300 }
+S[1254971] = { i = 252936, req = 280 }
+S[1254972] = { i = 252935, req = 280 }
+S[1254973] = { i = 252934, req = 270 }
+S[1254974] = { i = 252933, req = 270 }
+S[1254975] = { i = 252932, req = 260 }
+S[1254976] = { i = 252931, req = 260 }
+S[1254977] = { i = 252930, req = 255 }
+S[1254978] = { i = 252929, req = 255 }
+S[1254979] = { i = 252928, req = 255 }
+S[1254980] = { i = 252927, req = 255 }
+S[1254981] = { i = 252926, req = 255 }
+S[1254982] = { i = 252925, req = 250 }
+S[1254983] = { i = 252924, req = 250 }
+S[1254984] = { i = 252923, req = 250 }
+S[1254985] = { i = 252922, req = 250 }
+S[1254986] = { i = 252921, req = 250 }
+S[1254987] = { i = 252920, req = 250 }
+S[1254988] = { i = 252919, req = 250 }
+S[1254989] = { i = 252918, req = 250 }
+S[1254990] = { i = 252917, req = 250 }
+S[1254991] = { i = 252916, req = 250 }
+S[1254992] = { i = 252915, req = 240 }
+S[1254993] = { i = 252914, req = 240 }
+S[1254994] = { i = 252913, req = 235 }
+S[1254995] = { i = 252912, req = 235 }
+S[1254996] = { i = 252911, req = 235 }
+S[1254997] = { i = 252910, req = 235 }
+S[1254998] = { i = 252909, req = 230 }
+S[1254999] = { i = 252908, req = 230 }
+S[1255000] = { i = 252907, req = 225 }
+S[1255001] = { i = 252906, req = 225 }
+S[1255002] = { i = 252905, req = 225 }
+S[1255003] = { i = 252904, req = 225 }
+S[1255004] = { i = 252903, req = 210 }
+S[1255005] = { i = 252902, req = 210 }
+S[1255006] = { i = 252901, req = 210 }
+S[1255007] = { i = 252900, req = 210 }
+S[1255008] = { i = 252899, req = 200 }
+S[1255009] = { i = 252898, req = 200 }
+S[1255010] = { i = 252897, req = 200 }
+S[1255011] = { i = 252896, req = 200 }
+S[1255012] = { i = 252895, req = 300 }
+S[1255013] = { i = 252894, req = 300 }
+S[1255014] = { i = 252893, req = 300 }
+S[1255015] = { i = 252892, req = 300 }
+S[1255016] = { i = 252891, req = 300 }
+S[1255017] = { i = 252890, req = 280 }
+S[1255018] = { i = 252889, req = 280 }
+S[1255019] = { i = 252888, req = 275 }
+S[1255020] = { i = 252887, req = 275 }
+S[1255021] = { i = 252886, req = 270 }
+S[1255022] = { i = 252885, req = 270 }
+S[1255023] = { i = 252884, req = 270 }
+S[1255024] = { i = 252883, req = 265 }
+S[1255025] = { i = 252882, req = 265 }
+S[1255026] = { i = 252881, req = 260 }
+S[1255027] = { i = 252880, req = 260 }
+S[1255028] = { i = 252879, req = 260 }
+S[1255029] = { i = 252878, req = 255 }
+S[1255030] = { i = 252877, req = 255 }
+S[1255031] = { i = 252876, req = 250 }
+S[1255032] = { i = 252875, req = 250 }
+S[1255033] = { i = 252874, req = 250 }
+S[1255034] = { i = 252873, req = 250 }
+S[1255035] = { i = 252872, req = 250 }
+S[1255036] = { i = 252871, req = 250 }
+S[1255037] = { i = 252870, req = 250 }
+S[1255038] = { i = 252869, req = 250 }
+S[1255039] = { i = 252868, req = 250 }
+S[1255040] = { i = 252867, req = 250 }
+S[1255041] = { i = 252866, req = 240 }
+S[1255042] = { i = 252865, req = 240 }
+S[1255043] = { i = 252864, req = 235 }
+S[1255044] = { i = 252863, req = 235 }
+S[1255045] = { i = 252862, req = 235 }
+S[1255046] = { i = 252861, req = 235 }
+S[1255047] = { i = 252860, req = 235 }
+S[1255048] = { i = 252859, req = 235 }
+S[1255049] = { i = 252858, req = 235 }
+S[1255050] = { i = 252857, req = 225 }
+S[1255051] = { i = 252856, req = 225 }
+S[1255052] = { i = 252855, req = 225 }
+S[1255053] = { i = 252854, req = 225 }
+S[1255054] = { i = 252853, req = 225 }
+S[1255055] = { i = 252852, req = 210 }
+S[1255056] = { i = 252851, req = 210 }
+S[1255057] = { i = 252850, req = 210 }
+S[1255058] = { i = 252849, req = 210 }
+S[1255059] = { i = 252848, req = 210 }
+S[1255060] = { i = 252847, req = 200 }
+S[1255061] = { i = 252846, req = 200 }
+S[1255062] = { i = 252845, req = 200 }
+S[1255063] = { i = 252844, req = 200 }
+S[1255064] = { i = 252843, req = 200 }
+S[1255065] = { i = 252842, req = 175 }
+S[1255066] = { i = 252841, req = 175 }
+S[1255067] = { i = 252840, req = 175 }
+S[1255068] = { i = 252839, req = 175 }
+S[1255069] = { i = 252838, req = 175 }
+S[1255070] = { i = 252837, req = 175 }
+S[1255071] = { i = 252836, req = 175 }
+S[1255073] = { i = 252834, req = 185 }
+S[1255074] = { i = 252833, req = 185 }
+S[1255075] = { i = 252832, req = 150 }
+S[1255076] = { i = 252831, req = 150 }
+S[1255077] = { i = 252830, req = 150 }
+S[1255078] = { i = 252829, req = 150 }
+S[1255079] = { i = 252828, req = 150 }
+S[1255080] = { i = 252827, req = 150 }
+S[1255081] = { i = 252826, req = 150 }
+S[1255082] = { i = 252825, req = 125 }
+S[1255083] = { i = 252824, req = 125 }
+S[1255084] = { i = 252823, req = 125 }
+S[1255085] = { i = 252822, req = 125 }
+S[1255086] = { i = 252821, req = 125 }
+S[1255087] = { i = 252820, req = 125 }
+S[1255088] = { i = 252819, req = 125 }
+S[1255089] = { i = 252818, req = 125 }
+S[1255090] = { i = 252817, req = 125 }
+S[1255091] = { i = 252816, req = 125 }
+S[1255092] = { i = 252815, req = 125 }
+S[1255093] = { i = 252814, req = 125 }
+S[1255095] = { i = 252812, req = 135 }
+S[1255096] = { i = 252811, req = 135 }
+S[1255097] = { i = 252810, req = 110 }
+S[1255098] = { i = 252809, req = 110 }
+S[1255099] = { i = 252808, req = 110 }
+S[1255100] = { i = 252807, req = 110 }
+S[1255101] = { i = 252806, req = 110 }
+S[1255102] = { i = 252805, req = 110 }
+S[1255103] = { i = 252804, req = 110 }
+S[1255104] = { i = 252803, req = 100 }
+S[1255105] = { i = 252802, req = 100 }
+S[1255106] = { i = 252801, req = 100 }
+S[1255107] = { i = 252800, req = 100 }
+S[1255108] = { i = 252799, req = 100 }
+S[1255109] = { i = 252798, req = 100 }
+S[1255110] = { i = 252797, req = 100 }
+S[1255111] = { i = 252796, req = 100 }
+S[1255112] = { i = 252795, req = 100 }
+S[1255113] = { i = 252794, req = 100 }
+S[1255114] = { i = 252793, req = 100 }
+S[1255115] = { i = 252792, req = 100 }
+S[1255116] = { i = 252791, req = 85 }
+S[1255117] = { i = 252790, req = 85 }
+S[1255118] = { i = 252789, req = 85 }
+S[1255119] = { i = 252788, req = 85 }
+S[1255120] = { i = 252787, req = 85 }
+S[1255121] = { i = 252786, req = 85 }
+S[1255123] = { i = 252784, req = 80 }
+S[1255124] = { i = 252783, req = 80 }
+S[1255125] = { i = 252782, req = 75 }
+S[1255126] = { i = 252781, req = 75 }
+S[1255127] = { i = 252780, req = 75 }
+S[1255128] = { i = 252779, req = 75 }
+S[1255129] = { i = 252778, req = 75 }
+S[1255130] = { i = 252777, req = 75 }
+S[1255131] = { i = 252776, req = 75 }
+S[1255132] = { i = 252775, req = 75 }
+S[1255133] = { i = 252774, req = 75 }
+S[1255134] = { i = 252773, req = 75 }
+S[1255135] = { i = 252772, req = 75 }
+S[1255136] = { i = 252771, req = 75 }
+S[1255137] = { i = 252770, req = 60 }
+S[1255138] = { i = 252769, req = 60 }
+S[1255139] = { i = 252768, req = 60 }
+S[1255140] = { i = 252767, req = 60 }
+S[1255141] = { i = 252766, req = 60 }
+S[1255142] = { i = 252765, req = 60 }
+S[1255143] = { i = 252764, req = 35 }
+S[1255144] = { i = 252763, req = 35 }
+S[1255145] = { i = 252762, req = 35 }
+S[1255146] = { i = 252761, req = 35 }
+S[1257013] = { i = 253665, req = 5 }
+S[1257017] = { i = 253668, req = 70 }
+S[1257368] = { i = 253886, req = 50 }
+S[1257369] = { i = 253888, req = 50 }
+S[1257370] = { i = 253890, req = 60 }
+S[1257371] = { i = 253892, req = 60 }
+S[1257372] = { i = 253894, req = 60 }
+S[1257373] = { i = 253896, req = 60 }
+S[1257374] = { i = 253898, req = 60 }
+S[1257375] = { i = 253900, req = 60 }
+S[1257376] = { i = 253902, req = 75 }
+S[1257377] = { i = 253904, req = 75 }
+S[1257378] = { i = 253906, req = 75 }
+S[1257379] = { i = 253908, req = 75 }
+S[1257380] = { i = 253910, req = 75 }
+S[1257381] = { i = 253912, req = 75 }
+S[1257382] = { i = 253914, req = 75 }
+S[1257383] = { i = 253916, req = 75 }
+S[1257384] = { i = 253918, req = 75 }
+S[1257385] = { i = 253920, req = 75 }
+S[1257386] = { i = 253922, req = 75 }
+S[1257387] = { i = 253924, req = 75 }
+S[1257388] = { i = 253926, req = 85 }
+S[1257389] = { i = 253928, req = 85 }
+S[1257390] = { i = 253930, req = 85 }
+S[1257391] = { i = 253932, req = 85 }
+S[1257392] = { i = 253934, req = 85 }
+S[1257393] = { i = 253936, req = 85 }
+S[1257394] = { i = 253938, req = 100 }
+S[1257395] = { i = 253940, req = 100 }
+S[1257396] = { i = 253942, req = 100 }
+S[1257397] = { i = 253944, req = 100 }
+S[1257398] = { i = 253946, req = 100 }
+S[1257399] = { i = 253948, req = 100 }
+S[1257400] = { i = 253950, req = 100 }
+S[1257401] = { i = 253952, req = 100 }
+S[1257402] = { i = 253954, req = 100 }
+S[1257403] = { i = 253956, req = 100 }
+S[1257404] = { i = 253958, req = 100 }
+S[1257405] = { i = 253960, req = 100 }
+S[1257406] = { i = 253962, req = 110 }
+S[1257407] = { i = 253964, req = 110 }
+S[1257408] = { i = 253966, req = 110 }
+S[1257409] = { i = 253968, req = 110 }
+S[1257410] = { i = 253970, req = 110 }
+S[1257411] = { i = 253972, req = 110 }
+S[1257412] = { i = 253974, req = 125 }
+S[1257413] = { i = 253976, req = 125 }
+S[1257414] = { i = 253978, req = 125 }
+S[1257415] = { i = 253980, req = 125 }
+S[1257416] = { i = 253982, req = 125 }
+S[1257417] = { i = 253984, req = 125 }
+S[1257418] = { i = 253986, req = 125 }
+S[1257419] = { i = 253988, req = 125 }
+S[1257420] = { i = 253990, req = 125 }
+S[1257421] = { i = 253992, req = 125 }
+S[1257422] = { i = 253994, req = 125 }
+S[1257423] = { i = 253996, req = 125 }
+S[1257424] = { i = 253998, req = 125 }
+S[1257425] = { i = 254000, req = 140 }
+S[1257426] = { i = 254002, req = 140 }
+S[1257427] = { i = 254004, req = 140 }
+S[1257428] = { i = 254006, req = 140 }
+S[1257429] = { i = 254008, req = 140 }
+S[1257430] = { i = 254010, req = 140 }
+S[1257431] = { i = 254012, req = 140 }
+S[1257432] = { i = 254014, req = 145 }
+S[1257433] = { i = 254016, req = 150 }
+S[1257434] = { i = 254018, req = 160 }
+S[1257435] = { i = 254020, req = 165 }
+S[1257436] = { i = 254022, req = 165 }
+S[1257437] = { i = 254024, req = 165 }
+S[1257438] = { i = 254026, req = 165 }
+S[1257439] = { i = 254028, req = 165 }
+S[1257440] = { i = 254030, req = 165 }
+S[1257441] = { i = 254032, req = 165 }
+S[1257442] = { i = 254034, req = 170 }
+S[1257443] = { i = 254036, req = 190 }
+S[1257444] = { i = 254038, req = 190 }
+S[1257445] = { i = 254040, req = 190 }
+S[1257446] = { i = 254042, req = 190 }
+S[1257447] = { i = 254044, req = 190 }
+S[1257448] = { i = 254046, req = 190 }
+S[1257449] = { i = 254048, req = 190 }
+S[1257450] = { i = 254050, req = 195 }
+S[1257451] = { i = 254052, req = 195 }
+S[1257452] = { i = 254054, req = 195 }
+S[1257453] = { i = 254056, req = 195 }
+S[1257454] = { i = 254058, req = 195 }
+S[1257455] = { i = 254060, req = 195 }
+S[1257456] = { i = 254062, req = 205 }
+S[1257457] = { i = 254064, req = 205 }
+S[1257458] = { i = 254066, req = 205 }
+S[1257459] = { i = 254068, req = 205 }
+S[1257460] = { i = 254070, req = 205 }
+S[1257461] = { i = 254072, req = 205 }
+S[1257462] = { i = 254074, req = 215 }
+S[1257463] = { i = 254076, req = 215 }
+S[1257464] = { i = 254078, req = 215 }
+S[1257465] = { i = 254080, req = 215 }
+S[1257466] = { i = 254082, req = 215 }
+S[1257467] = { i = 254084, req = 215 }
+S[1257468] = { i = 254086, req = 215 }
+S[1257469] = { i = 254088, req = 215 }
+S[1257470] = { i = 254090, req = 215 }
+S[1257471] = { i = 254092, req = 215 }
+S[1257472] = { i = 254094, req = 225 }
+S[1257473] = { i = 254096, req = 235 }
+S[1257474] = { i = 254098, req = 235 }
+S[1257475] = { i = 254100, req = 235 }
+S[1257476] = { i = 254102, req = 235 }
+S[1257477] = { i = 254104, req = 235 }
+S[1257478] = { i = 254106, req = 235 }
+S[1257479] = { i = 254108, req = 235 }
+S[1257480] = { i = 254110, req = 235 }
+S[1257481] = { i = 254112, req = 235 }
+S[1257482] = { i = 254114, req = 235 }
+S[1257483] = { i = 254116, req = 235 }
+S[1257484] = { i = 254118, req = 235 }
+S[1257485] = { i = 254120, req = 240 }
+S[1257486] = { i = 254122, req = 250 }
+S[1257487] = { i = 254124, req = 250 }
+S[1257488] = { i = 254126, req = 245 }
+S[1257489] = { i = 254128, req = 250 }
+S[1257490] = { i = 254130, req = 255 }
+S[1257491] = { i = 254132, req = 255 }
+S[1257492] = { i = 254134, req = 255 }
+S[1257493] = { i = 254136, req = 260 }
+S[1257494] = { i = 254138, req = 260 }
+S[1257495] = { i = 254140, req = 300 }
+S[1259341] = { i = 255728, req = 215 }
+S[1259343] = { i = 255724, req = 140 }
+S[1259344] = { i = 255727, req = 210 }
+S[1259345] = { i = 255731, req = 280 }
+S[1259348] = { i = 255726, req = 200 }
+S[1259349] = { i = 255730, req = 265 }
+S[1262975] = { i = 273097, req = 140 }
+S[1262978] = { i = 273102, req = 140 }
+S[1262980] = { i = 273106, req = 140 }
+S[1262982] = { i = 273109, req = 300 }
+S[1262985] = { i = 273098, req = 140 }
+S[1262990] = { i = 273141, req = 140 }
+S[1262996] = { i = 273105, req = 140 }
+S[1262998] = { i = 273119, req = 300 }
+S[1263001] = { i = 273118, req = 300 }
+S[1263005] = { i = 273085, req = 140 }
+S[1263031] = { i = 273096, req = 140 }
+S[1263032] = { i = 273099, req = 140 }
+S[1263034] = { i = 273092, req = 140 }
+S[1263041] = { i = 273086, req = 140 }
+S[1263056] = { i = 273103, req = 140 }
+S[1263067] = { i = 273115, req = 300 }
+S[1263070] = { i = 273120, req = 300 }
+S[1263071] = { i = 273122, req = 300 }
+S[1263073] = { i = 273113, req = 300 }
+S[1263078] = { i = 273112, req = 300 }
+S[1263079] = { i = 273121, req = 300 }
+S[1263080] = { i = 273124, req = 300 }
+S[1263082] = { i = 273116, req = 300 }
+S[1263083] = { i = 273117, req = 300 }
+S[1266893] = { i = 264201, req = 25 }
+S[1266905] = { i = 264202, req = 25 }
+S[1266906] = { i = 264203, req = 55 }
+S[1266907] = { i = 264204, req = 100 }
+S[1266908] = { i = 264205, req = 130 }
+S[1266909] = { i = 264206, req = 145 }
+S[1266910] = { i = 264207, req = 145 }
+S[1266911] = { i = 264208, req = 150 }
+S[1266912] = { i = 264209, req = 175 }
+S[1266913] = { i = 264210, req = 175 }
+S[1266914] = { i = 264211, req = 190 }
+S[1266915] = { i = 264212, req = 190 }
+S[1266916] = { i = 264213, req = 200 }
+S[1266917] = { i = 264214, req = 215 }
+S[1266918] = { i = 264215, req = 215 }
+S[1266919] = { i = 264216, req = 225 }
+S[1266920] = { i = 264217, req = 225 }
+S[1266921] = { i = 264218, req = 240 }
+S[1266922] = { i = 264219, req = 240 }
+S[1266923] = { i = 264220, req = 250 }
+S[1266924] = { i = 264221, req = 250 }
+S[1266925] = { i = 264222, req = 275 }
+S[1266926] = { i = 264223, req = 275 }
+S[1266927] = { i = 264224, req = 275 }
+S[1266928] = { i = 264225, req = 285 }
+S[1266929] = { i = 264226, req = 285 }
+S[1266930] = { i = 264227, req = 300 }
+S[1266931] = { i = 264228, req = 300 }
+S[1266932] = { i = 264229, req = 300 }
+S[1266933] = { i = 264230, req = 300 }
+S[1266934] = { i = 264231, req = 300 }
+S[1266935] = { i = 264232, req = 300 }
+S[1266936] = { i = 264233, req = 300 }
+S[1266937] = { i = 264234, req = 300 }
+S[1266938] = { i = 264235, req = 300 }
+S[1266939] = { i = 264236, req = 300 }
+S[1266940] = { i = 264237, req = 300 }
+S[1266941] = { i = 264238, req = 300 }
+S[1266942] = { i = 264239, req = 300 }
+S[1266943] = { i = 264240, req = 300 }
+S[1270633] = { i = 263511, req = 25 }
+S[1270635] = { i = 263513, req = 35 }
+S[1283400] = { i = 273087, req = 90 }
+S[1286792] = { i = 269901, req = 190 }
+S[1286796] = { i = 269903, req = 140 }
+S[1291341] = { i = 273101, req = 200 }
+S[1292920] = { i = 273952, req = 300 }
+S[1292921] = { i = 273953, req = 300 }
+S[1292923] = { i = 273954, req = 300 }
+S[1292924] = { i = 273955, req = 300 }
+S[1292925] = { i = 273956, req = 300 }
+S[1292926] = { i = 273957, req = 300 }
+S[1292927] = { i = 273958, req = 300 }
+S[1292928] = { i = 273959, req = 300 }
+S[1292929] = { i = 273960, req = 300 }
+S[1292930] = { i = 273961, req = 300 }
+S[1292931] = { i = 273962, req = 300 }
+S[1292932] = { i = 273963, req = 300 }
+S[1292933] = { i = 273964, req = 300 }
+S[1292934] = { i = 273965, req = 300 }
+S[1292935] = { i = 273966, req = 300 }
+S[1292936] = { i = 273967, req = 300 }
+S[1292937] = { i = 273968, req = 300 }
+S[1292938] = { i = 273969, req = 300 }
+S[1292939] = { i = 273970, req = 300 }
+S[1292940] = { i = 273971, req = 300 }
+S[1292941] = { i = 273972, req = 300 }
+S[1292942] = { i = 273973, req = 300 }
+S[1292943] = { i = 273974, req = 300 }
+S[1292944] = { i = 273975, req = 300 }
+S[1292945] = { i = 273976, req = 300 }
+S[1292946] = { i = 273977, req = 300 }
+S[1292947] = { i = 273978, req = 300 }
+S[1292948] = { i = 273979, req = 300 }
+S[1292949] = { i = 273980, req = 300 }
+S[1292950] = { i = 273981, req = 300 }
+S[1292951] = { i = 273982, req = 300 }
+S[1292952] = { i = 273983, req = 300 }
+S[1292953] = { i = 273984, req = 300 }
+S[1292954] = { i = 273985, req = 300 }
+S[1292955] = { i = 273986, req = 300 }
+S[1292956] = { i = 273987, req = 300 }
+S[1292957] = { i = 273988, req = 300 }
+S[1292958] = { i = 273989, req = 300 }
+S[1292959] = { i = 273990, req = 300 }
+S[1292960] = { i = 273991, req = 300 }
+S[1292961] = { i = 273992, req = 300 }
+S[1292962] = { i = 273993, req = 300 }
+S[1292963] = { i = 273994, req = 300 }
+S[1292964] = { i = 273995, req = 300 }
+S[1292965] = { i = 273996, req = 300 }
+S[1292966] = { i = 273997, req = 300 }
+S[1292967] = { i = 273998, req = 300 }
+S[1292968] = { i = 273999, req = 300 }
+S[1292969] = { i = 274000, req = 300 }
+S[1292970] = { i = 274001, req = 300 }
+S[1292971] = { i = 274002, req = 300 }
+S[1292972] = { i = 274003, req = 300 }
+S[1292973] = { i = 274004, req = 300 }
+S[1292974] = { i = 274005, req = 300 }
+S[1292975] = { i = 274006, req = 300 }
+S[1292976] = { i = 274007, req = 300 }
+S[1292977] = { i = 274008, req = 300 }
+S[1292978] = { i = 274009, req = 300 }
+S[1292979] = { i = 274010, req = 300 }
+S[1292980] = { i = 274011, req = 300 }
+S[1292981] = { i = 274012, req = 300 }
+S[1292982] = { i = 274013, req = 300 }
+S[1292983] = { i = 274014, req = 300 }
+S[1292984] = { i = 274015, req = 300 }
+S[1292985] = { i = 274016, req = 300 }
+S[1292986] = { i = 274017, req = 300 }
+S[1292987] = { i = 274018, req = 300 }
+S[1292988] = { i = 274019, req = 300 }
+S[1293559] = { i = 274277, req = 300 }
+S[1293560] = { i = 274278, req = 300 }
+S[1293561] = { i = 274279, req = 300 }
+S[1293562] = { i = 274280, req = 300 }
+S[1293849] = { i = 274389, req = 300 }
+S[1293850] = { i = 274390, req = 300 }
+S[1294014] = { i = 274415, req = 275 }
+S[1294054] = { i = 274424, req = 295 }
+S[1295805] = { i = 274972, req = 200 }
+S[1295834] = { i = 274977, req = 185 }
+S[1297120] = { i = 275580, req = 285, fac = "Cenarion Circle", rep = "Friendly" }
+S[1297121] = { i = 275581, req = 290, fac = "Cenarion Circle", rep = "Honored" }
+S[1297122] = { i = 275582, req = 295, fac = "Cenarion Circle", rep = "Honored" }
+S[1297123] = { i = 275583, req = 285, fac = "Cenarion Circle", rep = "Friendly" }
+S[1297124] = { i = 275584, req = 290, fac = "Cenarion Circle", rep = "Honored" }
+S[1297125] = { i = 275585, req = 295, fac = "Cenarion Circle", rep = "Honored" }
+S[1297126] = { i = 275586, req = 285, fac = "Cenarion Circle", rep = "Friendly" }
+S[1297127] = { i = 275587, req = 290, fac = "Cenarion Circle", rep = "Honored" }
+S[1297128] = { i = 275588, req = 295, fac = "Cenarion Circle", rep = "Honored" }
+S[1297129] = { i = 275589, req = 285, fac = "Cenarion Circle", rep = "Friendly" }
+S[1297130] = { i = 275590, req = 290, fac = "Cenarion Circle", rep = "Honored" }
+S[1297131] = { i = 275591, req = 295, fac = "Cenarion Circle", rep = "Honored" }
+S[1297132] = { i = 275592, req = 285, fac = "Cenarion Circle", rep = "Friendly" }
+S[1297133] = { i = 275593, req = 290, fac = "Cenarion Circle", rep = "Honored" }
+S[1297134] = { i = 275594, req = 295, fac = "Cenarion Circle", rep = "Honored" }
+S[1297135] = { i = 275595, req = 285, fac = "Cenarion Circle", rep = "Friendly" }
+S[1297136] = { i = 275596, req = 290, fac = "Cenarion Circle", rep = "Honored" }
+S[1297137] = { i = 275597, req = 295, fac = "Cenarion Circle", rep = "Honored" }
+S[1297138] = { i = 275598, req = 285, fac = "Cenarion Circle", rep = "Friendly" }
+S[1297139] = { i = 275599, req = 290, fac = "Cenarion Circle", rep = "Honored" }
+S[1297140] = { i = 275600, req = 295, fac = "Cenarion Circle", rep = "Honored" }
+S[1297141] = { i = 275601, req = 285, fac = "Cenarion Circle", rep = "Friendly" }
+S[1297142] = { i = 275602, req = 290, fac = "Cenarion Circle", rep = "Honored" }
+S[1297143] = { i = 275603, req = 295, fac = "Cenarion Circle", rep = "Honored" }
+S[1299914] = { i = 276542, req = 300 }
+S[1299915] = { i = 276543, req = 300 }
+S[1299916] = { i = 276544, req = 300 }
+S[1299917] = { i = 276545, req = 300 }
+S[1301421] = { i = 276928, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301422] = { i = 276929, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301423] = { i = 276930, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301424] = { i = 276931, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301425] = { i = 276932, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301426] = { i = 276933, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301427] = { i = 276934, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301428] = { i = 276935, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301429] = { i = 276936, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301430] = { i = 276937, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301431] = { i = 276938, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301432] = { i = 276939, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301433] = { i = 276940, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301434] = { i = 276941, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301435] = { i = 276942, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301436] = { i = 276943, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301437] = { i = 276944, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301438] = { i = 276945, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301439] = { i = 276946, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301440] = { i = 276947, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301441] = { i = 276948, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301442] = { i = 276949, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301443] = { i = 276950, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301444] = { i = 276951, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301445] = { i = 276952, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301446] = { i = 276953, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301447] = { i = 276954, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301448] = { i = 276955, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301449] = { i = 276956, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301450] = { i = 276957, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301451] = { i = 276958, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301452] = { i = 276959, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301453] = { i = 276960, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301454] = { i = 276961, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301455] = { i = 276962, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301456] = { i = 276963, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301457] = { i = 276964, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301458] = { i = 276965, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301459] = { i = 276966, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301460] = { i = 276967, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301461] = { i = 276968, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301462] = { i = 276969, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301463] = { i = 276970, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301464] = { i = 276971, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301465] = { i = 276972, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301466] = { i = 276973, req = 50, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301468] = { i = 276974, req = 60, fac = "Nightclaw Druids", rep = "Honored" }
+S[1301469] = { i = 276975, req = 55, fac = "Nightclaw Druids", rep = "Friendly" }
+S[1301526] = { i = 276976, req = 175, fac = "Earthen Ring", rep = "Friendly" }
+S[1301527] = { i = 276977, req = 175, fac = "Earthen Ring", rep = "Friendly" }
+S[1301528] = { i = 276978, req = 175, fac = "Earthen Ring", rep = "Friendly" }
+S[1301529] = { i = 276979, req = 175, fac = "Earthen Ring", rep = "Friendly" }
+S[1301530] = { i = 276980, req = 175, fac = "Earthen Ring", rep = "Friendly" }
+S[1301531] = { i = 276981, req = 175, fac = "Earthen Ring", rep = "Friendly" }
+S[1301532] = { i = 276982, req = 175, fac = "Earthen Ring", rep = "Friendly" }
+S[1301533] = { i = 276983, req = 175, fac = "Earthen Ring", rep = "Friendly" }
+S[1301534] = { i = 276984, req = 175, fac = "Kirin Tor", rep = "Friendly" }
+S[1301535] = { i = 276985, req = 175, fac = "Kirin Tor", rep = "Friendly" }
+S[1301536] = { i = 276986, req = 175, fac = "Kirin Tor", rep = "Friendly" }
+S[1301537] = { i = 276987, req = 175, fac = "Kirin Tor", rep = "Friendly" }
+S[1301538] = { i = 276988, req = 175, fac = "Kirin Tor", rep = "Friendly" }
+S[1301539] = { i = 276989, req = 175, fac = "Kirin Tor", rep = "Friendly" }
+S[1301540] = { i = 276990, req = 175, fac = "Kirin Tor", rep = "Friendly" }
+S[1301541] = { i = 276991, req = 175, fac = "Kirin Tor", rep = "Friendly" }
+S[1302161] = { i = 277470, req = 65 }
+S[1302598] = { i = 277673, req = 50 }
+S[1302604] = { i = 277716, req = 30 }
+S[1306520] = { i = 279295, req = 300 }
+S[1306521] = { i = 279296, req = 300 }
+S[1306522] = { i = 279297, req = 300 }
+S[1306523] = { i = 279298, req = 300 }
+S[1306524] = { i = 279299, req = 300 }
+S[1306525] = { i = 279300, req = 300 }
+S[1306526] = { i = 279301, req = 300 }
+S[1306527] = { i = 279302, req = 300 }
+S[1306528] = { i = 279303, req = 300 }
+S[1306529] = { i = 279304, req = 300 }
+S[1306530] = { i = 279305, req = 300 }
+S[1306531] = { i = 279306, req = 300 }
+S[1306532] = { i = 279307, req = 300 }
+S[1306533] = { i = 279308, req = 300 }
+S[1306534] = { i = 279309, req = 300 }
+S[1306535] = { i = 279310, req = 300 }
+S[1306536] = { i = 279311, req = 300 }
+S[1306537] = { i = 279312, req = 300 }
+S[1306538] = { i = 279313, req = 300 }
+S[1306539] = { i = 279314, req = 300 }
+S[1306540] = { i = 279315, req = 300 }
+S[1306541] = { i = 279316, req = 300 }
+S[1306542] = { i = 279317, req = 300 }
+S[1306543] = { i = 279318, req = 300 }
+S[1306544] = { i = 279319, req = 300 }
+S[1306545] = { i = 279320, req = 300 }
+S[1306546] = { i = 279321, req = 300 }
+S[1306547] = { i = 279322, req = 300 }
+S[1308178] = { i = 280321, req = 175 }
+S[1308179] = { i = 280322, req = 175 }
+S[1308180] = { i = 280323, req = 175 }
+S[1308182] = { i = 280324, req = 175 }
+S[1308183] = { i = 280325, req = 200 }
+S[1308184] = { i = 280326, req = 200 }
+S[1308185] = { i = 280327, req = 200 }
+S[1308186] = { i = 280328, req = 200 }
+S[1317270] = { i = 284870, req = 260 }
+S[1317279] = { i = 284871, req = 275 }
+S[1317958] = { i = 285285, req = 85 }
+S[1317959] = { i = 285286, req = 165 }
+S[1317960] = { i = 285287, req = 230 }
+S[1317961] = { i = 285288, req = 285 }
+S[1317962] = { i = 285289, req = 110 }
+S[1317963] = { i = 285290, req = 195 }
+S[1317964] = { i = 285291, req = 270 }
+S[1319154] = { i = 286076, req = 125 }
+S[1319155] = { i = 286077, req = 125 }
+S[1319156] = { i = 286078, req = 125 }
+S[1319157] = { i = 286079, req = 175 }
+S[1319158] = { i = 286080, req = 175 }
+S[1319159] = { i = 286081, req = 175 }
+S[1319160] = { i = 286082, req = 225 }
+S[1319161] = { i = 286083, req = 225 }
+S[1319162] = { i = 286084, req = 225 }
+S[1319163] = { i = 286085, req = 275 }
+S[1319164] = { i = 286086, req = 275 }
+S[1319165] = { i = 286087, req = 275 }
+S[1319313] = { i = 286153, req = 225 }
+S[1328948] = { i = 289560, req = 280 }

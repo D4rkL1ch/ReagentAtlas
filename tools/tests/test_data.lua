@@ -82,3 +82,18 @@ test("real data: anchor items land in sensible tiers", function()
 	eq(V:GetInfo(2604).tier <= V.TIER_USEFUL, true, "Red Dye (vendor) at most Useful")
 	eq(V:GetInfo(6948), nil, "Hearthstone is not a reagent")
 end)
+
+test("output counts and conversion flags are well formed", function()
+	local ns = T.boot(nil)
+	for recipeID, recipe in pairs(ns.Recipes) do
+		if recipe.n then
+			eq(recipe.n > 1, true, "n of " .. recipeID)
+			eq(recipe.out ~= nil, true, "output of " .. recipeID)
+		end
+		if recipe.conv then
+			local kinds = 0
+			for _ in pairs(recipe.reagents) do kinds = kinds + 1 end
+			eq(kinds, 1, "conversion " .. recipeID .. " has one input")
+		end
+	end
+end)

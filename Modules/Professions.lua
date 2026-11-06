@@ -177,6 +177,34 @@ function Professions:GetKnownBy(recipeID)
 	return isMe, alts
 end
 
+-- Characters with the recipe's profession who don't know it: array of
+-- { key, isMe, rank, need, ready }, you first, then highest rank. ready means
+-- the rank is enough. need is the recipe item's required skill; trainer recipes
+-- have no such item, so theirs is where the recipe turns yellow, a little above
+-- the real requirement. Known recipes are only recorded from an opened
+-- profession window, so this can include someone who has it.
+function Professions:GetLearners(recipeID)
+	local recipe = ns.Recipes[recipeID]
+	local learners = {}
+	if not recipe then return learners end
+	local source = ns.RecipeSources and ns.RecipeSources[recipeID]
+	local need = source and source.req or recipe.skill
+	local me = ns:GetCharKey()
+	for key, char in pairs(ns.db.chars) do
+		local prof = char.profs and char.profs[recipe.prof]
+		if prof and not (prof.known and prof.known[recipeID]) then
+			local rank = prof.rank or 0
+			learners[#learners + 1] = { key = key, isMe = key == me, rank = rank, need = need, ready = rank >= need }
+		end
+	end
+	table.sort(learners, function(a, b)
+		if a.isMe ~= b.isMe then return a.isMe end
+		if a.rank ~= b.rank then return a.rank > b.rank end
+		return a.key < b.key
+	end)
+	return learners
+end
+
 -- Learned recipes missing from the data, as sorted "Name (id)" lines. Only
 -- profession windows opened this session are checked.
 function Professions:GetMissingRecipes()
