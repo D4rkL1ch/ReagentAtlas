@@ -44,7 +44,9 @@
 			"UIErrorsFrame",
 			"RaidNotice_AddMessage",
 			"RaidWarningFrame",
-			"SOUNDKIT"
+			"SOUNDKIT",
+			"LOOT_ITEM_SELF_MULTIPLE",
+			"LOOT_ITEM_SELF"
 		]
 	}
 }

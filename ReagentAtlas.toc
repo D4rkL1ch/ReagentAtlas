@@ -24,9 +24,11 @@ Modules\Sources.lua
 Modules\Tracker.lua
 Modules\Tooltip.lua
 Modules\BagMarkers.lua
+Modules\LootAlert.lua
 
 UI\Settings.lua
 UI\Browser.lua
 UI\Crafting.lua
 UI\TrackerWindow.lua
+UI\LootToast.lua
 UI\MinimapButton.lua

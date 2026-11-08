@@ -18,6 +18,8 @@ local TOGGLES = {
 	{ "minimapIcon", "Minimap icon", "Show the Reagent Atlas icon on the minimap. It is always listed under the AddOns button there too." },
 	{ "useAuctionator", "Use Auctionator prices", "Adjust tiers and show AH prices from Auctionator scans, if Auctionator is installed." },
 	{ "trackerSound", "Tracking list sound", "Play a sound when you have enough of something on the tracking list." },
+	{ "lootAlerts", "Loot alerts", "Announce looted recipes one of your characters could learn, and reagents at or above the minimum tier with who can craft with them." },
+	{ "lootSound", "Loot alert sound", "Play a sound with loot alerts." },
 }
 
 local category
@@ -197,6 +199,8 @@ function SettingsUI:OnInit()
 		return container:GetData()
 	end
 	Settings.CreateDropdown(category, tierSetting, TierOptions, "Bag items below this tier get no pip.")
+	local lootTierSetting = Register("lootMinTier", "Minimum tier for loot alerts", Settings.VarType.Number)
+	Settings.CreateDropdown(category, lootTierSetting, TierOptions, "Looted reagents below this tier don't alert. Recipe items alert whenever a character could learn them.")
 
 	if Settings.RegisterCanvasLayoutSubcategory then
 		CreatePanel()

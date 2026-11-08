@@ -346,15 +346,8 @@ local function Notify(completed)
 		ns:Print(AlertText(entry))
 	end
 	local text = #completed == 1 and AlertText(completed[1]) or ("%d tracked goals met"):format(#completed)
-	if RaidNotice_AddMessage and RaidWarningFrame then
-		RaidNotice_AddMessage(RaidWarningFrame, text, ALERT_COLOR)
-	elseif UIErrorsFrame then
-		UIErrorsFrame:AddMessage(text, ALERT_COLOR.r, ALERT_COLOR.g, ALERT_COLOR.b)
-	end
-	if ns.db.settings.trackerSound and PlaySound then
-		-- The Master channel still plays with sound effects turned off.
-		pcall(PlaySound, SOUNDKIT and SOUNDKIT.IG_QUEST_LIST_COMPLETE or FALLBACK_SOUND, "Master")
-	end
+	local sound = ns.db.settings.trackerSound and (SOUNDKIT and SOUNDKIT.IG_QUEST_LIST_COMPLETE or FALLBACK_SOUND)
+	ns:ShowAlert(text, ALERT_COLOR, sound)
 end
 
 -- Alerts on goals that became met; goals that fell short again re-arm. done is

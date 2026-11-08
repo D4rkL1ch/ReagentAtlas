@@ -69,6 +69,13 @@ function W:SetTexture(t) self.texture = t end
 function W:CreateTexture() return newWidget("Texture", self) end
 function W:CreateFontString() return newWidget("FontString", self) end
 function W:SetTitle(text) self.title = text end
+function W:SetAlpha(a) self.alpha = a end
+function W:GetAlpha() return self.alpha or 1 end
+-- 12 pixels per line of text.
+function W:GetStringHeight()
+	local _, breaks = (self.text or ""):gsub("\n", "")
+	return self.text and self.text ~= "" and (breaks + 1) * 12 or 0
+end
 
 -- WowScrollBoxList: SetDataProvider "renders" up to 40 elements through the
 -- view's initializer, reusing row frames like the real ScrollBox. `scroll`

@@ -12,6 +12,24 @@ function ns:Print(...)
 	print(CHAT_PREFIX .. strjoin(" ", tostringall(...)))
 end
 
+-- Raid-warning style message (the errors frame if there is none) and an
+-- optional sound kit. Master channel: it still plays with sound effects off.
+-- A kit the client doesn't know must not break the caller.
+function ns:ShowAlert(text, color, sound)
+	if RaidNotice_AddMessage and RaidWarningFrame then
+		RaidNotice_AddMessage(RaidWarningFrame, text, color)
+	elseif UIErrorsFrame then
+		UIErrorsFrame:AddMessage(text, color.r, color.g, color.b)
+	end
+	self:PlayAlertSound(sound)
+end
+
+function ns:PlayAlertSound(sound)
+	if sound and PlaySound then
+		pcall(PlaySound, sound, "Master")
+	end
+end
+
 -- Event dispatcher ----------------------------------------------------------
 -- Several handlers may listen to the same event; each receives (event, ...).
 
@@ -126,6 +144,9 @@ local DEFAULT_SETTINGS = {
 	markerMinTier = 4, -- Valuable
 	minimapIcon = true,
 	trackerSound = true,
+	lootAlerts = true,
+	lootSound = true,
+	lootMinTier = 5, -- Keep!
 }
 
 -- Fill missing keys from defaults without overwriting user values.

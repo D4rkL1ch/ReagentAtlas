@@ -36,8 +36,9 @@ Reagent Atlas is a WoW Forever (client 1.60.x, modern addon API) addon that tell
 | Vendor sightings | Merchant windows are read for recipe items, and who sold them is saved in `seenVendors`. Tooltips and the detail pane show these first, as confirmed sources, since they come from Forever and not from Classic-era data. Nothing is bought or changed. | P2 |
 | Crafting value | With Auctionator, the Crafting detail pane shows cost per craft, what the output sells for (all items a craft makes) and the profit after the 5% AH cut. A "Sort by" choice orders the list by profit, best first, with the profit in place of the skill; recipes without one follow, by skill. A reagent costs the vendor price if vendors sell it (`buy` in `Data/Reagents.lua`, per item) or the AH price if that's lower; other reagents use the AH price, so a reagent with no fresh price leaves the cost unknown. Crafted reagents are priced as bought, not by what they cost to make. Listing deposits aren't included. The Auctionator lookups only run for the profit sort or the selected recipe. | P2 |
 | Tracking list | A small movable window (browser button, Shift-click on the minimap entries, Settings, `/ratlas track`) listing tracked recipes and reagents; it stays open across reloads and can be left open in combat. Add with Track in the browser's detail pane or + on a recipe row; a recipe is reachable from any of its reagents. A recipe shows have / need per reagent, then who knows it, or where to get it (`Sources:GetDetailLines`, with the unconfirmed note). A plain click folds it. A reagent shows the owned count, optionally against a goal. Clicking a count sets the goal in the footer box: how many of a reagent (empty clears it), or how many crafts of a recipe (needs multiply; empty means one). Reaching a goal alerts: raid-warning text, a chat line and a sound (Settings toggle, Master channel). See "Tracking list" below. | P1 |
+| Loot alerts | When you loot (your own "You receive loot" chat line; quest rewards, purchases and crafts don't count) a recipe item that one of your characters could learn, or a reagent at or above the minimum tier (Settings, default Keep!), a sound plays and a notice appears at the top of the screen (`UI/LootToast.lua`: click-through, fades after 8 s), with the same detail in chat. Each item gets its icon and name; a recipe shows "Could learn" with ranks, as on its tooltip, and who already knows it; a reagent shows its tier and AH price, then each character that knows recipes using it with up to 3 of them, highest skill first (you green, alts blue), or that none does. A loot window with several such items gives one notice (up to 3 items, then "+N more, see chat") and one sound. The same item stays quiet for 10 minutes, so farming doesn't spam. Toggles for the alerts and their sound; chat text that is a secret value is skipped. `/ratlas lootdebug` (session only, a diagnostic without a UI equivalent) prints every loot message and why it did or didn't alert. | P2 |
 | Bag markers | Small tier-colored diamond pip in the top-left corner of default bag slots at or above the minimum tier (default Valuable). Toggleable. Hooks each bag window's `UpdateItems` (retail container frames in Forever); the bank window is not marked. With ElvUI, whose bags replace those windows, it hooks ElvUI's `UpdateSlot` instead, which also marks ElvUI's bank windows. | P2 |
-| Settings | Toggles for tooltip, markers, minimap icon, Auctionator use, minimum tier for markers, and an Open button for the browser. A "Status & characters" subpage shows version, data build and price source, lists tracked characters with a confirmed Forget button, and lists learned recipes missing from the data. Uses the modern Settings panel (Esc → Options → AddOns, the gear in the browser, right-click on the minimap icon, or `/ratlas config`; not in combat). | P2 |
+| Settings | Toggles for tooltip, markers, minimap icon, Auctionator use, tracking and loot alert sounds, loot alerts, minimum tiers for markers and loot alerts, and an Open button for the browser. A "Status & characters" subpage shows version, data build and price source, lists tracked characters with a confirmed Forget button, and lists learned recipes missing from the data. Uses the modern Settings panel (Esc → Options → AddOns, the gear in the browser, right-click on the minimap icon, or `/ratlas config`; not in combat). | P2 |
 | Minimap access | Always an entry in Blizzard's AddOns button by the minimap (runtime `AddonCompartmentFrame:RegisterAddon`, so no global), plus a draggable round icon that can be turned off. Left-click: browser. Right-click: settings. Angle saved in `ui.minimapAngle`. Own code, no LibDBIcon. | P2 |
 | No typing required | Every slash command has a UI equivalent; the commands stay as shortcuts. | P1 |
 
@@ -77,10 +78,12 @@ ReagentAtlas/
     Tracker.lua             -- tracked recipes and reagents, goals, alerts
     Tooltip.lua             -- TooltipDataProcessor hook, collapsed/expanded render
     BagMarkers.lua          -- tier pips on bag item buttons
+    LootAlert.lua           -- alerts for looted learnable recipes and valuable reagents
   UI/
     Browser.lua             -- main window, tabs, reagent list (ScrollBox), filters, detail pane
     Crafting.lua            -- Crafting tab: recipe and crafted item list, detail pane
     TrackerWindow.lua       -- tracking list window
+    LootToast.lua           -- on-screen loot alert notice
     Settings.lua            -- Settings panel, status & characters subpage
     MinimapButton.lua       -- minimap icon and AddOns button entry
   tools/
@@ -134,7 +137,7 @@ ns.SourceNPCs[npcID] = { "Name", "Zone", "AH" } -- sides: "A", "H", "AH" or "" (
 ```lua
 ReagentAtlasDB = {
   version = 1,
-  settings = { tooltip = true, markers = true, useAuctionator = true, markerMinTier = 3, minimapIcon = true, trackerSound = true },
+  settings = { tooltip = true, markers = true, useAuctionator = true, markerMinTier = 3, minimapIcon = true, trackerSound = true, lootAlerts = true, lootSound = true, lootMinTier = 5 },
   ui = { point = {...}, filters = {...}, craftFilters = {...}, browserTab = "reagents", minimapAngle = 225, trackerPoint = {...}, trackerShown = true },
   tracked = {  -- in the order added
     { kind = "item", id = itemID, need = 20, done = true },            -- need optional
@@ -242,7 +245,8 @@ Forever uses the modern retail-style API. Names below are from the retail API; c
 | Character | `UnitName`, `GetNormalizedRealmName`, `UnitClass` | Build the `Name-Realm` key. |
 | UI list | `CreateScrollBoxListLinearView`, `ScrollUtil.InitScrollBoxListWithScrollBar` | Virtualized reagent list in the browser. |
 | Settings | `Settings.RegisterVerticalLayoutCategory`, `Settings.RegisterAddOnCategory` | Options panel. |
-| Alerts | `RaidNotice_AddMessage(RaidWarningFrame, text, color)`, fallback `UIErrorsFrame:AddMessage`; `PlaySound(SOUNDKIT.IG_QUEST_LIST_COMPLETE, "Master")`, fallback kit 888 | Tracking list goals. The names come from retail annotations; the raid notice and kit 888 are used by addons running on Forever. |
+| Alerts | `RaidNotice_AddMessage(RaidWarningFrame, text, color)`, fallback `UIErrorsFrame:AddMessage`; `PlaySound(SOUNDKIT.IG_QUEST_LIST_COMPLETE, "Master")`, fallback kit 888 | Tracking list goals (`ns:ShowAlert` in Core; loot alerts use their own notice and `ns:PlayAlertSound`). The names come from retail annotations; the raid notice and kit 888 are used by addons running on Forever. Loot alerts play `SOUNDKIT.RAID_WARNING`, fallback kit 8959. |
+| Loot | `CHAT_MSG_LOOT`, `LOOT_ITEM_SELF`, `LOOT_ITEM_SELF_MULTIPLE`, `issecretvalue` | Your own loot, matched with the client's localized strings (English fallback). Secret chat text is skipped. |
 
 Addon restrictions introduced in Midnight target combat data; none of the above should be affected, but never touch protected frames in combat (check `InCombatLockdown()` before showing/moving the browser).
 
@@ -270,6 +274,7 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 - [ ] Recipe sources: confirm Classic-era vendors and drops against Forever. New Forever recipes (most of the 865 unknown in 1.60.1.70862, some possibly unused Season of Discovery leftovers) have no source yet; re-check QuestieDB's trace layer as it fills in. Merchant-window recording now covers what you visit; each player's sightings stay local.
 - [ ] Licensing: `Data/Sources.lua` derives from QuestieDB, which allows copying under GPLv3 terms but cannot promise every historic contributor agreed. Decide the addon's licence before any public release. QuestieDB's generated delta-base is scraped from Wowhead (its `docs/forever-delta-base.md`), and its licence says nothing about third-party data, so it is not used; some legacy Questie data may also trace back to Wowhead. Decide both together.
 - [ ] Tracking list alert: confirm in-game that `SOUNDKIT.IG_QUEST_LIST_COMPLETE` plays on Forever and is loud enough (Blizzard's Forever constants could not be checked offline).
+- [ ] Loot alerts: confirm in-game that `CHAT_MSG_LOOT` arrives as "You receive loot: [item]" (and "...x3" for stacks) for mob loot, gathering and containers, that it isn't a secret value in dungeons or combat, and that `SOUNDKIT.RAID_WARNING` plays.
 - [ ] Heuristic weights are guesses until the live economy settles after launch; plan a tuning pass a few weeks in.
 - [ ] Name for the addon: "Reagent Atlas" is a working title.
 
