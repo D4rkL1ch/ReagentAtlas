@@ -191,7 +191,7 @@ function SettingsUI:OnInit()
 	local tierSetting = Register("markerMinTier", "Minimum tier for markers", Settings.VarType.Number)
 	local function TierOptions()
 		local container = Settings.CreateControlTextContainer()
-		for tier = ns.Valuation.TIER_USEFUL, ns.Valuation.TIER_KEEP do
+		for tier = ns.Valuation.TIER_COMMON, ns.Valuation.TIER_KEEP do
 			container:Add(tier, ns.Valuation:ColorTier(tier))
 		end
 		return container:GetData()

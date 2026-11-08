@@ -264,7 +264,7 @@ test("mockup order of collapsed lines", function()
 	tt:SetItem(17056)
 	eq(tt:Text(), table.concat({
 		" ",
-		"Reagent Atlas: Valuable",
+		"Reagent Atlas: Useful",
 		"Used in 7 recipes · Leatherworking, Tailoring...",
 		"Highest: Leatherworking 285",
 		"Your alts can craft 3 (Brewdin, Frostia-OtherRealm)",
@@ -294,7 +294,7 @@ test("Shift view colors recipes by who knows them and lists owners", function()
 	tt:SetItem(17056)
 	eq(tt:Text(), table.concat({
 		" ",
-		"Reagent Atlas: Valuable",
+		"Reagent Atlas: Useful",
 		"Leatherworking",
 		"[v] Feathered Jerkin (285) | you",
 		"· Feathered Boots (250)",

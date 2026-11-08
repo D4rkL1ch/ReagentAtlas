@@ -292,7 +292,8 @@ test("a pip is repainted only when its tier changes", function()
 	ns.BagMarkers:UpdateFrame(bag)
 	eq(painted, 0, "same tier")
 	local tier = ns.Valuation.GetTier
-	ns.Valuation.GetTier = function() return 4 end
+	local other = tier(ns.Valuation, 12360) == 5 and 4 or 5
+	ns.Valuation.GetTier = function() return other end
 	ns.BagMarkers:UpdateFrame(bag)
 	ns.Valuation.GetTier = tier
 	eq(painted, 1, "new tier")

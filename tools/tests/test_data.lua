@@ -79,7 +79,7 @@ test("real data: anchor items land in sensible tiers", function()
 	eq(V:GetInfo(13468).tier, V.TIER_KEEP, "Black Lotus")
 	eq(V:GetInfo(2770).tier, V.TIER_VENDOR, "Copper Ore: long chain, none of it high-end")
 	eq(V:GetInfo(2589).tier <= V.TIER_USEFUL, true, "Linen Cloth at most Useful")
-	eq(V:GetInfo(2604).tier <= V.TIER_USEFUL, true, "Red Dye (vendor) at most Useful")
+	eq(V:GetInfo(2604).tier <= V.TIER_COMMON, true, "Red Dye (vendor) at most Common")
 	eq(V:GetInfo(6948), nil, "Hearthstone is not a reagent")
 end)
 

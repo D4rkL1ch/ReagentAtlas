@@ -13,13 +13,13 @@ test("collapsed tooltip matches the mockup layout", function()
 	eq(tt.lines[1], " ", "spacer")
 	eq(tt:Text(), table.concat({
 		" ",
-		"Reagent Atlas: Valuable",
+		"Reagent Atlas: Useful",
 		"Used in 7 recipes · Leatherworking, Tailoring...",
 		"Highest: Leatherworking 285",
 		"Spell reagent for Mage, Priest",
 		"Hold Shift for all recipes",
 	}, "\n"))
-	contains(tt.lines[2], "|cff4da6ff", "tier colored blue")
+	contains(tt.lines[2], "|cff1eff00", "tier colored green")
 end)
 
 test("Shift view groups recipes by profession, skill desc", function()
@@ -29,7 +29,7 @@ test("Shift view groups recipes by profession, skill desc", function()
 	tt:SetItem(17056)
 	eq(tt:Text(), table.concat({
 		" ",
-		"Reagent Atlas: Valuable",
+		"Reagent Atlas: Useful",
 		"Leatherworking",
 		"· Feathered Jerkin (285)",
 		"· Feathered Boots (250)",     -- name from output item
@@ -63,7 +63,7 @@ test("spell-only reagent has no recipe lines or Shift hint", function()
 	boot()
 	local tt = stubs.newTooltip()
 	tt:SetItem(17020)
-	eq(tt:Text(), " \nReagent Atlas: Useful\nSpell reagent for Mage\nSold by vendors")
+	eq(tt:Text(), " \nReagent Atlas: Common\nSpell reagent for Mage\nSold by vendors")
 end)
 
 test("spell reagent line names classes in class colors", function()
@@ -94,7 +94,7 @@ test("vendor-sold reagent says so in both views", function()
 	tt:SetItem(2604)
 	eq(tt:Text(), table.concat({
 		" ",
-		"Reagent Atlas: Useful",
+		"Reagent Atlas: Common",
 		"Used in 2 recipes · Blacksmithing",
 		"Highest: Blacksmithing 300",
 		"Sold by vendors",

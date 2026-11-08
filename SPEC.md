@@ -10,7 +10,7 @@ Reagent Atlas is a WoW Forever (client 1.60.x, modern addon API) addon that tell
 
 - Item tooltip shows every recipe that uses the item, across all professions.
 - Recipes the current character or any alt can craft are highlighted.
-- A value tier (Vendor / Useful / Valuable / Keep!) is predicted from recipe data, refined by Auctionator prices when available.
+- A value tier (Vendor / Common / Useful / Valuable / Keep!) is predicted from recipe data, refined by Auctionator prices when available.
 - A browser window lists all reagents with filters for profession, tier, owned and craftable.
 - Owned counts cover bags and bank of every character on the account.
 
@@ -41,7 +41,7 @@ Reagent Atlas is a WoW Forever (client 1.60.x, modern addon API) addon that tell
 | Minimap access | Always an entry in Blizzard's AddOns button by the minimap (runtime `AddonCompartmentFrame:RegisterAddon`, so no global), plus a draggable round icon that can be turned off. Left-click: browser. Right-click: settings. Angle saved in `ui.minimapAngle`. Own code, no LibDBIcon. | P2 |
 | No typing required | Every slash command has a UI equivalent; the commands stay as shortcuts. | P1 |
 
-Tier colors: Vendor = grey, Useful = white, Valuable = blue, Keep! = orange.
+Tier colors follow item quality: Vendor = grey, Common = white, Useful = green, Valuable = blue, Keep! = orange.
 
 ### Tracking list
 
@@ -178,8 +178,10 @@ Two hand-maintained lists cover what the DB2 data lacks: `tools/spell_reagents.c
 
 - Client tables: `SpellEffect` (learn-spell effect) + `ItemEffect` + `ItemXItemEffect` + `Item` (class 9) link a recipe to its recipe item; `ItemSparse` gives the required reputation; `Faction` and `AreaTable` give names.
 - QuestieDB's Forever tables at the commit pinned in `tools/fetch_db2.py`: vendors, drops, containers, quest rewards, NPC zones. They are read as text, never executed. Bump the pin on purpose and review the `Data/Sources.lua` diff.
+- QuestieDB's static correction layers, applied over those tables in QuestieDB's order: legacy Classic fixes, then player traces (aggregated from Forever players' sessions), then authored Forever fixes. A field is replaced, or `_add` / `_remove` edits a list. Dynamic and faction-specific fixes are skipped. Read as text too; an unknown `zoneIDs` name stops the build.
+- Left out on purpose: QuestieDB's generated delta-base (`src/corrections/Forever/generated/`), which sits between legacy and traces. It is scraped from Wowhead, so we have no licence to ship it (see Open questions). With it, named sources would rise to about 1,268.
 
-Coverage in 1.60.1 (2,518 recipes): 718 name a source, 98 have only a reputation hint, 987 have a recipe item with no known source, 715 have no recipe item and read "Trainer (likely)", which is an inference. QuestieDB has none of the 1,059 recipe items with IDs of 25000 or above, which are new in the Forever client. The named sources are Classic-era and unconfirmed in Forever, so the UI says so.
+Coverage in 1.60.1.70862 (2,518 recipes): 840 name a source, 98 have only a reputation hint, 865 have a recipe item with no known source, 715 have no recipe item and read "Trainer (likely)", which is an inference. 122 of the 1,059 recipe items with IDs of 25000 or above (new in the Forever client) have a source, all from the trace and authored layers. The named sources are mostly Classic-era and unconfirmed in Forever, so the UI says so.
 
 **Fallback / validation:** `Professions.lua` notes learned recipes seen in an open profession window that the generated data lacks. `/ratlas diff` lists them (session only; reagent lists are not compared yet).
 
@@ -197,15 +199,15 @@ The tier is a prediction, not a price: a score from recipe data, optionally nudg
 | Best output quality among those recipes | +5 rare, +10 epic |
 | Used in 2+ professions | +5 |
 | The reagent's own quality | +10 uncommon, +15 rare, +20 epic or better |
-| Spell reagent | tier at least Useful (no score bonus) |
-| Sold by NPC vendors | tier capped at Useful |
+| Spell reagent | tier at least Common (no score bonus) |
+| Sold by NPC vendors | tier capped at Common |
 | Not used in any recipe and not a spell reagent | no tier (nothing shown) |
 
-Tiers: 0–14 Vendor, 15–44 Useful, 45–77 Valuable, 78+ Keep! The browser sorts by tier, then score, then name.
+Tiers: 0–14 Vendor, 15–34 Common, 35–54 Useful, 55–74 Valuable, 75+ Keep! The browser sorts by tier, then score, then name. Before saved-data version 2 there were four tiers (15–44 Useful, 45–77 Valuable, 78+ Keep!), which put 215 reagents on Valuable, from Wool bolts to Fel Leather; saved tier settings are moved up one step by the DB migration.
 
 **Crafting chain** (`deep` in `Data/Reagents.lua`): the number of distinct recipes at skill 250 or above that an item reaches, directly or through what it crafts, so a reagent with few recipes still counts for what its output feeds. Arcane Crystal has 3 direct recipes and 109 in its chain through Arcanite Bar. Only high-end recipes count, because raw chains favour starter materials (Copper Ore reaches 188 recipes, 1 of them high-end). Conversions are not followed, since their output also comes from elsewhere: single-input transmutes (Fire to Earth) and leather up-conversions (Light to Medium). Smelting and cloth bolts are followed. Skill 250 is `HIGH_END_SKILL` in `tools/build_data.py`.
 
-Resulting spread on 1.60.1: 58 Keep!, 215 Valuable, 298 Useful, 42 Vendor. Examples: Arcanite Bar, Essences, Arcane Crystal, Black Lotus, Thorium Bar, Rugged Leather → Keep!; Thorium Ore, Runecloth, Iron Bar → Valuable; Linen, Light Leather, Copper Bar → Useful; Copper Ore → Vendor; dyes, threads, vials, spices → Useful (vendor cap).
+Resulting spread on 1.60.1.70862: 69 Keep!, 126 Valuable, 174 Useful, 202 Common, 42 Vendor. Examples: Arcanite Bar, Essences, Arcane Crystal, Black Lotus, Thorium Bar, Truesilver Bar, Mithril Bar, Rugged Leather → Keep!; Iron Bar, Mithril Ore, Heavy and Thick Leather, Thorium Ore, Runecloth → Valuable; Linen, Wool, Silk, Light Leather, Copper Bar → Useful; Peacebloom, Mageroyal → Common; Copper Ore → Vendor; dyes, threads, vials, spices → Common (vendor cap).
 
 The first draft (skill / 300 × 40, min(count, 10) × 2, +10/+20 for output quality, +10 for spell reagents) put 114 reagents on Keep! and most vendor goods on Valuable or Keep!, because recipe counts saturate at 10 and common materials are used in 50–200 recipes.
 
@@ -217,7 +219,7 @@ The first draft (skill / 300 × 40, min(count, 10) × 2, +10/+20 for output qual
 - Price age 0 means seen today. If Auctionator has no age function, the price is used without one.
 - Wrap every call in `pcall`; on any error disable the bridge for the session (one chat notice; `/ratlas version` shows the reason).
 - Optional: `Auctionator.API.v1.RegisterForDBUpdate("ReagentAtlas", fn)` fires the internal `PRICES_CHANGED` message after a scan, for UI that needs to redraw. Prices are not cached; ages are, for 60 seconds or until that message, because Auctionator sorts the item's whole price history to answer.
-- When a fresh price exists: if price ≥ 5 × vendor price **and** ≥ 1g, raise the tier one step (max Keep!); if price < vendor price, cap at Useful. Vendor-sold reagents stay capped at Useful (their AH price is just the vendor markup). Items without a vendor sell price are not adjusted. The 1g floor keeps cheap commons (Linen, Copper Ore at 20× vendor) from rising; it is in `Valuation.WEIGHTS` with the other knobs.
+- When a fresh price exists: if price ≥ 5 × vendor price **and** ≥ 1g, raise the tier one step (max Keep!); if price < vendor price, cap at Common. Vendor-sold reagents stay capped at Common (their AH price is just the vendor markup). Items without a vendor sell price are not adjusted. The 1g floor keeps cheap commons (Linen, Copper Ore at 20× vendor) from rising; it is in `Valuation.WEIGHTS` with the other knobs.
 - Tooltip shows the price beside the tier, as in the mockup: "Reagent Atlas: Valuable · AH 1s 20c", plus "(N days old)" from 1 day on.
 - Verify in-game during Phase 1 that the Forever build of Auctionator keeps API v1.
 
@@ -265,8 +267,8 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 - [x] Forever bank layout: classic bank bags or retail-style bank tabs? Retail-style tabs (Enum.BagIndex 6-14 character, 15-23 warband) plus a reagent bag (5), per the Forever 1.60.1 API docs. Confirm in-game that the warband bank is enabled.
 - [x] Spell reagents: which classes and spells use reagents in Forever? Derived from DB2 (`SpellReagents` + `SpellClassOptions` + class skill lines): 23 items in 1.60.1. Gaps (e.g. Levitate) fixed in `tools/spell_reagents.csv`.
 - [ ] Vendor-sold reagents: `tools/vendor_reagents.csv` (58 items) is from Classic knowledge; verify against Forever vendors after launch.
-- [ ] Recipe sources: confirm Classic-era vendors and drops against Forever. New Forever recipes (most of the 987 unknown in 1.60.1, some possibly unused Season of Discovery leftovers) have no source yet; re-check QuestieDB as it fills in. Merchant-window recording now covers what you visit; each player's sightings stay local.
-- [ ] Licensing: `Data/Sources.lua` derives from QuestieDB, which allows copying under GPLv3 terms but cannot promise every historic contributor agreed. Decide the addon's licence before any public release.
+- [ ] Recipe sources: confirm Classic-era vendors and drops against Forever. New Forever recipes (most of the 865 unknown in 1.60.1.70862, some possibly unused Season of Discovery leftovers) have no source yet; re-check QuestieDB's trace layer as it fills in. Merchant-window recording now covers what you visit; each player's sightings stay local.
+- [ ] Licensing: `Data/Sources.lua` derives from QuestieDB, which allows copying under GPLv3 terms but cannot promise every historic contributor agreed. Decide the addon's licence before any public release. QuestieDB's generated delta-base is scraped from Wowhead (its `docs/forever-delta-base.md`), and its licence says nothing about third-party data, so it is not used; some legacy Questie data may also trace back to Wowhead. Decide both together.
 - [ ] Tracking list alert: confirm in-game that `SOUNDKIT.IG_QUEST_LIST_COMPLETE` plays on Forever and is loud enough (Blizzard's Forever constants could not be checked offline).
 - [ ] Heuristic weights are guesses until the live economy settles after launch; plan a tuning pass a few weeks in.
 - [ ] Name for the addon: "Reagent Atlas" is a working title.

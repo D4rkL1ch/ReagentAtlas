@@ -127,13 +127,14 @@ test("AdjustTier: raise one step at 5x vendor price and at least 1g", function()
 	eq(V:AdjustTier(info(2, 1000), 5000), 2, "5x but under 1g")
 	eq(V:AdjustTier(info(2, 1000), 10000), 3, "10x and 1g")
 	eq(V:AdjustTier(info(2, 2500), 10000), 2, "1g but only 4x")
-	eq(V:AdjustTier(info(4, 100), 99999), 4, "Keep! stays Keep!")
-	eq(V:AdjustTier(info(1, 100), 20000), 2, "Vendor -> Useful")
+	eq(V:AdjustTier(info(5, 100), 99999), 5, "Keep! stays Keep!")
+	eq(V:AdjustTier(info(4, 100), 99999), 5, "Valuable -> Keep!")
+	eq(V:AdjustTier(info(1, 100), 20000), 2, "Vendor -> Common")
 end)
 
-test("AdjustTier: below vendor price caps at Useful", function()
+test("AdjustTier: below vendor price caps at Common", function()
 	local V = boot(nil).Valuation
-	eq(V:AdjustTier(info(4, 1000), 999), 2, "Keep! -> Useful")
+	eq(V:AdjustTier(info(5, 1000), 999), 2, "Keep! -> Common")
 	eq(V:AdjustTier(info(1, 1000), 999), 1, "Vendor stays Vendor")
 end)
 

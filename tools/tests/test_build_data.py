@@ -41,6 +41,89 @@ class ParseLua(unittest.TestCase):
             self.assertEqual(b.load_questie_table(path), {7: ["Seven", [1]], 8: ["Eight"]})
 
 
+CORRECTIONS = """
+local X = QuestieLoader:CreateModule("X")
+function X:Load()
+    local itemKeys = QuestieDB.itemKeys
+    local zoneIDs = ZoneDB.zoneIDs
+    return {
+        [1] = { -- Thing, with a -- in the comment and a "quote"
+            [itemKeys.name] = "It's -- here",
+            [itemKeys.npcDrops] = {}, -- only show vendors
+            [itemKeys.vendors_add] = {5,6},
+            [itemKeys.zone] = zoneIDs.TANARIS,
+            [itemKeys.flags] = npcFlags.VENDOR + npcFlags.REPAIR,
+        },
+        --[[ [2] = { [itemKeys.name] = "commented out" }, ]]
+        [3] = {
+            [itemKeys.spawns] = {[zoneIDs.SILITHUS] = {{1.5,2}}},
+            [itemKeys.npcDrops_remove] = {7},
+        },
+    }
+end
+function X:LoadDynamic()
+    return { [9] = { [itemKeys.name] = "dynamic" } }
+end
+"""
+
+
+class Corrections(unittest.TestCase):
+    ZONES = {"TANARIS": 440, "SILITHUS": 1377}
+    KEYS = {"name": 0, "npcDrops": 1, "vendors": 2, "zone": 3, "flags": 4, "spawns": 5}
+
+    def load(self, text=CORRECTIONS, zones=None):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "fixes.lua"
+            path.write_text(text, encoding="utf-8")
+            return b.load_corrections(path, self.ZONES if zones is None else zones)
+
+    def test_reads_only_static_load(self):
+        fixes = self.load()
+        self.assertEqual(sorted(fixes), [1, 3])
+        self.assertEqual(fixes[1]["name"], "It's -- here")
+        self.assertEqual(fixes[1]["npcDrops"], [])
+        self.assertEqual(fixes[1]["zone"], 440)
+        self.assertIsInstance(fixes[1]["flags"], b.LuaExpr)
+        self.assertEqual(fixes[3]["spawns"], {1377: [[1.5, 2]]})
+
+    def test_unknown_zone_stops_the_build(self):
+        with self.assertRaises(ValueError):
+            self.load(zones={})
+
+    def test_apply_replaces_adds_and_removes(self):
+        records = {1: ["Thing", [10, 11], [5]], 3: ["Other", [7, 8]]}
+        b.apply_corrections(records, self.KEYS, self.load())
+        self.assertEqual(records[1][:4], ["It's -- here", [], [5, 6], 440])
+        self.assertEqual(records[3][1], [8])
+        self.assertEqual(records[3][5], {1377: [[1.5, 2]]})
+
+    def test_apply_creates_records_and_ignores_unknown_fields(self):
+        records: dict = {}
+        b.apply_corrections(records, {"name": 0}, {4: {"name": "New", "waypoints": {}}, 5: {"npcDrops_add": [1]}})
+        self.assertEqual(records, {4: ["New"], 5: []})
+
+    def test_nil_clears_a_field(self):
+        records = {1: ["Thing", [1]]}
+        b.apply_corrections(records, self.KEYS, {1: {"npcDrops": None}})
+        self.assertEqual(records[1], ["Thing", None])
+
+    def test_keys_and_zones_from_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "db.lua"
+            db.write_text("QuestieDB.itemKeys = {\n    ['name'] = 1, -- string\n    ['npcDrops'] = 2,\n}\n", encoding="utf-8")
+            zones = Path(tmp) / "zones.lua"
+            zones.write_text("constants.zoneIDs = {\n  -- DUSKWOOD = 99,\n  DUSKWOOD = 10,\n  DUSKWOOD = 11,\n}\n", encoding="utf-8")
+            self.assertEqual(b.load_questie_keys(db), {"name": 0, "npcDrops": 1})
+            self.assertEqual(b.load_questie_zones(zones), {"DUSKWOOD": 10})
+
+    def test_layers_match_what_fetch_downloads(self):
+        import fetch_db2
+        fetched = {Path(p).name for p in fetch_db2.QUESTIEDB_CORRECTIONS}
+        needed = {f for fs in b.QUESTIE_LAYERS.values() for f in fs} | {b.QUESTIE_ZONES}
+        self.assertEqual(fetched, needed)
+        self.assertFalse(any("generated" in p for p in fetch_db2.QUESTIEDB_CORRECTIONS))
+
+
 class Drops(unittest.TestCase):
     ZONES = {1: "Tanaris", 2: "Silithus"}
 

@@ -167,7 +167,7 @@ test("/ratlas toggles the browser and fills the list", function()
 	eq(ns.Browser:IsShown(), true, "open")
 	local list = findWidget(function(w) return w.template == "WowScrollBoxList" and w.provider and #w.provider.list > 0 end)
 	assert(list, "list has rows")
-	eq(#list.provider.list, 6, "default min tier Useful hides the Vendor-tier rows")
+	eq(#list.provider.list, 6, "default min tier Common hides the Vendor-tier rows")
 	local first = list.rows[1]
 	contains(first.Name.text, list.provider.list[1].name, "row shows the name")
 	stubs.slash("/ratlas", "")
@@ -393,12 +393,12 @@ test("bag markers: pip at or above the minimum tier, tier-colored", function()
 	local ns, bag = bootWithBag()
 	bag:UpdateItems()
 	local arcanite = ns.Valuation:GetTier(12360)
-	assert(arcanite >= 3, "fixture: Arcanite Bar is at least Valuable")
+	assert(arcanite >= ns.Valuation.TIER_VALUABLE, "fixture: Arcanite Bar is at least Valuable")
 	eq(pipShown(bag.buttons[2]), true, "Arcanite marked")
 	local c = bag.buttons[2].ReagentAtlasPip.fill.color
 	local hex = ns.Valuation.TIERS[arcanite].color
 	eq(math.floor(c[1] * 255 + 0.5), tonumber(hex:sub(3, 4), 16), "red channel")
-	assert(ns.Valuation:GetTier(2589) < 3, "fixture: Linen below Valuable")
+	assert(ns.Valuation:GetTier(2589) < ns.Valuation.TIER_VALUABLE, "fixture: Linen below Valuable")
 	eq(pipShown(bag.buttons[1]), false, "Linen not marked")
 	eq(pipShown(bag.buttons[3]), false, "empty slot not marked")
 end)
@@ -490,8 +490,8 @@ test("settings panel registers toggles and the tier dropdown", function()
 	for i, control in ipairs(Settings.controls) do kinds[i] = control.kind .. ":" .. control.setting.key end
 	eq(table.concat(kinds, ","), "checkbox:tooltip,checkbox:markers,checkbox:minimapIcon,checkbox:useAuctionator,checkbox:trackerSound,dropdown:markerMinTier", "controls")
 	local options = Settings.controls[6].options()
-	eq(#options, 3, "Useful, Valuable, Keep!")
-	eq(options[1].value, ns.Valuation.TIER_USEFUL, "first option")
+	eq(#options, 4, "Common, Useful, Valuable, Keep!")
+	eq(options[1].value, ns.Valuation.TIER_COMMON, "first option")
 end)
 
 test("toggling the tooltip setting takes effect immediately", function()
@@ -697,7 +697,7 @@ test("safe to sell: owned, nothing of yours uses it, Useful or below", function(
 			},
 		},
 	})
-	eq(ids(ns.Browser:BuildRows(filters({ sell = true }))), "2604,12359", "Linen is Tailoring, Arcanite too good, the rest unowned")
+	eq(ids(ns.Browser:BuildRows(filters({ sell = true }))), "12359,2604", "Linen is Tailoring, Arcanite too good, the rest unowned; best tier first")
 
 	ns.Tracker:Add("item", 12359)
 	eq(ids(ns.Browser:BuildRows(filters({ sell = true }))), "2604", "a tracked item stays")

@@ -14,26 +14,29 @@ Valuation.WEIGHTS = {
 	epicOutput = 10,      -- best output is epic or better (quality 4+)
 	multiProfession = 5,  -- used in 2+ professions
 	ownQuality = { [2] = 10, [3] = 15, [4] = 20 }, -- the reagent's own quality (4 = epic and up)
-	spellMinTier = 2,     -- spell reagents are at least Useful
-	vendorMaxTier = 2,    -- vendor-sold reagents are capped at Useful
+	spellMinTier = 2,     -- spell reagents are at least Common
+	vendorMaxTier = 2,    -- vendor-sold reagents are capped at Common
 	priceRaiseFactor = 5, -- a fresh AH price this many times the vendor price...
 	priceRaiseMin = 10000, -- ...and at least this much (copper) raises the tier one step
-	priceCapTier = 2,     -- an AH price below the vendor price caps the tier at Useful
+	priceCapTier = 2,     -- an AH price below the vendor price caps the tier at Common
 }
 
 local DEFAULT_MAX_SKILL = 300
 
 -- Lower score bound of each tier; index = tier number.
-Valuation.TIER_MIN = { 0, 15, 45, 78 }
+Valuation.TIER_MIN = { 0, 15, 35, 55, 75 }
 
 Valuation.TIER_VENDOR = 1
-Valuation.TIER_USEFUL = 2
-Valuation.TIER_VALUABLE = 3
-Valuation.TIER_KEEP = 4
+Valuation.TIER_COMMON = 2
+Valuation.TIER_USEFUL = 3
+Valuation.TIER_VALUABLE = 4
+Valuation.TIER_KEEP = 5
 
+-- Colours follow item quality: poor, common, uncommon, rare (lightened), legendary.
 Valuation.TIERS = {
 	{ name = "Vendor",   color = "ff9d9d9d" },
-	{ name = "Useful",   color = "ffffffff" },
+	{ name = "Common",   color = "ffffffff" },
+	{ name = "Useful",   color = "ff1eff00" },
 	{ name = "Valuable", color = "ff4da6ff" },
 	{ name = "Keep!",    color = "ffff8000" },
 }

@@ -28,9 +28,9 @@ Vendor-sold reagents come from vendor_reagents.csv (source dir if present, else
 tools/vendor_reagents.csv), maintained by hand: columns itemID, name.
 
 Recipe sources need Item.csv, ItemEffect.csv, ItemXItemEffect.csv, Faction.csv
-and AreaTable.csv plus QuestieDB's Forever tables in <src>/questie/ (all fetched
-by fetch_db2.py). Without them Data/Sources.lua is written empty and the addon
-shows no sources.
+and AreaTable.csv plus QuestieDB's Forever tables in <src>/questie/ and their
+correction layers in <src>/questie/corrections/ (all fetched by fetch_db2.py).
+Without them Data/Sources.lua is written empty and the addon shows no sources.
 """
 
 from __future__ import annotations
@@ -437,6 +437,201 @@ def load_questie_table(path: Path) -> dict[int, list]:
     return result
 
 
+# QuestieDB correction layers ------------------------------------------------
+
+# Static correction layers per raw table, in QuestieDB's order (docs/forever.md):
+# raw base -> legacy Classic fixes -> player traces -> authored Forever fixes.
+# The generated delta-base that QuestieDB applies between legacy and traces is
+# left out on purpose: it is scraped from Wowhead (see tools/fetch_db2.py).
+# Dynamic and faction-specific fixes (LoadDynamic, LoadFactionFixes) are skipped.
+QUESTIE_LAYERS = {
+    "foreverItemDB.lua": ["classicItemFixes.lua", "foreverItemTraces.lua", "foreverItemFixes.lua"],
+    "foreverNpcDB.lua": ["classicNPCFixes.lua", "foreverNpcTraces.lua", "foreverNPCFixes.lua"],
+    "foreverQuestDB.lua": ["classicQuestFixes.lua", "foreverQuestTraces.lua", "foreverQuestFixes.lua"],
+}
+QUESTIE_ZONES = "zones.lua"
+
+
+class LuaExpr(str):
+    """A Lua expression kept as text (npcFlags sums, enum lookups we don't need)."""
+
+
+def strip_lua_comments(text: str) -> str:
+    out, pos, end = [], 0, len(text)
+    while pos < end:
+        char = text[pos]
+        if char in "'\"":
+            close = pos + 1
+            while text[close] != char:
+                close += 2 if text[close] == "\\" else 1
+            out.append(text[pos:close + 1])
+            pos = close + 1
+        elif text.startswith("--[[", pos):
+            pos = text.index("]]", pos) + 2
+        elif text.startswith("--", pos):
+            newline = text.find("\n", pos)
+            pos = end if newline < 0 else newline
+        else:
+            out.append(char)
+            pos += 1
+    return "".join(out)
+
+
+class CorrectionReader:
+    """Reads the table a correction file's Load() returns, as text.
+
+    Keys like itemKeys.npcDrops become field names, zoneIDs.NAME the zone ID;
+    any other expression is kept as LuaExpr. Nothing is executed.
+    """
+
+    def __init__(self, text: str, zones: dict[str, int]):
+        self.text, self.pos, self.zones = text, 0, zones
+
+    def skip_space(self) -> str:
+        while self.text[self.pos] in " \t\r\n":
+            self.pos += 1
+        return self.text[self.pos]
+
+    def value(self):
+        char = self.skip_space()
+        if char == "{":
+            return self.table()
+        if char in "'\"":
+            value, self.pos = parse_lua_value(self.text, self.pos)
+            return value
+        start, depth = self.pos, 0
+        while True:
+            char = self.text[self.pos]
+            if char in "([{":
+                depth += 1
+            elif char in ")]}":
+                if depth == 0:
+                    break
+                depth -= 1
+            elif char in ",;" and depth == 0:
+                break
+            self.pos += 1
+        return self.atom(self.text[start:self.pos].strip())
+
+    def table(self):
+        self.pos += 1
+        keyed: dict = {}
+        items: list = []
+        while True:
+            char = self.skip_space()
+            if char == "}":
+                self.pos += 1
+                return keyed or items
+            if char in ",;":
+                self.pos += 1
+            elif char == "[":
+                close = self.text.index("]", self.pos)
+                key = self.atom(self.text[self.pos + 1:close].strip())
+                self.pos = self.text.index("=", close) + 1
+                keyed[key] = self.value()
+            else:
+                name = re.compile(r"([A-Za-z_]\w*)\s*=(?!=)").match(self.text, self.pos)
+                if name:
+                    self.pos = name.end()
+                    keyed[name.group(1)] = self.value()
+                else:
+                    items.append(self.value())
+
+    def atom(self, raw: str):
+        if raw == "nil":
+            return None
+        if raw in ("true", "false"):
+            return raw == "true"
+        if re.fullmatch(r"-?\d+", raw):
+            return int(raw)
+        if re.fullmatch(r"-?\d*\.\d+", raw):
+            return float(raw)
+        if raw.startswith("zoneIDs."):
+            if raw[8:] not in self.zones:
+                raise ValueError(f"unknown QuestieDB zone {raw}; refresh {QUESTIE_ZONES}")
+            return self.zones[raw[8:]]
+        key = re.fullmatch(r"\w+Keys\.(\w+)", raw)
+        if key:
+            return key.group(1)
+        if raw.startswith("'") or raw.startswith('"'):
+            return parse_lua_value(raw, 0)[0]
+        return LuaExpr(raw)
+
+
+def load_questie_zones(path: Path) -> dict[str, int]:
+    """QuestieDB's zone enum: NAME -> zone ID (first definition wins)."""
+    zones: dict[str, int] = {}
+    for name, number in re.findall(r"(\w+)\s*=\s*(\d+)", strip_lua_comments(path.read_text(encoding="utf-8"))):
+        zones.setdefault(name, int(number))
+    return zones
+
+
+def load_corrections(path: Path, zones: dict[str, int]) -> dict[int, dict]:
+    """Static corrections of a file: what its Load() returns, by entity ID."""
+    text = strip_lua_comments(path.read_text(encoding="utf-8"))
+    match = re.search(r"function\s+\w+:Load\(\)", text)
+    if not match:
+        raise ValueError(f"{path.name}: no Load() function")
+    reader = CorrectionReader(text, zones)
+    reader.pos = text.index("return", match.end()) + len("return")
+    data = reader.value()
+    return {k: v for k, v in data.items() if isinstance(k, int)} if isinstance(data, dict) else {}
+
+
+def load_questie_keys(path: Path) -> dict[str, int]:
+    """Field name -> position in a raw record, from the file's xxxKeys table."""
+    text = path.read_text(encoding="utf-8")
+    block = re.search(r"QuestieDB\.\w+Keys = \{(.*?)\n\}", text, re.S)
+    if not block:
+        raise ValueError(f"{path.name}: no key table")
+    return {name: int(pos) - 1 for name, pos in re.findall(r"\['(\w+)'\] = (\d+)", block.group(1))}
+
+
+def apply_corrections(records: dict[int, list], keys: dict[str, int], corrections: dict[int, dict]) -> None:
+    """Apply one layer in place: a field replaces, field_add adds, field_remove removes.
+
+    Fields a record doesn't have in its key table are ignored; records the
+    layer names but the table lacks are created.
+    """
+    for entity, fields in corrections.items():
+        record = records.setdefault(entity, [])
+        for name, value in fields.items():
+            if not isinstance(name, str):
+                continue
+            op = ""
+            if name.endswith("_add") or name.endswith("_remove"):
+                name, op = name.rsplit("_", 1)
+            if name not in keys:
+                continue
+            index = keys[name]
+            if len(record) <= index:
+                record.extend([None] * (index + 1 - len(record)))
+            current = record[index]
+            if op == "add" and isinstance(value, dict):
+                record[index] = {**(current if isinstance(current, dict) else {}), **value}
+            elif op == "add" and isinstance(value, list):
+                base = current if isinstance(current, list) else []
+                record[index] = base + [v for v in value if v not in base]
+            elif op == "remove" and isinstance(value, list):
+                if isinstance(current, list):
+                    record[index] = [v for v in current if v not in value]
+                elif isinstance(current, dict):
+                    record[index] = {k: v for k, v in current.items() if k not in value}
+            else:
+                record[index] = value
+
+
+def load_questie_db(questie: Path, name: str) -> dict[int, list]:
+    """A raw QuestieDB table with its correction layers applied."""
+    path = questie / name
+    records = load_questie_table(path)
+    keys = load_questie_keys(path)
+    zones = load_questie_zones(questie / "corrections" / QUESTIE_ZONES)
+    for layer in QUESTIE_LAYERS[name]:
+        apply_corrections(records, keys, load_corrections(questie / "corrections" / layer, zones))
+    return records
+
+
 def field(record: list, index: int):
     """QuestieDB records stop at their last non-nil field."""
     return record[index] if index < len(record) else None
@@ -495,7 +690,8 @@ def build_sources(src: Path, recipes: dict[int, dict]) -> tuple[dict[int, dict],
     """
     questie = src / "questie"
     needed = [src / f"{t}.csv" for t in ("Item", "ItemEffect", "ItemXItemEffect", "Faction", "AreaTable")]
-    needed += [questie / f for f in ("foreverItemDB.lua", "foreverNpcDB.lua", "foreverQuestDB.lua", "commit.txt")]
+    needed += [questie / f for f in (*QUESTIE_LAYERS, "commit.txt")]
+    needed += [questie / "corrections" / f for f in (QUESTIE_ZONES, *(f for fs in QUESTIE_LAYERS.values() for f in fs))]
     if not all(path.exists() for path in needed):
         return None
 
@@ -506,9 +702,10 @@ def build_sources(src: Path, recipes: dict[int, dict]) -> tuple[dict[int, dict],
     factions = {to_int(r["ID"]): col(r, "Name_lang") for r in read_csv(src / "Faction.csv")}
     zones = {to_int(r["ID"]): col(r, "AreaName_lang") for r in read_csv(src / "AreaTable.csv")}
     zones.update(ZONE_OVERRIDES)
-    q_items = load_questie_table(questie / "foreverItemDB.lua")
-    q_npcs = load_questie_table(questie / "foreverNpcDB.lua")
-    q_quests = load_questie_table(questie / "foreverQuestDB.lua")
+    q_items = load_questie_db(questie, "foreverItemDB.lua")
+    # Trace-created NPCs can lack a name; there is nothing to show for them.
+    q_npcs = {n: r for n, r in load_questie_db(questie, "foreverNpcDB.lua").items() if field(r, QNPC_NAME)}
+    q_quests = load_questie_db(questie, "foreverQuestDB.lua")
 
     sources: dict[int, dict] = {}
     named_npcs: set[int] = set()
@@ -628,7 +825,7 @@ def write_sources(result: tuple[dict[int, dict], dict[int, tuple], str] | None, 
     lines = header(version)
     if result:
         sources, npcs, commit = result
-        lines.insert(2, f"-- Recipe sources: QuestieDB {commit} (github.com/Questie/QuestieDB, GPLv3 terms).")
+        lines.insert(2, f"-- Recipe sources: QuestieDB {commit} with legacy, trace and authored corrections (github.com/Questie/QuestieDB, GPLv3 terms).")
         lines.append("local N = {}")
         lines.append("ns.SourceNPCs = N")
         for npc in sorted(npcs):

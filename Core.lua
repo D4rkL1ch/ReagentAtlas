@@ -4,7 +4,7 @@ local addonName, ns = ...
 
 ns.name = addonName
 ns.version = (C_AddOns and C_AddOns.GetAddOnMetadata and C_AddOns.GetAddOnMetadata(addonName, "Version")) or "dev"
-ns.DB_VERSION = 1
+ns.DB_VERSION = 2
 
 local CHAT_PREFIX = "|cff33ff99Reagent Atlas|r: "
 
@@ -123,7 +123,7 @@ local DEFAULT_SETTINGS = {
 	tooltip = true,
 	markers = true,
 	useAuctionator = true,
-	markerMinTier = 3,
+	markerMinTier = 4, -- Valuable
 	minimapIcon = true,
 	trackerSound = true,
 }
@@ -140,7 +140,17 @@ end
 -- Migrations keyed by the version they upgrade *from*. Each step must leave
 -- the DB valid for version + 1.
 local migrations = {
-	-- [1] = function(db) ... end,
+	-- Four value tiers became five: Common went in below Useful, so the old
+	-- Valuable (3) and Keep! (4) moved up one. Vendor and Useful/Common (2) stay.
+	[1] = function(db)
+		local function Shift(tbl, key)
+			if tbl and type(tbl[key]) == "number" and tbl[key] >= 3 then
+				tbl[key] = tbl[key] + 1
+			end
+		end
+		Shift(db.settings, "markerMinTier")
+		Shift(db.ui and db.ui.filters, "minTier")
+	end,
 }
 
 local function MigrateDB(db)
