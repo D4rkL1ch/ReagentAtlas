@@ -3,6 +3,7 @@
 ## Notes: Shows which recipes use an item, who can craft them, and whether it is worth keeping.
 ## Author: D4rkL1ch
 ## Version: @project-version@
+## X-Wago-ID: b6mzZzKP
 ## SavedVariables: ReagentAtlasDB
 ## OptionalDeps: Auctionator
 ## Category: Professions
