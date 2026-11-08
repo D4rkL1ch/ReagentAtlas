@@ -48,4 +48,6 @@ Recipe data in `Data/` is generated from the game client's DB2 tables with `tool
 
 ## License
 
-All rights reserved © TwinUnicorns (for now).
+Copyright © 2026 D4rkL1ch.
+
+Reagent Atlas is free software, licensed under the [GNU General Public License v3.0](LICENSE). Recipe source data is derived in part from [QuestieDB](https://github.com/Questie/QuestieDB) (GPL-3.0).

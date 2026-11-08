@@ -1,7 +1,7 @@
 ## Interface: 16001
 ## Title: Reagent Atlas
 ## Notes: Shows which recipes use an item, who can craft them, and whether it is worth keeping.
-## Author: TwinUnicorns
+## Author: D4rkL1ch
 ## Version: 0.1.0
 ## SavedVariables: ReagentAtlasDB
 ## OptionalDeps: Auctionator
