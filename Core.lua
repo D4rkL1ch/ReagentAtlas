@@ -3,7 +3,14 @@ local addonName, ns = ...
 -- Namespace basics ----------------------------------------------------------
 
 ns.name = addonName
-ns.version = (C_AddOns and C_AddOns.GetAddOnMetadata and C_AddOns.GetAddOnMetadata(addonName, "Version")) or "dev"
+-- The packager replaces @project-version@ in the TOC with the release tag; a
+-- copy deployed straight from the repo still has the token, so it reads "dev".
+local metaVersion = C_AddOns and C_AddOns.GetAddOnMetadata and C_AddOns.GetAddOnMetadata(addonName, "Version")
+if not metaVersion or metaVersion:find("@", 1, true) then
+	ns.version = "dev"
+else
+	ns.version = (metaVersion:gsub("^v", ""))
+end
 ns.DB_VERSION = 2
 
 local CHAT_PREFIX = "|cff33ff99Reagent Atlas|r: "
@@ -255,7 +262,7 @@ end
 function ns:GetStatusLines()
 	local gameVersion, build, _, tocVersion = GetBuildInfo()
 	local lines = {
-		("v%s"):format(self.version),
+		self.version == "dev" and "development copy (not a packaged release)" or ("v%s"):format(self.version),
 		("client %s (build %s), interface %s"):format(tostring(gameVersion), tostring(build), tostring(tocVersion)),
 		("recipe data: build %s"):format(tostring(self.DATA_BUILD)),
 	}

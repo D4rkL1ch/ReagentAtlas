@@ -1,0 +1,26 @@
+name: Release
+
+# Push a version tag (e.g. 0.1.0, or 0.2.0-beta1 for a beta) to build the zip,
+# publish a GitHub release and, once X-Wago-ID is in the TOC and the
+# WAGO_API_TOKEN secret is set, upload it to Wago.
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write # create the GitHub release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # Actions are pinned to commit SHAs; the comment names the version.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # the packager builds the changelog from history
+
+      - uses: BigWigsMods/packager@01e8631a69c69d7654c788d152630d5fed9e3812 # v2.7.0
+        env:
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}

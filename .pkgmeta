@@ -1,0 +1,13 @@
+package-as: ReagentAtlas
+
+# Ship only the addon (same set as tools/deploy.ps1) plus LICENSE, which the
+# GPL requires in every package. Dotfiles and .github are skipped by default.
+ignore:
+  - tools
+  - docs
+  - SPEC.md
+  - CLAUDE.md
+  - README.md
+  - ReagentAtlas.code-workspace
+
+enable-nolib-creation: no

@@ -2,7 +2,7 @@
 ## Title: Reagent Atlas
 ## Notes: Shows which recipes use an item, who can craft them, and whether it is worth keeping.
 ## Author: D4rkL1ch
-## Version: 0.1.0
+## Version: @project-version@
 ## SavedVariables: ReagentAtlasDB
 ## OptionalDeps: Auctionator
 ## Category: Professions
