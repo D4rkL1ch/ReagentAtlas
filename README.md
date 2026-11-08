@@ -19,10 +19,6 @@ Reagent Atlas only displays information. It never loots, sells, posts or scans f
 
 **Documentation:** see the [wiki](https://github.com/D4rkL1ch/ReagentAtlas/wiki) for installation, every feature, settings and commands, and an FAQ. Project page: [d4rkl1ch.github.io/ReagentAtlas](https://d4rkl1ch.github.io/ReagentAtlas/).
 
-## Status
-
-Pre-alpha, in development. Targets the WoW Forever client 1.60.x (modern addon API).
-
 ## Repository layout
 
 | Path | What |
