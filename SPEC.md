@@ -1,6 +1,6 @@
 # Reagent Atlas — Implementation Spec
 
-Last updated: Nov 6, 2026
+Last updated: Nov 8, 2026
 
 ## Overview & goals
 
@@ -272,7 +272,7 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 - [x] Spell reagents: which classes and spells use reagents in Forever? Derived from DB2 (`SpellReagents` + `SpellClassOptions` + class skill lines): 23 items in 1.60.1. Gaps (e.g. Levitate) fixed in `tools/spell_reagents.csv`.
 - [ ] Vendor-sold reagents: `tools/vendor_reagents.csv` (58 items) is from Classic knowledge; verify against Forever vendors after launch.
 - [ ] Recipe sources: confirm Classic-era vendors and drops against Forever. New Forever recipes (most of the 865 unknown in 1.60.1.70862, some possibly unused Season of Discovery leftovers) have no source yet; re-check QuestieDB's trace layer as it fills in. Merchant-window recording now covers what you visit; each player's sightings stay local.
-- [ ] Licensing: `Data/Sources.lua` derives from QuestieDB, which allows copying under GPLv3 terms but cannot promise every historic contributor agreed. Decide the addon's licence before any public release. QuestieDB's generated delta-base is scraped from Wowhead (its `docs/forever-delta-base.md`), and its licence says nothing about third-party data, so it is not used; some legacy Questie data may also trace back to Wowhead. Decide both together.
+- [x] Licensing: `Data/Sources.lua` derives from QuestieDB, which allows copying under GPLv3 terms but cannot promise every historic contributor agreed. Decided: the addon is GPL-3.0 (`LICENSE`, credited in the README), and QuestieDB's generated delta-base stays out, since it is scraped from Wowhead (its `docs/forever-delta-base.md`) and its licence says nothing about third-party data. Some legacy Questie data may also trace back to Wowhead; revisit if that becomes a problem.
 - [ ] Tracking list alert: confirm in-game that `SOUNDKIT.IG_QUEST_LIST_COMPLETE` plays on Forever and is loud enough (Blizzard's Forever constants could not be checked offline).
 - [ ] Loot alerts: confirm in-game that `CHAT_MSG_LOOT` arrives as "You receive loot: [item]" (and "...x3" for stacks) for mob loot, gathering and containers, that it isn't a secret value in dungeons or combat, and that `SOUNDKIT.RAID_WARNING` plays.
 - [ ] Heuristic weights are guesses until the live economy settles after launch; plan a tuning pass a few weeks in.

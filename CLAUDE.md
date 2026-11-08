@@ -29,4 +29,4 @@ See `SPEC.md` → "Architecture & file layout". Load order in the TOC: Data → 
 
 ## Testing
 The user runs the addon on Windows: deploy, then `/reload` in-game. Errors are checked with BugSack/BugGrabber.
-Until WoW Forever launches (Nov 4, 2026) there is no game client to test in: favour offline checks (luacheck/LuaLS, unit tests with stubbed WoW APIs) and mark anything that needs in-game confirmation.
+WoW Forever is live (since Nov 4, 2026), so changes get tested in-game. Still run the offline checks first (LuaLS diagnostics, `tools/tests/run.ps1` with stubbed WoW APIs), and list anything that needs in-game confirmation.
