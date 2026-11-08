@@ -2,7 +2,7 @@ local addonName, ns = ...
 
 local Browser = ns:RegisterModule("Browser", {})
 
--- Layout (SPEC.md > Browser window; design mockup in docs/).
+-- Layout (SPEC.md > Browser window and Design reference).
 local WIDTH, HEIGHT = 860, 560
 local LIST_WIDTH = 380
 local ROW_HEIGHT = 30

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reagent Atlas: a WoW Forever addon</title>
+<meta name="description" content="Reagent Atlas shows which profession recipes use an item, which of your characters can craft them, and whether it's worth keeping. A World of Warcraft: Forever addon.">
+<meta property="og:title" content="Reagent Atlas">
+<meta property="og:description" content="Hover an item, see if it's worth keeping. Recipes, alts, owned counts and a value tier, right in the tooltip.">
+<meta property="og:image" content="https://d4rkl1ch.github.io/ReagentAtlas/icon.png">
+<meta property="og:url" content="https://d4rkl1ch.github.io/ReagentAtlas/">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #10162a;
+    --deep: #0b1020;
+    --panel: #19213a;
+    --gold: #d9a441;
+    --gold-dim: #8a6a2c;
+    --parchment: #ece3cc;
+    --muted: #a9a58f;
+    --crystal: #74b4ff;
+
+    /* WoW item quality colours, used for the tiers */
+    --q-poor: #9d9d9d;
+    --q-common: #ffffff;
+    --q-uncommon: #1eff00;
+    --q-rare: #0070dd;
+    --q-epic: #a335ee;
+    --q-legendary: #ff8000;
+    --tt-gold: #ffd100;
+    --tt-alt: #4fa8ff;
+
+    --measure: 38rem;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(60rem 40rem at 78% -10%, rgba(116,180,255,.10), transparent 60%),
+      var(--night);
+    color: var(--parchment);
+    font: 400 1.1875rem/1.55 "Alegreya Sans", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--gold); text-underline-offset: .18em; }
+  a:hover { color: #f0c46a; }
+  :focus-visible { outline: 2px solid var(--crystal); outline-offset: 3px; border-radius: 2px; }
+
+  h1, h2, h3 { font-family: "Cinzel", Georgia, serif; font-weight: 700; line-height: 1.15; margin: 0; }
+  h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); color: var(--gold); letter-spacing: .01em; }
+  h3 { font-size: 1.15rem; font-weight: 500; color: var(--parchment); }
+  p { margin: 0 0 1em; }
+
+  .wrap { width: min(72rem, 100% - 2.5rem); margin-inline: auto; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 27rem);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    padding: clamp(3rem, 8vw, 6.5rem) 0 clamp(3rem, 6vw, 5rem);
+  }
+  .brand { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+  .brand img { width: 64px; height: 64px; }
+  .brand span { font-family: "Cinzel", serif; font-size: 1.05rem; color: var(--muted); }
+  .hero h1 {
+    font-size: clamp(2.6rem, 6.2vw, 4.6rem);
+    color: var(--parchment);
+    letter-spacing: -.005em;
+    max-width: 12ch;
+  }
+  .lede { font-size: 1.3rem; color: var(--parchment); max-width: 32rem; margin: 1.5rem 0 2rem; }
+  .lede em { color: var(--muted); font-style: italic; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .btn {
+    display: inline-flex; align-items: center; gap: .55rem;
+    padding: .8rem 1.35rem;
+    font: 700 1.05rem/1 "Alegreya Sans", sans-serif;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 1px solid var(--gold);
+  }
+  .btn-primary { background: linear-gradient(#e2b04f, #b9862c); color: #1a1205; border-color: #f0c46a; box-shadow: inset 0 1px 0 rgba(255,255,255,.35); }
+  .btn-primary:hover { background: linear-gradient(#ecbd5e, #c69234); color: #1a1205; }
+  .btn-ghost { color: var(--gold); background: transparent; }
+  .btn-ghost:hover { background: rgba(217,164,65,.1); color: #f0c46a; }
+  .btn svg { width: 1.1em; height: 1.1em; }
+
+  .meta { margin-top: 1.5rem; color: var(--muted); font-size: 1rem; }
+
+  /* ---------- Tooltip demo ---------- */
+  .demo { position: relative; }
+  .demo-stage { display: flex; gap: 1rem; align-items: flex-start; }
+  .slot {
+    flex: none; width: 52px; height: 52px; margin-top: 4px;
+    border-radius: 4px;
+    border: 2px solid var(--q-uncommon);
+    background:
+      radial-gradient(circle at 50% 40%, #b9e1ff 0 18%, #6fa8f0 19% 34%, #2c5aa8 35% 52%, transparent 53%),
+      #0d1424;
+    box-shadow: 0 0 0 1px #000, inset 0 0 8px rgba(0,0,0,.8);
+    position: relative;
+  }
+  .slot b { position: absolute; right: 3px; bottom: 1px; font: 700 .85rem/1 Arial, sans-serif; color: #fff; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000; }
+  .slot i { position: absolute; left: 3px; top: 3px; width: 8px; height: 8px; background: var(--q-legendary); transform: rotate(45deg); box-shadow: 0 0 0 1px #000; }
+
+  .tooltip {
+    flex: 1;
+    min-width: 0;
+    background: rgba(8,10,18,.94);
+    border: 1px solid #5c5c66;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px #000, 0 18px 50px rgba(0,0,0,.55);
+    padding: .85rem 1rem .9rem;
+    font: 400 1.02rem/1.34 "Friz Quadrata", "Alegreya Sans", Arial, sans-serif;
+    color: #fff;
+  }
+  .tooltip .name { font-size: 1.2rem; color: var(--q-uncommon); }
+  .tooltip .row { display: flex; justify-content: space-between; gap: 1rem; }
+  .tooltip .gap { height: .55em; }
+  .c-white { color: #fff; }
+  .c-gold { color: var(--tt-gold); }
+  .c-green { color: var(--q-uncommon); }
+  .c-alt { color: var(--tt-alt); }
+  .c-grey { color: #8f8f8f; }
+  .c-keep { color: var(--q-legendary); }
+
+  .tt-expanded { display: none; }
+  .demo.shift .tt-collapsed { display: none; }
+  .demo.shift .tt-expanded { display: block; }
+
+  .shift-toggle {
+    margin: 1.1rem 0 0 68px;
+    display: inline-flex; align-items: center; gap: .6rem;
+    background: none; border: 0; padding: 0; cursor: pointer;
+    color: var(--muted); font: inherit; font-size: 1rem;
+  }
+  .key {
+    display: inline-block; min-width: 4.2rem; padding: .3rem .7rem .35rem;
+    font: 600 .9rem/1 "Alegreya Sans", sans-serif; color: var(--parchment);
+    background: linear-gradient(#2a3352, #1b2238);
+    border: 1px solid #3c4770; border-bottom-width: 3px; border-radius: 5px;
+    text-align: center;
+    transition: transform .08s, border-bottom-width .08s;
+  }
+  .demo.shift .key { transform: translateY(2px); border-bottom-width: 1px; background: #2c3760; border-color: var(--crystal); }
+
+  /* ---------- Sections ---------- */
+  section { padding: clamp(3.5rem, 7vw, 5.5rem) 0; border-top: 1px solid rgba(217,164,65,.18); }
+  .section-head { max-width: var(--measure); margin-bottom: 2.5rem; }
+  .section-head p { color: var(--muted); margin-top: .8rem; }
+
+  /* Tiers: the ladder itself is the information */
+  .tiers { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
+  .tiers li { padding: 1.1rem 1rem 1.25rem; background: var(--panel); border-top: 4px solid var(--c); }
+  .tiers li:first-child { border-radius: 4px 0 0 4px; }
+  .tiers li:last-child { border-radius: 0 4px 4px 0; }
+  .tiers strong { display: block; font: 700 1.25rem/1.2 "Cinzel", serif; color: var(--c); }
+  .tiers span { display: block; margin-top: .45rem; font-size: .98rem; color: var(--muted); line-height: 1.4; }
+  .tier-note { max-width: var(--measure); margin-top: 1.75rem; color: var(--muted); font-size: 1.05rem; }
+
+  /* Features: a two-column definition list */
+  .features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.25rem 4rem; margin: 0; }
+  .features div { max-width: 31rem; }
+  .features dt { font: 500 1.2rem/1.25 "Cinzel", serif; color: var(--parchment); margin-bottom: .45rem; }
+  .features dd { margin: 0; color: #cfc7b0; }
+  .features code { font-size: .9em; }
+
+  code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; font-size: .92em; color: var(--crystal); }
+
+  /* Install: genuinely a sequence */
+  .install { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 3rem 4rem; }
+  .install ol { margin: 0; padding-left: 1.4rem; }
+  .install li { margin-bottom: .8rem; padding-left: .3rem; }
+  .install li::marker { color: var(--gold); font-family: "Cinzel", serif; font-weight: 700; }
+  .install h3 { margin-bottom: 1rem; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 1.05rem; }
+  th, td { text-align: left; padding: .65rem .75rem .65rem 0; border-bottom: 1px solid rgba(236,227,204,.1); vertical-align: top; }
+  th { font-weight: 500; color: var(--muted); font-size: .95rem; }
+  td:first-child { white-space: nowrap; padding-right: 1.5rem; }
+
+  .promise > div { max-width: var(--measure); }
+  .promise { font-size: 1.3rem; }
+  .promise p:last-child { color: var(--muted); font-size: 1.1rem; }
+
+  footer { padding: 2.5rem 0 3rem; border-top: 1px solid rgba(217,164,65,.18); color: var(--muted); font-size: .98rem; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; }
+  footer p { margin: 0; max-width: 40rem; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .tiers { grid-template-columns: 1fr; }
+    .tiers li, .tiers li:first-child, .tiers li:last-child { border-radius: 0; border-top: 0; border-left: 4px solid var(--c); display: grid; grid-template-columns: 7.5rem 1fr; align-items: baseline; gap: 1rem; padding: .9rem 1rem; }
+    .tiers span { margin-top: 0; }
+    .features, .install { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 480px) {
+    .slot { display: none; }
+    .shift-toggle { margin-left: 0; }
+    td:first-child { white-space: normal; }
+  }
+</style>
+</head>
+<body>
+
+<header class="wrap hero">
+  <div>
+    <div class="brand">
+      <img src="icon.png" alt="" width="64" height="64">
+      <span>For World of Warcraft: Forever</span>
+    </div>
+    <h1>Reagent Atlas</h1>
+    <p class="lede">Hover anything in your bags and see which recipes use it, which of your characters can craft them, and whether it's worth keeping. <em>Before you vendor it.</em></p>
+    <div class="actions">
+      <!-- TODO: replace with the Wago.io project URL once it's live -->
+      <a class="btn btn-primary" href="https://addons.wago.io/">Download on Wago</a>
+      <a class="btn btn-ghost" href="https://github.com/D4rkL1ch/ReagentAtlas">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Source on GitHub
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/D4rkL1ch/ReagentAtlas/wiki">Documentation</a>
+    </div>
+    <p class="meta">Version 0.1.0 for client 1.60.x. Free and open source under GPL-3.0.</p>
+  </div>
+
+  <div class="demo" id="demo" aria-label="Example of the Reagent Atlas tooltip on Arcane Crystal">
+    <div class="demo-stage">
+      <div class="slot" aria-hidden="true"><i></i><b>5</b></div>
+      <div class="tooltip" role="img" aria-describedby="demo-caption">
+        <div class="name">Arcane Crystal</div>
+        <div class="c-white">Crafting Reagent</div>
+        <div class="gap"></div>
+
+        <div class="tt-collapsed">
+          <div><span class="c-keep">Reagent Atlas: Keep!</span> · AH 4g 85c</div>
+          <div>Used in 3 recipes · Engineering, Enchanting, Alchemy</div>
+          <div>Highest: Engineering 320</div>
+          <div class="c-green">You can craft 2 (you, Brewdin)</div>
+          <div>Owned: 7 across 2 characters</div>
+          <div class="c-grey">Hold Shift for all recipes</div>
+        </div>
+
+        <div class="tt-expanded">
+          <div><span class="c-keep">Reagent Atlas: Keep!</span> · AH 4g 85c</div>
+          <div class="c-gold">Engineering</div>
+          <div class="c-grey">· Obsidian Scope (320)</div>
+          <div class="c-gold">Enchanting</div>
+          <div class="row c-alt"><span>✓ Enchant 2H Weapon - Strength (295)</span><span>Brewdin</span></div>
+          <div class="c-gold">Alchemy</div>
+          <div class="row c-green"><span>✓ Transmute: Arcanite (275)</span><span>you</span></div>
+          <div class="gap"></div>
+          <div class="row"><span>You</span><span>Bags 5</span></div>
+          <div class="row"><span>Brewdin</span><span>Bank 2</span></div>
+        </div>
+      </div>
+    </div>
+    <button class="shift-toggle" id="shift" type="button" aria-pressed="false">
+      <span class="key">Shift</span>
+      <span id="demo-caption">Hold Shift (or click) for every recipe</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section id="tiers">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Five tiers, in colours you already read</h2>
+        <p>Every reagent gets a predicted value tier, coloured like item quality so you can judge it at a glance.</p>
+      </div>
+      <ol class="tiers">
+        <li style="--c: var(--q-poor)"><strong>Vendor</strong><span>Copper Ore</span></li>
+        <li style="--c: var(--q-common)"><strong>Common</strong><span>Peacebloom, Mageroyal, dyes and threads</span></li>
+        <li style="--c: var(--q-uncommon)"><strong>Useful</strong><span>Linen, Wool, Silk, Copper Bar</span></li>
+        <li style="--c: var(--q-rare)"><strong>Valuable</strong><span>Iron Bar, Thick Leather, Runecloth</span></li>
+        <li style="--c: var(--q-legendary)"><strong>Keep!</strong><span>Arcanite Bar, Black Lotus, Essences</span></li>
+      </ol>
+      <p class="tier-note">The tier is a prediction, not a price. It weighs how many recipes use an item, how high their skill goes and what they lead to further down the crafting chain. With <a href="https://www.curseforge.com/wow/addons/auctionator">Auctionator</a> installed, fresh auction prices move it up or down a step.</p>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Everything else it shows you</h2>
+      </div>
+      <dl class="features">
+        <div>
+          <dt>All your alts at once</dt>
+          <dd>Recipes you know are green, recipes an alt knows are blue with their name. Owned counts add up bags and banks of every character, plus the warband bank.</dd>
+        </div>
+        <div>
+          <dt>Reagent browser</dt>
+          <dd>Type <code>/ratlas</code> to list every reagent in the game. Filter by profession, tier, what you own and what you can craft, and see where each recipe comes from.</dd>
+        </div>
+        <div>
+          <dt>Crafting tab</dt>
+          <dd>The other way round: search any recipe or crafted item to see what it takes, how many of each reagent you have, and who knows it or where to learn it.</dd>
+        </div>
+        <div>
+          <dt>Tracking list</dt>
+          <dd>Follow recipes and reagents in a small window. Set a goal and get a sound and a message when you have enough. The shopping list adds up what's still missing.</dd>
+        </div>
+        <div>
+          <dt>Loot alerts</dt>
+          <dd>Loot a recipe one of your characters could learn, or a Keep! reagent, and you hear about it. The same item stays quiet for 10 minutes while you farm.</dd>
+        </div>
+        <div>
+          <dt>Bag markers</dt>
+          <dd>A small tier-coloured pip on valuable items in your bags, so you can spot them without hovering. Works with ElvUI bags too.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap install">
+      <div>
+        <h2>Install</h2>
+        <p style="color: var(--muted); margin-top: .8rem;">With the <a href="https://addons.wago.io/app">WagoApp</a>, search for Reagent Atlas and click Install. To install by hand:</p>
+        <ol>
+          <li>Download the latest release from Wago or GitHub.</li>
+          <li>Extract the <code>ReagentAtlas</code> folder into <code>Interface\AddOns</code> inside your WoW Forever folder.</li>
+          <li>Start the game, or type <code>/reload</code> if it's already running.</li>
+          <li>Log in on each character once, and open your bank and profession windows, so Reagent Atlas learns what they have and know.</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Commands</h3>
+        <table>
+          <thead><tr><th scope="col">Type</th><th scope="col">To</th></tr></thead>
+          <tbody>
+            <tr><td><code>/ratlas</code></td><td>Open the browser</td></tr>
+            <tr><td><code>/ratlas track</code></td><td>Show the tracking list</td></tr>
+            <tr><td><code>/ratlas config</code></td><td>Open settings</td></tr>
+            <tr><td><code>/ratlas forget Name-Realm</code></td><td>Remove a deleted character</td></tr>
+            <tr><td><code>/ratlas version</code></td><td>Show version and data build</td></tr>
+          </tbody>
+        </table>
+        <p style="color: var(--muted); margin-top: 1rem; font-size: 1.02rem;">You never have to type: every command is also a button, in the minimap menu or under Esc, Options, AddOns.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="promise">
+    <div class="wrap promise"><div>
+      <h2>It only shows you things</h2>
+      <p style="margin-top: 1rem;">Reagent Atlas never loots, sells, posts or scans the auction house for you. It reads your bags, banks and profession windows, and tells you what it knows.</p>
+      <p>Recipe data is built from the WoW Forever client. Where a recipe drops or who sells it comes partly from Classic-era data and isn't confirmed in Forever yet, and the addon says so when that's the case.</p>
+    </div></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 D4rkL1ch. Reagent Atlas is free software under the <a href="https://github.com/D4rkL1ch/ReagentAtlas/blob/main/LICENSE">GNU GPL v3</a>. Recipe sources derive in part from <a href="https://github.com/Questie/QuestieDB">QuestieDB</a>.</p>
+    <p>Not affiliated with Blizzard Entertainment. World of Warcraft is a trademark of Blizzard Entertainment, Inc.</p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var demo = document.getElementById('demo');
+    var btn = document.getElementById('shift');
+    var latched = false;
+    function set(on) {
+      demo.classList.toggle('shift', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    btn.addEventListener('click', function () { latched = !latched; set(latched); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Shift') set(true); });
+    document.addEventListener('keyup', function (e) { if (e.key === 'Shift') set(latched); });
+    window.addEventListener('blur', function () { set(latched); });
+  })();
+</script>
+</body>
+</html>

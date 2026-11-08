@@ -8,7 +8,7 @@ Hover any item in your bags and Reagent Atlas shows:
 
 - **Which profession recipes use it**, across all professions, with the required skill level.
 - **Who can craft them**: recipes known by your current character are highlighted green, recipes known by one of your alts blue (with the alt's name).
-- **A predicted value tier**: *Vendor*, *Useful*, *Valuable* or *Keep!*, estimated from recipe data and refined with Auctionator prices when available.
+- **A predicted value tier**: *Vendor*, *Common*, *Useful*, *Valuable* or *Keep!*, estimated from recipe data and refined with Auctionator prices when available.
 - **How many you own**, across bags and banks of all your characters.
 
 A browser window (`/ratlas`) lists every reagent in the game with filters for profession, tier, owned and craftable, and optional pips mark valuable items right in your bags. Its Crafting tab works the other way round: search any recipe or craftable item to see what it takes to make, how many of each reagent you have, and who knows the recipe or where to get it.
@@ -16,6 +16,8 @@ A browser window (`/ratlas`) lists every reagent in the game with filters for pr
 A tracking list (`/ratlas track`, or the button in the browser) follows recipes and reagents: how many of each reagent you have and need, and where to get a recipe you don't know yet. Set a goal and you get a message and a sound when you have enough. Its shopping list adds up all your tracked recipes: what's still to get, what to craft first, and who can craft it.
 
 Reagent Atlas only displays information. It never loots, sells, posts or scans for you.
+
+**Documentation:** see the [wiki](https://github.com/D4rkL1ch/ReagentAtlas/wiki) for installation, every feature, settings and commands, and an FAQ. Project page: [d4rkl1ch.github.io/ReagentAtlas](https://d4rkl1ch.github.io/ReagentAtlas/).
 
 ## Status
 
@@ -27,7 +29,7 @@ Pre-alpha, in development. Targets the WoW Forever client 1.60.x (modern addon A
 | --- | --- |
 | `ReagentAtlas.toc`, `Core.lua`, `Data/`, `Modules/`, `UI/` | The addon itself (what gets deployed) |
 | `tools/` | Data builder (`build_data.py`), deploy and setup scripts. Not shipped. |
-| `docs/` | Icon and design references |
+| `docs/` | Project landing page (served by GitHub Pages) and icon. Not shipped. |
 | `SPEC.md` | Full implementation spec |
 | `CLAUDE.md` | Instructions for AI coding agents working on this repo |
 
