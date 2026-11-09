@@ -25,8 +25,9 @@ See `SPEC.md` → "Architecture & file layout". Load order in the TOC: Data → 
 ## Repo and deploy
 - This repo (GitHub `D4rkL1ch/ReagentAtlas`, public, GPL-3.0) is the source of truth. It is NOT inside the WoW folder. Never commit secrets, tokens or local paths.
 - The repo root is the addon root. `tools/deploy.ps1` copies only what ships (`*.toc`, top-level `*.lua`, `Data/`, `Modules/`, `UI/`, `Media/`) into `Interface\AddOns\ReagentAtlas`. If you add a new shipped folder, add it to `$ShipDirs` there.
-- Everything else (`tools/`, `docs/`, `SPEC.md`, `CLAUDE.md`, `README.md`) stays repo-only, except `LICENSE`, which must ship in release packages.
+- Everything else (`tools/`, `docs/`, `SPEC.md`, `CLAUDE.md`, `README.md`) stays repo-only, except `LICENSE`, which must ship in release packages, and `CHANGELOG.md`, the release notes.
 - Releases: pushing a tag runs `.github/workflows/release.yml` (BigWigs packager), which builds the zip, creates the GitHub release and uploads to Wago. `.pkgmeta`'s `ignore` list must keep matching what `tools/deploy.ps1` ships. The TOC version is `@project-version@`, filled from the tag; never hard-code it.
+- Release notes: `.pkgmeta` uses `CHANGELOG.md` (`manual-changelog`) for the zip, the GitHub release and Wago. Before each tag, rewrite it for the new version only: player-facing changes in plain words, no file names, internals, tooling or Claude/skills, and have the user approve it.
 
 ## Testing
 The user runs the addon on Windows: deploy, then `/reload` in-game. Errors are checked with BugSack/BugGrabber.

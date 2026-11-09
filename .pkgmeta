@@ -1,7 +1,8 @@
 package-as: ReagentAtlas
 
 # Ship only the addon (same set as tools/deploy.ps1) plus LICENSE, which the
-# GPL requires in every package. Dotfiles and .github are skipped by default.
+# GPL requires in every package, and CHANGELOG.md. Dotfiles and .github are
+# skipped by default.
 ignore:
   - tools
   - docs
@@ -11,3 +12,9 @@ ignore:
   - ReagentAtlas.code-workspace
 
 enable-nolib-creation: no
+
+# Release notes come from this hand-written file, not from commit messages.
+# It holds only the version being released; rewrite it before each tag.
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
