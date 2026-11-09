@@ -154,6 +154,8 @@ local DEFAULT_SETTINGS = {
 	lootAlerts = true,
 	lootSound = true,
 	lootMinTier = 5, -- Keep!
+	lootMap = true,  -- record where reagents are looted
+	mapPins = 1,     -- world map: 0 off, 1 tracked and selected, 2 everything looted
 }
 
 -- Fill missing keys from defaults without overwriting user values.
@@ -210,6 +212,10 @@ local function InitDB()
 	db.account = db.account or {}   -- account-wide data, e.g. the warband bank
 	db.tracked = db.tracked or {}   -- tracking list, see Modules/Tracker.lua
 	db.seenVendors = db.seenVendors or {} -- recipe vendors seen, see Modules/Sources.lua
+	db.lootMap = db.lootMap or {}   -- where items were looted, see Modules/LootMap.lua
+	db.lootMap.items = db.lootMap.items or {}
+	db.lootMap.sources = db.lootMap.sources or {}
+	db.lootMap.names = db.lootMap.names or {}
 	ns.db = db
 end
 

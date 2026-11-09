@@ -254,6 +254,8 @@ function Browser:GetDetail(itemID)
 		sellPrice = info.sellPrice,
 		owned = total,
 		where = where,
+		looted = ns.LootMap:GetSummaryText(itemID),
+		onMap = ns.LootMap:GetBestMap(itemID) ~= nil,
 		recipeCount = info.recipeCount,
 		craftable = CraftableCount(itemID),
 		recipes = recipes,
@@ -574,8 +576,19 @@ local function CreateDetail(parent)
 	d.Track:SetSize(70, 22)
 	d.Track:SetPoint("TOPRIGHT", -PAD, -PAD)
 	d.Track:SetScript("OnClick", function() ToggleTracked("item", selected) end)
+	d.Map = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
+	d.Map:SetSize(50, 22)
+	d.Map:SetPoint("RIGHT", d.Track, "LEFT", -4, 0)
+	d.Map:SetText("Map")
+	d.Map:SetScript("OnClick", function() ns.LootMap:ShowOnMap(selected) end)
+	d.Map:SetScript("OnEnter", function(self)
+		GameTooltip:SetOwner(self, "ANCHOR_TOP")
+		GameTooltip:AddLine("Show where you looted it on the world map")
+		GameTooltip:Show()
+	end)
+	d.Map:SetScript("OnLeave", function() GameTooltip:Hide() end)
 	d.Name:SetPoint("TOPLEFT", d.Edge, "TOPRIGHT", 12, -2)
-	d.Name:SetPoint("RIGHT", d.Track, "LEFT", -8, 0)
+	d.Name:SetPoint("RIGHT", d.Map, "LEFT", -8, 0)
 	d.Name:SetJustifyH("LEFT")
 	d.Name:SetWordWrap(false)
 	d.Tier = CreateLabel(parent, "GameFontNormal")
@@ -605,10 +618,14 @@ local function CreateDetail(parent)
 	d.Where:SetPoint("TOPLEFT", d.Edge, "BOTTOMLEFT", 0, -72)
 	d.Where:SetPoint("RIGHT", -PAD, 0)
 	d.Where:SetJustifyH("LEFT")
+	d.Looted = CreateLabel(parent, "GameFontHighlight")
+	d.Looted:SetPoint("TOPLEFT", d.Where, "BOTTOMLEFT", 0, -4)
+	d.Looted:SetPoint("RIGHT", -PAD, 0)
+	d.Looted:SetJustifyH("LEFT")
 
 	d.UsedIn = CreateLabel(parent, "GameFontNormal",
 		"Used in  " .. Color("row: crafted item · icon: recipe · Shift-click to link", COLOR_HINT))
-	d.UsedIn:SetPoint("TOPLEFT", d.Where, "BOTTOMLEFT", 0, -12)
+	d.UsedIn:SetPoint("TOPLEFT", d.Looted, "BOTTOMLEFT", 0, -12)
 
 	d.Legend = CreateLabel(parent, "GameFontHighlightSmall",
 		Color(CHECK .. " this character", COLOR_YOURS) .. "    " .. Color(CHECK .. " an alt", COLOR_ALT)
@@ -631,7 +648,7 @@ local function UpdateDetail()
 	d.ShownItem = selected
 	local detail = selected and Browser:GetDetail(selected)
 	local show = detail ~= nil
-	for _, region in ipairs({ d.Edge, d.Icon, d.Name, d.Tier, d.Price, d.Where, d.UsedIn, d.Legend, d.Recipes, d.Track }) do
+	for _, region in ipairs({ d.Edge, d.Icon, d.Name, d.Tier, d.Price, d.Where, d.Looted, d.UsedIn, d.Legend, d.Recipes, d.Track, d.Map }) do
 		region:SetShown(show)
 	end
 	for _, stat in ipairs(d.Stats) do stat:GetParent():SetShown(show) end
@@ -649,6 +666,8 @@ local function UpdateDetail()
 	d.Stats[3]:SetText(detail.craftable)
 	local where = #detail.where > 0 and table.concat(detail.where, ", ") or "—"
 	d.Where:SetText(Color("Where it is: ", COLOR_HINT) .. Color(where, COLOR_TEXT))
+	d.Looted:SetText(Color("Looted at: ", COLOR_HINT) .. Color(detail.looted or "not recorded yet", COLOR_TEXT))
+	d.Map:SetEnabled(detail.onMap)
 	d.UsedIn:SetShown(#detail.recipes > 0)
 	d.Track:SetText(ns.Tracker:Find("item", detail.itemID) and "Untrack" or "Track")
 	d.Recipes:SetDataProvider(CreateDataProvider(detail.recipes),
@@ -847,6 +866,7 @@ end
 
 function Browser:Select(itemID)
 	selected = itemID
+	ns.LootMap:SetFocus(itemID)
 	if frame and frame:IsShown() then
 		frame.List:ForEachFrame(function(button)
 			button.Selected:SetShown(button.itemID == selected)
@@ -903,6 +923,7 @@ end
 function Browser:OnInit()
 	ns:RegisterMessage("CHAR_DATA_CHANGED", QueueDataRefresh)
 	ns:RegisterMessage("PRICES_CHANGED", QueueDataRefresh)
+	ns:RegisterMessage("LOOT_MAP_CHANGED", QueueDataRefresh)
 	ns:RegisterMessage("SETTINGS_CHANGED", QueueDataRefresh)
 	ns:RegisterMessage("TRACKER_CHANGED", UpdateTrackButtons)
 	ns:RegisterEvent("ITEM_DATA_LOAD_RESULT", function(_, itemID)

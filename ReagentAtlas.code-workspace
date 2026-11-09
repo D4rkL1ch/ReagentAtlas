@@ -46,7 +46,11 @@
 			"RaidWarningFrame",
 			"SOUNDKIT",
 			"LOOT_ITEM_SELF_MULTIPLE",
-			"LOOT_ITEM_SELF"
+			"LOOT_ITEM_SELF",
+			"WorldMapFrame",
+			"ToggleWorldMap",
+			"MapCanvasDataProviderMixin",
+			"GetMinimapShape"
 		]
 	}
 }

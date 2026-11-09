@@ -20,6 +20,7 @@ local TOGGLES = {
 	{ "trackerSound", "Tracking list sound", "Play a sound when you have enough of something on the tracking list." },
 	{ "lootAlerts", "Loot alerts", "Announce looted recipes one of your characters could learn, and reagents at or above the minimum tier with who can craft with them." },
 	{ "lootSound", "Loot alert sound", "Play a sound with loot alerts." },
+	{ "lootMap", "Record loot locations", "Remember where reagents and recipe items were looted and what from, for the world map and the browser. Only counts per spot are kept." },
 }
 
 local category
@@ -201,6 +202,15 @@ function SettingsUI:OnInit()
 	Settings.CreateDropdown(category, tierSetting, TierOptions, "Bag items below this tier get no pip.")
 	local lootTierSetting = Register("lootMinTier", "Minimum tier for loot alerts", Settings.VarType.Number)
 	Settings.CreateDropdown(category, lootTierSetting, TierOptions, "Looted reagents below this tier don't alert. Recipe items alert whenever a character could learn them.")
+	local mapSetting = Register("mapPins", "World map shows", Settings.VarType.Number)
+	local function MapOptions()
+		local container = Settings.CreateControlTextContainer()
+		container:Add(ns.LootMap.SHOW_OFF, "Nothing")
+		container:Add(ns.LootMap.SHOW_TRACKED, "Tracked and selected")
+		container:Add(ns.LootMap.SHOW_ALL, "Everything looted")
+		return container:GetData()
+	end
+	Settings.CreateDropdown(category, mapSetting, MapOptions, "Where you looted reagents, as pins on the world map. Tracked and selected: reagents on the tracking list (with or without a goal), reagents of tracked recipes, and the reagent selected in the browser.")
 
 	if Settings.RegisterCanvasLayoutSubcategory then
 		CreatePanel()

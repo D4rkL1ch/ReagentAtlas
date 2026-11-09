@@ -488,10 +488,14 @@ test("settings panel registers toggles and the tier dropdown", function()
 	eq(Settings.registered.name, "Reagent Atlas", "category")
 	local kinds = {}
 	for i, control in ipairs(Settings.controls) do kinds[i] = control.kind .. ":" .. control.setting.key end
-	eq(table.concat(kinds, ","), "checkbox:tooltip,checkbox:markers,checkbox:minimapIcon,checkbox:useAuctionator,checkbox:trackerSound,checkbox:lootAlerts,checkbox:lootSound,dropdown:markerMinTier,dropdown:lootMinTier", "controls")
-	local options = Settings.controls[8].options()
+	eq(table.concat(kinds, ","), "checkbox:tooltip,checkbox:markers,checkbox:minimapIcon,checkbox:useAuctionator,checkbox:trackerSound,checkbox:lootAlerts,checkbox:lootSound,checkbox:lootMap,dropdown:markerMinTier,dropdown:lootMinTier,dropdown:mapPins", "controls")
+	local options = Settings.controls[9].options()
 	eq(#options, 4, "Common, Useful, Valuable, Keep!")
 	eq(options[1].value, ns.Valuation.TIER_COMMON, "first option")
+	local mapOptions = Settings.controls[11].options()
+	eq(#mapOptions, 3, "map: nothing, tracked and selected, everything")
+	eq(ns.db.settings.mapPins, ns.LootMap.SHOW_TRACKED, "map default: tracked and selected")
+	eq(ns.db.settings.lootMap, true, "recording on by default")
 end)
 
 test("toggling the tooltip setting takes effect immediately", function()

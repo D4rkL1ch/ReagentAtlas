@@ -188,11 +188,9 @@ local function HandleLoot(text)
 	return ("item %d: alert"):format(itemID)
 end
 
-local debugging = false -- session only, /ratlas lootdebug
-
 local function OnLoot(_, text)
 	local result = HandleLoot(text)
-	if debugging then
+	if ns.lootDebug then
 		local raw = type(text) == "string" and not (issecretvalue and issecretvalue(text))
 			and text:gsub("|", "||") or "?"
 		ns:Print(("loot: %s -> %s"):format(raw, result))
@@ -202,9 +200,9 @@ end
 -- Lifecycle -----------------------------------------------------------------
 
 function LootAlert:OnInit()
-	ns:RegisterCommand("lootdebug", "lootdebug - print every loot message and why it did or didn't alert", function()
-		debugging = not debugging
-		ns:Print(debugging and "loot debug on: loot something." or "loot debug off.")
+	ns:RegisterCommand("lootdebug", "lootdebug - print every loot message, why it did or didn't alert, and what the loot map recorded", function()
+		ns.lootDebug = not ns.lootDebug or nil -- session only; LootMap reads it too
+		ns:Print(ns.lootDebug and "loot debug on: loot something." or "loot debug off.")
 	end)
 end
 
