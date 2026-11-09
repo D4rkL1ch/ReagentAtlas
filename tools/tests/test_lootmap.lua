@@ -28,9 +28,22 @@ local function install()
 			[DUNGEON] = { name = "The Deadmines", mapType = 4, parentMapID = WESTFALL },
 		},
 		opened = nil,
+		unitSwap = false, -- UnitPosition gives the world axes in the other order
+		calls = { vec = 0, info = 0, pos = 0 }, -- allocating API calls, for the minimap
 	}
 	Enum.UIMapType = { Zone = 3, Dungeon = 4, Micro = 5 }
-	CreateVector2D = vec
+	CreateVector2D = function(x, y)
+		L.calls.vec = L.calls.vec + 1
+		return vec(x, y)
+	end
+	-- World axes as in WoW: the first grows north, the second west. Zones are
+	-- 1000 x 600 yards with their top-left corner at the origin.
+	UnitPosition = function()
+		if L.x == nil or L.mapID == DUNGEON then return nil end
+		local a, b = -600 * L.y, -1000 * L.x
+		if L.unitSwap then a, b = b, a end
+		return a, b, 0, 0
+	end
 	GetNumLootItems = function() return #L.slots end
 	GetLootSlotLink = function(slot)
 		local s = L.slots[slot]
@@ -54,14 +67,19 @@ local function install()
 	C_Map = {
 		GetBestMapForUnit = function() return L.mapID end,
 		GetPlayerMapPosition = function(mapID)
+			L.calls.pos = L.calls.pos + 1
 			if L.x == nil or mapID == DUNGEON then return nil end
 			return vec(L.x, L.y)
 		end,
-		GetMapInfo = function(mapID) return L.mapInfo[mapID] end,
+		GetMapInfo = function(mapID)
+			L.calls.info = L.calls.info + 1
+			return L.mapInfo[mapID]
+		end,
 		GetWorldPosFromMapPos = function(mapID, pos)
-			if mapID ~= CAVE then return nil end
 			local x, y = pos:GetXY()
-			return 0, vec(x, y)
+			if mapID == CAVE then return 0, vec(x, y) end
+			if mapID == ELWYNN or mapID == WESTFALL then return 0, vec(-600 * y, -1000 * x) end
+			return nil
 		end,
 		-- The cave covers (0.3-0.4, 0.5-0.6) of Elwynn.
 		GetMapPosFromWorldPos = function(_, worldPos, mapID)
@@ -78,6 +96,7 @@ end
 local function uninstall()
 	GetNumLootItems, GetLootSlotLink, GetLootSlotInfo, GetLootSourceInfo, IsFishingLoot = nil, nil, nil, nil, nil
 	UnitGUID, C_Map, CreateVector2D, Enum.UIMapType, issecretvalue = nil, nil, nil, nil, nil
+	UnitPosition = nil
 	WorldMapFrame, MapCanvasDataProviderMixin, CreateFromMixins = nil, nil, nil
 	C_Minimap, GetMinimapShape, GetPlayerFacing, C_CVar = nil, nil, nil, nil
 end
@@ -405,6 +424,58 @@ test("minimap: tracked spots near you, hidden when far or off", function()
 	ns.MinimapPins:Update()
 	eq(#minimapPins(), 0, "instance")
 	eq(#stubs.errors, 0, "no errors")
+end)
+
+test("minimap: updates allocate nothing once the zone is set up", function()
+	local ns = boot()
+	L.x, L.y = 0.5, 0.5
+	loot({ { FEATHER, 1, npc(448) } })
+	ns.Tracker:Add("item", FEATHER)
+	stubs.runTimers()
+	ns.MinimapPins:Update() -- builds the zone's frame and checks the axis order
+	L.calls = { vec = 0, info = 0, pos = 0 }
+	for i = 1, 50 do
+		L.x = 0.5 + i * 0.0001 -- walking
+		ns.MinimapPins:Update()
+	end
+	eq(L.calls.vec, 0, "no Vector2D per update")
+	eq(L.calls.pos, 0, "no map position per update")
+	eq(L.calls.info, 0, "no map info per update")
+	eq(#minimapPins(), 1, "still shown")
+
+	-- No spots on the zone: not even the frame is built.
+	L.mapID = WESTFALL
+	L.calls = { vec = 0, info = 0, pos = 0 }
+	ns.MinimapPins:Update()
+	ns.MinimapPins:Update()
+	eq(L.calls.vec + L.calls.pos, 0, "nothing to show, nothing asked")
+	eq(L.calls.info, 1, "zone looked up once per map")
+end)
+
+test("minimap: either axis order from UnitPosition lands in the same place", function()
+	local ns = boot()
+	L.x, L.y = 0.5, 0.5
+	loot({ { FEATHER, 1, npc(448) } })
+	ns.Tracker:Add("item", FEATHER)
+	stubs.runTimers()
+	L.unitSwap = true
+	ns.MinimapPins:Update()
+	local pins = minimapPins()
+	eq(#pins, 1, "shown")
+	local point = pins[1].points[#pins[1].points]
+	T.near(point[4], 5 * 0.7, "5 yards east")
+	T.near(point[5], -3 * 0.7, "3 yards south")
+end)
+
+test("minimap: in a cave, spots on the zone around it", function()
+	local ns = boot()
+	L.x, L.y = 0.5, 0.5
+	loot({ { FEATHER, 1, npc(448) } })
+	ns.Tracker:Add("item", FEATHER)
+	stubs.runTimers()
+	L.mapID = CAVE -- UnitPosition stays world-based
+	ns.MinimapPins:Update()
+	eq(#minimapPins(), 1, "shown from the cave")
 end)
 
 -- Browser -------------------------------------------------------------------
