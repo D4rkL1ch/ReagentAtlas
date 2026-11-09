@@ -7,6 +7,7 @@ WoW Forever addon (client 1.60.x, modern retail-style addon API). Full spec: `SP
 - At the end of a phase, list exactly what the user should test in-game (`/reload`, what to hover/click, expected result).
 - When an API in `SPEC.md` is marked "verify" or you're unsure it exists in Forever, check the LuaLS/Ketho WoW API annotations first; if still unsure, add a guarded call (`if C_Something and C_Something.Func then`) and tell the user what to confirm in-game.
 - Update the "Open questions" checklist in `SPEC.md` when one gets answered.
+- Project skills in `.claude/skills/` (repo-only; the packager skips dot-folders): `deploy-and-check` before the user tests in-game, `forever-api-check` before using an API not yet in the addon, `read-saved-data` to see what the addon saved in-game.
 
 ## Code rules
 - Lua 5.1 (WoW runtime). No `goto`, no integer division `//`, no `require`.
