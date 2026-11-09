@@ -15,6 +15,8 @@ A browser window (`/ratlas`) lists every reagent in the game with filters for pr
 
 A tracking list (`/ratlas track`, or the button in the browser) follows recipes and reagents: how many of each reagent you have and need, and where to get a recipe you don't know yet. Set a goal and you get a message and a sound when you have enough. Its shopping list adds up all your tracked recipes: what's still to get, what to craft first, and who can craft it.
 
+A loot map remembers where you looted each reagent and what dropped it: the mob, the herb or ore node, or fishing. Tracked and selected reagents show as pins on the world map and the minimap, so you can find your way back to the spot.
+
 Reagent Atlas only displays information. It never loots, sells, posts or scans for you.
 
 **Documentation:** see the [wiki](https://github.com/D4rkL1ch/ReagentAtlas/wiki) for installation, every feature, settings and commands, and an FAQ. Project page: [d4rkl1ch.github.io/ReagentAtlas](https://d4rkl1ch.github.io/ReagentAtlas/).
