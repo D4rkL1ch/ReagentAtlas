@@ -10,6 +10,13 @@ Forever fixes) and the zone enum they refer to. The generated delta-base in
 src/corrections/Forever/generated/ is deliberately not fetched: it is scraped
 from Wowhead, whose data we have no licence to ship (SPEC.md > Open questions).
 
+Forever's client data has no "learned at" skill for recipes (MinSkillLineRank
+is 1). For trainer recipes it comes from the CMaNGOS Classic world database
+(GPL-3.0) at the pinned CMANGOS_COMMIT, mapped to recipes and to Forever's
+rebalanced skill ranks through Classic Era's SkillLineAbility and SpellEffect
+(ERA_BUILD). Saved into tools/db2/era/; only the trainer rows of the CMaNGOS
+dump are kept (trainer_spells.csv).
+
 Usage:
     python tools/fetch_db2.py                 # latest WoW Forever build (product "wowf")
     python tools/fetch_db2.py 1.60.1.70707    # a specific build
@@ -17,7 +24,10 @@ Usage:
 
 from __future__ import annotations
 
+import csv
+import gzip
 import json
+import re
 import sys
 import urllib.request
 from pathlib import Path
@@ -43,6 +53,13 @@ QUESTIEDB_CORRECTIONS = [
     "src/corrections/Forever/foreverQuestFixes.lua",
     "src/corrections/enum/zones.lua",
 ]
+ERA_BUILD = "1.15.9.70576"
+ERA_TABLES = ["SkillLineAbility", "SpellEffect"]
+CMANGOS_COMMIT = "c33f90b8eeb3f8bacb53d5cbfee45075c80b416c"
+CMANGOS_DUMP = "Full_DB/ClassicDB_1_12_1_z2815.sql.gz"
+# Leading columns of npc_trainer / npc_trainer_template: entry, spell, spellcost, reqskill, reqskillvalue.
+TRAINER_ROW = re.compile(r"\((\d+),(\d+),(\d+),(\d+),(\d+),")
+TRAINER_INSERT = re.compile(r"^INSERT INTO `npc_trainer(?:_template)?` VALUES ")
 
 
 def fetch(url: str) -> bytes:
@@ -54,6 +71,31 @@ def fetch(url: str) -> bytes:
 def latest_build() -> str:
     builds = json.loads(fetch("https://wago.tools/api/builds"))
     return builds[PRODUCT][0]["version"]
+
+
+def trainer_spells(dump: bytes) -> list[tuple[int, int, int]]:
+    """(spell, reqskill, reqskillvalue) for every trainer row in a CMaNGOS SQL dump."""
+    rows = set()
+    for line in gzip.decompress(dump).decode("utf-8", "replace").splitlines():
+        if TRAINER_INSERT.match(line):
+            for m in TRAINER_ROW.finditer(line):
+                rows.add((int(m[2]), int(m[4]), int(m[5])))
+    return sorted(rows)
+
+
+def fetch_era(out_dir: Path) -> None:
+    out_dir.mkdir(exist_ok=True)
+    for table in ERA_TABLES:
+        data = fetch(f"https://wago.tools/db2/{table}/csv?build={ERA_BUILD}")
+        (out_dir / f"{table}.csv").write_bytes(data)
+        print(f"era {table}: {len(data) // 1024} KB")
+    rows = trainer_spells(fetch(f"https://raw.githubusercontent.com/cmangos/classic-db/{CMANGOS_COMMIT}/{CMANGOS_DUMP}"))
+    with (out_dir / "trainer_spells.csv").open("w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["spell", "reqskill", "reqskillvalue"])
+        writer.writerows(rows)
+    print(f"trainer_spells.csv: {len(rows)} rows")
+    (out_dir / "source.txt").write_text(f"era {ERA_BUILD}\ncmangos/classic-db {CMANGOS_COMMIT}\n", encoding="utf-8")
 
 
 def main() -> int:
@@ -78,6 +120,7 @@ def main() -> int:
         (corrections_dir / Path(path).name).write_bytes(data)
         print(f"{Path(path).name}: {len(data) // 1024} KB")
     (questie_dir / "commit.txt").write_text(QUESTIEDB_COMMIT + "\n", encoding="utf-8")
+    fetch_era(OUT_DIR / "era")
     print(f"build {version} -> {OUT_DIR}")
     return 0
 

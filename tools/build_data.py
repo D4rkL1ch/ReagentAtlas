@@ -31,6 +31,11 @@ Recipe sources need Item.csv, ItemEffect.csv, ItemXItemEffect.csv, Faction.csv
 and AreaTable.csv plus QuestieDB's Forever tables in <src>/questie/ and their
 correction layers in <src>/questie/corrections/ (all fetched by fetch_db2.py).
 Without them Data/Sources.lua is written empty and the addon shows no sources.
+
+Recipe learn skills for trainer recipes need <src>/era/ (Classic Era
+SkillLineAbility.csv and SpellEffect.csv plus trainer_spells.csv from
+CMaNGOS, fetched by fetch_db2.py). Without them those recipes keep the skill
+where they turn yellow.
 """
 
 from __future__ import annotations
@@ -84,6 +89,7 @@ EXCLUDED_CLASS_LINES = {2851}
 EFFECT_CREATE_ITEM = 24
 EFFECT_LEARN_SPELL = 36
 ITEM_CLASS_RECIPE = 9
+ACQUIRE_WITH_PROFESSION = 1  # SkillLineAbility.AcquireMethod: learned with the profession
 ITEM_LEATHER = (7, 6)   # Trade Goods: Leather (class, subclass)
 
 # Recipes from this skill up count as high-end in a reagent's crafting chain.
@@ -288,6 +294,58 @@ def chain_counts(recipes: dict[int, dict], items: Iterable[int], conversions: se
     return counts
 
 
+def item_learn_skills(src: Path, recipes: dict[int, dict]) -> dict[int, int]:
+    """Recipe spell -> skill its recipe item requires (Forever's own data)."""
+    if not all((src / f"{t}.csv").exists() for t in ("Item", "ItemEffect", "ItemXItemEffect")):
+        return {}
+    sparse = read_csv(src / "ItemSparse.csv")
+    required = {to_int(r["ID"]): to_int(col(r, "RequiredSkillRank")) for r in sparse}
+    item_names = {to_int(r["ID"]): col(r, "Display_lang") for r in sparse}
+    result = {}
+    for spell, items in recipe_items(src, recipes, item_names).items():
+        ranks = [required[i] for i in items if required.get(i)]
+        if ranks:
+            result[spell] = min(ranks)
+    return result
+
+
+def trainer_learn_skills(era: Path, recipes: dict[int, dict], yellow: dict[int, int]) -> dict[int, int]:
+    """Recipe spell -> skill a trainer requires, moved onto Forever's ranks.
+
+    CMaNGOS lists Classic trainers' teaching spells; Classic Era's SpellEffect
+    maps those to recipe spells. Forever rebalanced many recipes, so the
+    Classic value is shifted by however far Forever moved the recipe's yellow
+    rank from Classic Era's. Checked against recipe items, where Forever's
+    value is known, the shift gives the exact skill for ~97% of them.
+    """
+    needed = [era / f for f in ("SkillLineAbility.csv", "SpellEffect.csv", "trainer_spells.csv")]
+    if not all(path.exists() for path in needed):
+        return {}
+    taught_by: dict[int, set[int]] = {}
+    for row in read_csv(era / "SpellEffect.csv"):
+        if to_int(col(row, "Effect")) == EFFECT_LEARN_SPELL:
+            taught_by.setdefault(to_int(col(row, "SpellID")), set()).add(to_int(col(row, "EffectTriggerSpell")))
+    era_yellow: dict[int, int] = {}
+    for row in read_csv(era / "SkillLineAbility.csv"):
+        spell, rank = to_int(col(row, "Spell")), to_int(col(row, "TrivialSkillLineRankLow"))
+        if rank > 0:
+            era_yellow[spell] = min(rank, era_yellow.get(spell, rank))
+
+    classic: dict[int, int] = {}
+    for row in read_csv(era / "trainer_spells.csv"):
+        teach, skill_line, value = to_int(row["spell"]), to_int(row["reqskill"]), max(to_int(row["reqskillvalue"]), 1)
+        for spell in taught_by.get(teach, set()) | {teach}:
+            recipe = recipes.get(spell)
+            if recipe and skill_line in (0, recipe["prof"]):
+                classic[spell] = min(value, classic.get(spell, value))
+
+    result = {}
+    for spell, value in classic.items():
+        if spell in era_yellow and yellow.get(spell):
+            result[spell] = max(1, min(value + yellow[spell] - era_yellow[spell], yellow[spell]))
+    return result
+
+
 def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
     prof_of = load_professions(src)
     names = load_spell_names(src)
@@ -296,6 +354,7 @@ def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
     items = load_items(src)
 
     recipes: dict[int, dict] = {}
+    auto_learned: set[int] = set()
     for row in read_csv(src / "SkillLineAbility.csv"):
         prof = prof_of.get(to_int(col(row, "SkillLine")))
         spell = to_int(col(row, "Spell"))
@@ -306,6 +365,8 @@ def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
         # Forever leaves MinSkillLineRank at 1 for nearly every recipe; the
         # skill where the recipe turns yellow is the usable difficulty signal.
         skill = max(to_int(col(row, "MinSkillLineRank")), to_int(col(row, "TrivialSkillLineRankLow")))
+        if to_int(col(row, "AcquireMethod")) == ACQUIRE_WITH_PROFESSION:
+            auto_learned.add(spell)
         recipe = {"prof": prof, "skill": skill, "reagents": reagents[spell]}
         out, amount = outputs.get(spell, (None, 1))
         if out:
@@ -329,6 +390,20 @@ def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
             del recipes[spell]
         else:
             seen[key] = spell
+
+    # "skill" so far is the yellow rank. Replace it with the skill the recipe
+    # is learned at: the recipe item's requirement, else 1 for recipes that
+    # come with the profession, else the trainer's.
+    yellow = {spell: r["skill"] for spell, r in recipes.items()}
+    by_item = item_learn_skills(src, recipes)
+    auto = {s: 1 for s in auto_learned if s in recipes and s not in by_item}
+    by_trainer = {s: v for s, v in trainer_learn_skills(src / "era", recipes, yellow).items()
+                  if s not in by_item and s not in auto}
+    for spell, skill in (by_trainer | auto | by_item).items():
+        recipes[spell]["skill"] = skill
+    rest = len(recipes) - len(by_item) - len(auto) - len(by_trainer)
+    print(f"learn skill: {len(by_item)} from recipe items, {len(auto)} with the profession, "
+          f"{len(by_trainer)} from trainers, {rest} left at the yellow rank")
 
     index: dict[int, dict] = {}
     for spell, recipe in recipes.items():
@@ -775,8 +850,10 @@ def header(version: str) -> list[str]:
     ]
 
 
-def write_recipes(recipes: dict[int, dict], build_id: str, version: str) -> None:
+def write_recipes(recipes: dict[int, dict], build_id: str, version: str, trainer_source: str = "") -> None:
     lines = header(version)
+    if trainer_source:
+        lines.insert(2, f"-- Trainer skill requirements: CMaNGOS classic-db {trainer_source} (github.com/cmangos/classic-db, GPL-3.0).")
     lines.append(f'ns.DATA_BUILD = "{build_id}"')
     lines.append(f"ns.MAX_SKILL = {max((r['skill'] for r in recipes.values()), default=0)}")
     lines.append("")
@@ -881,7 +958,13 @@ def main() -> int:
 
     recipes, index = build(src)
     OUT_DIR.mkdir(exist_ok=True)
-    write_recipes(recipes, build_id, version)
+    era_source = src / "era" / "source.txt"
+    trainer_source = ""
+    if era_source.exists():
+        for line in era_source.read_text(encoding="utf-8").splitlines():
+            if line.startswith("cmangos/classic-db "):
+                trainer_source = line.split()[1]
+    write_recipes(recipes, build_id, version, trainer_source)
     write_reagents(index, version)
     sources = build_sources(src, recipes)
     write_sources(sources, version)

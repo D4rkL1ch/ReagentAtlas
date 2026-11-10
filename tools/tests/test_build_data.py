@@ -205,6 +205,42 @@ class Chains(unittest.TestCase):
             self.assertEqual(b.conversion_recipes(Path(tmp), recipes, names), {1, 4})
 
 
+class LearnSkills(unittest.TestCase):
+    def era(self, tmp):
+        era = Path(tmp)
+        era.joinpath("SpellEffect.csv").write_text(
+            "SpellID,Effect,EffectTriggerSpell\n3814,36,3813\n9001,36,9000\n", encoding="utf-8")
+        era.joinpath("SkillLineAbility.csv").write_text(
+            "Spell,TrivialSkillLineRankLow\n3813,170\n9000,100\n7000,60\n", encoding="utf-8")
+        era.joinpath("trainer_spells.csv").write_text(
+            "spell,reqskill,reqskillvalue\n3814,197,150\n3814,197,160\n9001,164,80\n7000,0,0\n8000,197,50\n",
+            encoding="utf-8")
+        return era
+
+    def test_trainer_skill_follows_forever_rebalance(self):
+        recipes = {3813: {"prof": 197}, 9000: {"prof": 197}, 7000: {"prof": 185}, 8000: {"prof": 197}}
+        yellow = {3813: 145, 9000: 100, 7000: 60, 8000: 70}
+        with tempfile.TemporaryDirectory() as tmp:
+            result = b.trainer_learn_skills(self.era(tmp), recipes, yellow)
+        # 3813: lowest trainer value, moved by Forever's yellow shift (170 -> 145).
+        # 9000: trainer is for another profession. 7000: taught directly, 0 means 1.
+        # 8000: no Classic Era rank to shift from.
+        self.assertEqual(result, {3813: 125, 7000: 1})
+
+    def test_trainer_skill_never_above_yellow(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result = b.trainer_learn_skills(self.era(tmp), {3813: {"prof": 197}}, {3813: 160})
+        self.assertEqual(result, {3813: 140})
+        with tempfile.TemporaryDirectory() as tmp:
+            era = self.era(tmp)
+            era.joinpath("SkillLineAbility.csv").write_text("Spell,TrivialSkillLineRankLow\n3813,140\n", encoding="utf-8")
+            self.assertEqual(b.trainer_learn_skills(era, {3813: {"prof": 197}}, {3813: 145}), {3813: 145})
+
+    def test_missing_era_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertEqual(b.trainer_learn_skills(Path(tmp), {1: {"prof": 197}}, {1: 50}), {})
+
+
 class LuaOutput(unittest.TestCase):
     def test_strings_are_escaped(self):
         self.assertEqual(b.lua_str('a"b\\c'), '"a\\"b\\\\c"')
