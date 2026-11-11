@@ -1,8 +1,11 @@
 name: Release
 
 # Push a version tag (e.g. 0.1.0, or 0.2.0-beta1 for a beta) to build the zip,
-# publish a GitHub release and, once X-Wago-ID is in the TOC and the
-# WAGO_API_TOKEN secret is set, upload it to Wago.
+# publish a GitHub release and upload it to:
+#   - Wago, when X-Wago-ID is in the TOC and the WAGO_API_TOKEN secret is set;
+#   - CurseForge, when X-Curse-Project-ID is in the TOC and the CF_API_KEY
+#     secret is set.
+# A site whose ID or secret is missing is skipped.
 on:
   push:
     tags:
@@ -24,3 +27,4 @@ jobs:
         env:
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
           WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
