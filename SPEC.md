@@ -300,7 +300,7 @@ Build in five phases; each ends with an in-game check (`/reload`, BugSack shows 
 - [x] World map pins sit just above Blizzard's super-tracked quest pin level (`GetPinFrameLevelsManager():GetValidFrameLevel("PIN_FRAME_LEVEL_SUPER_TRACKED_QUEST")`, Blizzard pins start at 2000), so quest markers no longer hide them and the player arrow stays on top. Confirmed in-game (Nov 11).
 - [ ] Loot map: confirm in-game that `GetLootSourceInfo` exists and returns `Creature-…` / `GameObject-…` GUIDs (without it, sources are just missing), that `GetPlayerMapPosition` gives positions outdoors, that `UNIT_SPELLCAST_SENT` names gathering nodes, that pins sit above the map art (frame level) and keep their size when zooming, and that the Map button opens the map (`C_Map.OpenWorldMap` is marked restricted). World map and minimap pins confirmed working in-game (Nov 9, ElvUI minimap). Group loot rolls may count an item whose slot was cleared for a roll you didn't win.
 - [x] Waylaid Crates: the crate tooltip shows the fill block alongside ElvUI and Auctionator, and the bundles match the crate's own "Fill the crate with any bundle" list. Confirmed in-game (Nov 11).
-- [ ] Waylaid Crates: can a 40-count bundle (more than one stack) be filled?
+- [x] Waylaid Crates: a 40-count bundle (more than one stack) fills: target a stack of the reagent and the crate takes the whole bundle. Confirmed in-game (Nov 11).
 - [ ] Heuristic weights are guesses until the live economy settles after launch; plan a tuning pass a few weeks in.
 - [ ] Name for the addon: "Reagent Atlas" is a working title.
 
