@@ -1,9 +1,7 @@
 # Reagent Atlas
 
-## 0.2.2
+## 0.3.0
 
-- Fixed: recipe skill levels showed the skill where a recipe turns yellow instead of the skill you need to learn it, so many were 5 to 45 points too high. Recipes taught by a recipe item now show the item's requirement.
-- Fixed: recipes learned from a profession trainer now show the skill the trainer requires (for example, Small Silk Pack now reads Tailoring 125 instead of 145). These come from Classic trainer data adjusted to Forever's skill levels.
-- Fixed: starter recipes you get when you learn a profession now show skill 1.
-- Fixed: the "learnable" filter in the crafting browser now includes recipes you can already learn, instead of waiting until they would turn yellow.
-- Reagent tiers can shift slightly, since they weigh how high-level the recipes using a reagent are.
+- New: Waylaid Crate tooltips show what each bundle that fills the crate costs (for example 20 Peacebloom or 10 Mageroyal), cheapest first, and how many of each reagent you own across your characters. Costs use the vendor price when vendors sell the reagent cheaper, otherwise the current Auctionator price. Hold Shift to see every bundle, with price ages and vendor prices marked. Without Auctionator only vendor prices show.
+- Changed: raw materials with a real use are now at least Common instead of Vendor: reagents that fill a Waylaid Crate, and ores, hides and cloth that turn into widely used bars, leather or bolts (Copper Ore, Tin Ore, Light Hide...).
+- Fixed: loot map pins on the world map no longer hide under quest markers. The player arrow still stays on top.
