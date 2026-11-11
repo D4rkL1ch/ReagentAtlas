@@ -241,6 +241,35 @@ class LearnSkills(unittest.TestCase):
             self.assertEqual(b.trainer_learn_skills(Path(tmp), {1: {"prof": 197}}, {1: 50}), {})
 
 
+class Crates(unittest.TestCase):
+    def write(self, tmp, bundles):
+        src = Path(tmp)
+        src.joinpath("ItemSparse.csv").write_text(
+            "ID,Display_lang\n248682,Waylaid Crate: Apprentice Herbs\n2447,Peacebloom\n765,Silverleaf\n", encoding="utf-8")
+        src.joinpath("ItemEffect.csv").write_text("ID,SpellID\n5,1247426\n", encoding="utf-8")
+        src.joinpath("ItemXItemEffect.csv").write_text("ID,ItemEffectID,ItemID\n1,5,248682\n", encoding="utf-8")
+        src.joinpath("SpellEffect.csv").write_text(
+            "ID,EffectIndex,Effect,EffectBasePointsF,SpellID\n"
+            "1,0,295,0,1247426\n1,3,3,10,1247426\n2,2,3,20,1247426\n", encoding="utf-8")
+        path = src / "crate_bundles.csv"
+        path.write_text("crateID,itemID,count,name\n" + bundles, encoding="utf-8")
+        return src, path
+
+    def test_matching_list_in_effect_order(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            src, path = self.write(tmp, "248682,2447,20,Peacebloom\n248682,765,10,Silverleaf\n")
+            self.assertEqual(b.load_crates(src, path), {248682: [(2447, 20), (765, 10)]})
+
+    def test_wrong_count_or_name_stops_the_build(self):
+        for bundles in ("248682,2447,10,Peacebloom\n248682,765,20,Silverleaf\n",
+                        "248682,2447,20,Peacebloom\n248682,765,10,Mageroyal\n",
+                        ""):
+            with tempfile.TemporaryDirectory() as tmp:
+                src, path = self.write(tmp, bundles)
+                with self.assertRaises(SystemExit):
+                    b.load_crates(src, path)
+
+
 class LuaOutput(unittest.TestCase):
     def test_strings_are_escaped(self):
         self.assertEqual(b.lua_str('a"b\\c'), '"a\\"b\\\\c"')

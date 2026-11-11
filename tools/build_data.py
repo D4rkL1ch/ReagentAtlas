@@ -27,6 +27,10 @@ tools/spell_reagents.csv): columns itemID, class, note; "-CLASS" removes.
 Vendor-sold reagents come from vendor_reagents.csv (source dir if present, else
 tools/vendor_reagents.csv), maintained by hand: columns itemID, name.
 
+Waylaid Crate bundles come from tools/crate_bundles.csv (crateID, itemID,
+count, name), maintained by hand and checked against the client's counts and
+item names; it writes Data/Crates.lua.
+
 Recipe sources need Item.csv, ItemEffect.csv, ItemXItemEffect.csv, Faction.csv
 and AreaTable.csv plus QuestieDB's Forever tables in <src>/questie/ and their
 correction layers in <src>/questie/corrections/ (all fetched by fetch_db2.py).
@@ -88,6 +92,8 @@ EXCLUDED_CLASS_LINES = {2851}
 
 EFFECT_CREATE_ITEM = 24
 EFFECT_LEARN_SPELL = 36
+EFFECT_DUMMY = 3
+CRATE_PREFIX = "Waylaid Crate: "
 ITEM_CLASS_RECIPE = 9
 ACQUIRE_WITH_PROFESSION = 1  # SkillLineAbility.AcquireMethod: learned with the profession
 ITEM_LEATHER = (7, 6)   # Trade Goods: Leather (class, subclass)
@@ -455,6 +461,69 @@ def build(src: Path) -> tuple[dict[int, dict], dict[int, dict]]:
         entry["deep"] = chains[item]
 
     return recipes, index
+
+
+# Waylaid Crates --------------------------------------------------------------
+
+def load_crates(src: Path, path: Path) -> dict[int, list[tuple[int, int]]] | None:
+    """Crate itemID -> bundles [(reagent itemID, count)], in the client's order.
+
+    Which reagent goes with which bundle is server data, so crate_bundles.csv
+    pairs them by hand. The client does hold each bundle's count: one Dummy
+    effect per bundle on the crate's "Stock Crate" use spell. The list is
+    checked against those counts, in effect order, and against item names, so
+    a patch that changes a crate stops the build instead of shipping wrong
+    counts. Returns None when the client tables are missing (sample data).
+    """
+    needed = ["ItemEffect.csv", "ItemXItemEffect.csv", "ItemSparse.csv", "SpellEffect.csv"]
+    if not path.exists() or not all((src / name).exists() for name in needed):
+        return None
+
+    bundles: dict[int, list[tuple[int, int]]] = {}
+    for row in read_csv(path):
+        bundles.setdefault(to_int(row["crateID"]), []).append((to_int(row["itemID"]), to_int(row["count"])))
+    listed_names = {to_int(r["itemID"]): r["name"] for r in read_csv(path)}
+
+    item_names = {to_int(r["ID"]): col(r, "Display_lang") for r in read_csv(src / "ItemSparse.csv")}
+    effect_spell = {to_int(r["ID"]): to_int(col(r, "SpellID")) for r in read_csv(src / "ItemEffect.csv")}
+    use_spell: dict[int, int] = {}
+    for row in read_csv(src / "ItemXItemEffect.csv"):
+        use_spell.setdefault(to_int(col(row, "ItemID")), effect_spell.get(to_int(col(row, "ItemEffectID")), 0))
+    dummies: dict[int, list[tuple[int, int]]] = {}
+    for row in read_csv(src / "SpellEffect.csv"):
+        if to_int(col(row, "Effect")) == EFFECT_DUMMY:
+            count = int(float(col(row, "EffectBasePointsF") or 0))
+            dummies.setdefault(to_int(col(row, "SpellID")), []).append((to_int(col(row, "EffectIndex")), count))
+
+    errors = []
+    for item, name in item_names.items():
+        if name.startswith(CRATE_PREFIX) and item not in bundles:
+            errors.append(f"{item} {name}: not in {path.name}")
+    for crate, listed in bundles.items():
+        name = item_names.get(crate, "")
+        if not name.startswith(CRATE_PREFIX):
+            errors.append(f"{crate}: not a Waylaid Crate in this build ({name or 'missing'})")
+            continue
+        client = [count for _, count in sorted(dummies.get(use_spell.get(crate, 0), []))]
+        if [count for _, count in listed] != client:
+            errors.append(f"{crate} {name}: counts {[c for _, c in listed]} in {path.name}, client has {client}")
+        for reagent, _ in listed:
+            if item_names.get(reagent) != listed_names[reagent]:
+                errors.append(f"{crate}: item {reagent} is {item_names.get(reagent)!r}, listed as {listed_names[reagent]!r}")
+    if errors:
+        raise SystemExit("crate_bundles.csv does not match the client data:\n  " + "\n  ".join(errors))
+    return bundles
+
+
+def write_crates(crates: dict[int, list[tuple[int, int]]] | None, version: str) -> None:
+    lines = header(version)
+    lines.append("-- Waylaid Crates: crate itemID -> bundles { reagent itemID, count }; fill with any one.")
+    lines.append("local C = {}")
+    lines.append("ns.Crates = C")
+    for crate in sorted(crates or {}):
+        bundles = ", ".join(f"{{ {item}, {count} }}" for item, count in crates[crate])
+        lines.append(f"C[{crate}] = {{ {bundles} }}")
+    (OUT_DIR / "Crates.lua").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 # Recipe sources ------------------------------------------------------------
@@ -968,7 +1037,13 @@ def main() -> int:
     write_reagents(index, version)
     sources = build_sources(src, recipes)
     write_sources(sources, version)
+    crates = load_crates(src, ROOT / "tools" / "crate_bundles.csv")
+    write_crates(crates, version)
     print(f"build {version}: {len(recipes)} recipes, {len(index)} reagents -> {OUT_DIR}")
+    if crates is None:
+        print("crates: input files missing, Data/Crates.lua left empty")
+    else:
+        print(f"crates: {len(crates)} Waylaid Crates, {sum(len(b) for b in crates.values())} bundles")
     if sources:
         named = sum(1 for e in sources[0].values() if {"v", "q", "d", "dn", "o"} & e.keys())
         print(f"sources: {len(sources[0])} recipes with a recipe item, {named} with a named source")

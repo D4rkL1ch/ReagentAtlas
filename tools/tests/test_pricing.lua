@@ -170,3 +170,93 @@ test("FormatMoney text fallback", function()
 	eq(P:FormatMoney(10000), "1g", "gold")
 	eq(P:FormatMoney(10203), "1g 2s 3c", "mixed")
 end)
+
+-- Waylaid Crates ------------------------------------------------------------
+
+local CRATE = 800001
+
+-- Fixture data plus one crate: 20x A, 10x B, 5x C (vendor-sold), 4x D.
+local function bootCrate()
+	local ns = T.boot(nil, function(ns)
+		T.useFixture(ns)
+		ns.Crates = { [CRATE] = { { 700001, 20 }, { 700002, 10 }, { 700003, 5 }, { 700004, 4 } } }
+		ns.Reagents[700003] = { r = {}, q = 1, sell = 10, vendor = true, buy = 50 }
+	end)
+	stubs.itemNames[700001], stubs.itemNames[700002] = "Herb A", "Herb B"
+	stubs.itemNames[700003], stubs.itemNames[700004] = "Thread C", "Shard D"
+	return ns
+end
+
+local function crateTooltip(ns, expanded)
+	local tt = stubs.newTooltip()
+	eq(ns.Tooltip:AddItemLines(tt, CRATE, expanded), true, "crate annotated")
+	return tt:Text()
+end
+
+test("crate options: cheapest first, vendor price when lower, unpriced last", function()
+	fakeAuctionator({ [700001] = 100, [700002] = 150, [700003] = 80 }, { [700002] = 2 })
+	local ns = bootCrate()
+	ns.db.account.bank = { [700004] = 9 }
+	local options = ns.Pricing:GetCrateOptions(CRATE)
+	eq(#options, 4, "all bundles")
+	eq(options[1].itemID, 700003, "vendor 5x50 = 250 first")
+	eq(options[1].cost, 250, "vendor cost")
+	eq(options[1].vendor, true, "vendor flag")
+	eq(options[2].itemID, 700002, "10x150 = 1500")
+	eq(options[2].age, 2, "age kept")
+	eq(options[3].itemID, 700001, "20x100 = 2000")
+	eq(options[4].itemID, 700004, "no price last")
+	eq(options[4].cost, nil, "unpriced")
+	eq(options[4].have, 9, "owned count")
+	eq(ns.Pricing:GetCrateOptions(12359), nil, "not a crate")
+end)
+
+test("crate options: AH cheaper than vendor wins; stale prices are unpriced", function()
+	fakeAuctionator({ [700003] = 20, [700001] = 5 }, { [700001] = 9 })
+	local ns = bootCrate()
+	local options = ns.Pricing:GetCrateOptions(CRATE)
+	eq(options[1].itemID, 700003, "AH 5x20")
+	eq(options[1].cost, 100, "AH cost")
+	eq(options[1].vendor, nil, "not vendor")
+	eq(options[2].cost, nil, "stale price ignored")
+end)
+
+test("crate tooltip: top 3 collapsed, all with Shift", function()
+	fakeAuctionator({ [700001] = 100, [700002] = 150 }, { [700002] = 2 })
+	local ns = bootCrate()
+	ns.db.account.bank = { [700001] = 32 }
+	local text = crateTooltip(ns, false)
+	contains(text, "Reagent Atlas: Fill with any one, cheapest first", "header")
+	contains(text, "5x Thread C | 2s 50c", "vendor first, no note collapsed")
+	contains(text, "10x Herb B | 15s\n", "no age collapsed")
+	contains(text, "20x Herb A (have 32) | 20s", "owned count")
+	contains(text, "1 more · Hold Shift for all", "more hint")
+	eq(text:find("Shard D", 1, true), nil, "4th hidden")
+	text = crateTooltip(ns, true)
+	contains(text, "5x Thread C | 2s 50c (vendor)", "vendor note")
+	contains(text, "10x Herb B | 15s (2 days old)", "age")
+	contains(text, "4x Shard D | no price", "unpriced")
+	eq(text:find("Hold Shift", 1, true), nil, "no hint expanded")
+	eq(#stubs.errors, 0, "no errors")
+end)
+
+test("crate tooltip without Auctionator: vendor prices only, with a note", function()
+	local ns = bootCrate()
+	local text = crateTooltip(ns, true)
+	contains(text, "5x Thread C | 2s 50c (vendor)", "vendor priced")
+	contains(text, "20x Herb A | no price", "no AH price")
+	contains(text, "Auction prices need Auctionator", "note")
+end)
+
+test("real data: every crate renders and its reagents have names in the data", function()
+	local ns = T.boot(nil)
+	local crates = 0
+	for crateID, bundles in pairs(ns.Crates) do
+		crates = crates + 1
+		eq(#bundles >= 2, true, "bundles of " .. crateID)
+		local tt = stubs.newTooltip()
+		eq(ns.Tooltip:AddItemLines(tt, crateID, true), true, "renders " .. crateID)
+	end
+	if ns.DATA_BUILD ~= "sample" then eq(crates, 30, "crate count") end
+	eq(#stubs.errors, 0, "no errors")
+end)

@@ -8,7 +8,9 @@ local MapPins = ns:RegisterModule("MapPins", {})
 local PIN_SIZE = 14       -- on screen, at a single loot
 local PIN_GROWTH = 8      -- extra size for the most looted spots
 local MAX_TOOLTIP_ITEMS = 6
-local FRAME_LEVEL = 500   -- above the map art, below Blizzard's dialogs
+local FRAME_LEVEL = 500   -- fallback: above the map art, below Blizzard's dialogs
+-- Pins are children of the holder, one level above it.
+local PIN_LEVEL_BELOW = "PIN_FRAME_LEVEL_SUPER_TRACKED_QUEST"
 
 local provider, holder
 local pins = {}
@@ -148,6 +150,19 @@ local function QueueRefresh()
 	end)
 end
 
+-- Blizzard's pins take absolute frame levels from 2000 up (quest markers,
+-- then the player arrow on top). Pins go just above the super-tracked quest,
+-- so quest markers don't hide them but the player arrow still does; clicks
+-- go through to the quest pin. Without the manager, a fixed offset.
+local function HolderLevel(canvas)
+	local manager = WorldMapFrame.GetPinFrameLevelsManager and WorldMapFrame:GetPinFrameLevelsManager()
+	if manager and manager.GetValidFrameLevel then
+		local ok, level = pcall(manager.GetValidFrameLevel, manager, PIN_LEVEL_BELOW)
+		if ok and type(level) == "number" then return level end
+	end
+	return canvas:GetFrameLevel() + FRAME_LEVEL
+end
+
 local function Attach()
 	if provider or not (WorldMapFrame and WorldMapFrame.AddDataProvider and MapCanvasDataProviderMixin
 		and CreateFromMixins) then
@@ -162,7 +177,7 @@ local function Attach()
 	local canvas = WorldMapFrame:GetCanvas()
 	holder = CreateFrame("Frame", nil, canvas)
 	holder:SetAllPoints(canvas)
-	holder:SetFrameLevel(canvas:GetFrameLevel() + FRAME_LEVEL)
+	holder:SetFrameLevel(HolderLevel(canvas))
 end
 
 function MapPins:IsAttached()

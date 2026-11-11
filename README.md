@@ -15,6 +15,8 @@ A browser window (`/ratlas`) lists every reagent in the game with filters for pr
 
 A tracking list (`/ratlas track`, or the button in the browser) follows recipes and reagents: how many of each reagent you have and need, and where to get a recipe you don't know yet. Set a goal and you get a message and a sound when you have enough. Its shopping list adds up all your tracked recipes: what's still to get, what to craft first, and who can craft it.
 
+Hover a Waylaid Crate and it lists the bundles that fill it, cheapest first, with what each costs at the vendor or auction house and how many you already own.
+
 A loot map remembers where you looted each reagent and what dropped it: the mob, the herb or ore node, or fishing. Tracked and selected reagents show as pins on the world map and the minimap, so you can find your way back to the spot.
 
 Reagent Atlas only displays information. It never loots, sells, posts or scans for you.

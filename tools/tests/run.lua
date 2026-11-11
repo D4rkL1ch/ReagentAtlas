@@ -74,6 +74,7 @@ function T.useFixture(ns)
 	ns.DATA_BUILD = "99999"
 	-- No sources by default, so layout tests stay independent of them.
 	ns.RecipeSources, ns.SourceNPCs = nil, nil
+	ns.Crates = {} -- real crates would lift fixture items such as Linen Cloth
 end
 
 for _, file in ipairs({ "test_core.lua", "test_valuation.lua", "test_tooltip.lua", "test_characters.lua", "test_pricing.lua", "test_ui.lua", "test_crafting.lua", "test_sources.lua", "test_tracker.lua", "test_lootalert.lua", "test_lootmap.lua", "test_efficiency.lua", "test_data.lua" }) do

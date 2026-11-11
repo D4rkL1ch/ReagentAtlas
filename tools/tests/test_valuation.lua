@@ -147,3 +147,13 @@ test("skill scales against MAX_SKILL from the data", function()
 	ns.MAX_SKILL = nil -- older data without the constant falls back to 300
 	near(ns.Valuation:GetInfo(12359).score, 260 / 300 * 35 + demand(1) + 5, "fallback")
 end)
+
+test("real data: crate reagents and smelted/cured materials are at least Common", function()
+	local ns = T.boot(nil)
+	if ns.DATA_BUILD == "sample" then return end
+	local V = ns.Valuation
+	eq(V:GetInfo(2770).tier, V.TIER_COMMON, "Copper Ore: smelted into Copper Bar")
+	eq(V:GetInfo(2771).tier, V.TIER_COMMON, "Tin Ore: fills a crate")
+	eq(V:GetInfo(783).tier, V.TIER_COMMON, "Light Hide: cured into Cured Light Hide")
+	eq(V:GetInfo(2672).tier, V.TIER_VENDOR, "Stringy Wolf Meat stays Vendor")
+end)

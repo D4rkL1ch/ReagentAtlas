@@ -15,6 +15,8 @@ Valuation.WEIGHTS = {
 	multiProfession = 5,  -- used in 2+ professions
 	ownQuality = { [2] = 10, [3] = 15, [4] = 20 }, -- the reagent's own quality (4 = epic and up)
 	spellMinTier = 2,     -- spell reagents are at least Common
+	materialMinTier = 2,  -- at least Common: fills a Waylaid Crate, or is smelted/cured/woven...
+	materialMinUses = 10, -- ...into a reagent at least this many recipes use (conversions don't count)
 	vendorMaxTier = 2,    -- vendor-sold reagents are capped at Common
 	priceRaiseFactor = 5, -- a fresh AH price this many times the vendor price...
 	priceRaiseMin = 10000, -- ...and at least this much (copper) raises the tier one step
@@ -53,6 +55,27 @@ end
 
 -- Static data never changes in a session, so results are cached per item.
 local cache = {}
+
+local crateReagents -- itemID -> true, built on first use
+
+-- A raw material with a real use despite a low score: Copper Ore feeds one
+-- recipe (Smelt Copper) and few high-end ones, but Copper Bar is everywhere.
+local function IsMaterial(itemID, entry)
+	if not crateReagents then
+		crateReagents = {}
+		for _, bundles in pairs(ns.Crates or {}) do
+			for _, bundle in ipairs(bundles) do crateReagents[bundle[1]] = true end
+		end
+	end
+	if crateReagents[itemID] then return true end
+	local minUses = Valuation.WEIGHTS.materialMinUses
+	for _, recipeID in ipairs(entry.r) do
+		local recipe = ns.Recipes[recipeID]
+		local output = recipe and not recipe.conv and recipe.out and ns.Reagents[recipe.out]
+		if output and #output.r >= minUses then return true end
+	end
+	return false
+end
 
 local function Analyze(itemID)
 	local entry = ns.Reagents and ns.Reagents[itemID]
@@ -120,6 +143,9 @@ local function Analyze(itemID)
 	if spell and tier < W.spellMinTier then
 		tier = W.spellMinTier
 	end
+	if tier < W.materialMinTier and IsMaterial(itemID, entry) then
+		tier = W.materialMinTier
+	end
 	if entry.vendor and tier > W.vendorMaxTier then
 		tier = W.vendorMaxTier
 	end
@@ -155,6 +181,7 @@ end
 
 function Valuation:ClearCache()
 	wipe(cache)
+	crateReagents = nil
 end
 
 -- The data tier adjusted by an auction price (copper, or nil). Vendor-sold

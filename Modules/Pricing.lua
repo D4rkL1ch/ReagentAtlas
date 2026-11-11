@@ -91,6 +91,44 @@ local function ReagentCost(itemID, cache)
 	return vendor or ah
 end
 
+-- Cheapest first; options without a price last, most owned first, then in
+-- the crate's own order.
+local function ByCost(a, b)
+	if (a.cost ~= nil) ~= (b.cost ~= nil) then return a.cost ~= nil end
+	if a.cost and a.cost ~= b.cost then return a.cost < b.cost end
+	if not a.cost and a.have ~= b.have then return a.have > b.have end
+	return a.order < b.order
+end
+
+-- Ways to fill a Waylaid Crate (any one bundle), cheapest first, or nil if
+-- the item isn't one. Each option:
+--   itemID, count  the bundle
+--   cost    copper to buy the whole bundle; nil without a fresh price
+--   vendor  true when the cost is the vendor price
+--   age     days since Auctionator saw the AH price used, when known
+--   have    owned across the account
+--   order   position in the crate's own list
+function Pricing:GetCrateOptions(crateID)
+	local bundles = ns.Crates and ns.Crates[crateID]
+	if not bundles then return nil end
+	local options = {}
+	for i, bundle in ipairs(bundles) do
+		local itemID, count = bundle[1], bundle[2]
+		local reagent = ns.Reagents[itemID]
+		local vendor = reagent and reagent.buy
+		local ah, age = self:GetPrice(itemID)
+		local option = { itemID = itemID, count = count, have = ns.Inventory:GetTotal(itemID), order = i }
+		if vendor and not (ah and ah < vendor) then
+			option.cost, option.vendor = vendor * count, true
+		elseif ah then
+			option.cost, option.age = ah * count, age
+		end
+		options[i] = option
+	end
+	table.sort(options, ByCost)
+	return options
+end
+
 -- Value of one craft, in copper:
 --   cost      all reagents, nil unless every one has a price
 --   unpriced  how many reagents have none

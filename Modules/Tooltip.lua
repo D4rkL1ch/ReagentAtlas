@@ -5,6 +5,7 @@ local Tooltip = ns:RegisterModule("Tooltip", {})
 local MAX_COLLAPSED_PROFS = 2   -- professions named on the "Used in" line
 local MAX_EXPANDED_RECIPES = 30 -- recipe lines in the Shift view before "and N more"
 local MAX_NAMES = 3             -- character names listed before "+N"
+local MAX_COLLAPSED_BUNDLES = 3 -- Waylaid Crate fill options before "Hold Shift"
 local POISONS = 40              -- a class skill: rogues have it without a profession entry
 
 -- The default font has no check mark glyph; use the ready-check texture.
@@ -66,17 +67,19 @@ end
 
 -- Rendering -----------------------------------------------------------------
 
+-- " (3 days old)" from one day on, else "".
+local function AgeText(age)
+	if not age or age < 1 then return "" end
+	return age == 1 and " (1 day old)" or (" (%d days old)"):format(age)
+end
+
 -- "Reagent Atlas: Valuable · AH 1s 20c (3 days old)"; the tier includes the
 -- auction price adjustment when Auctionator has a fresh price.
 local function AddTierLine(tooltip, info)
 	local tier, price, age = ns.Valuation:GetTier(info.itemID)
 	local text = ns.Valuation:ColorTier(tier, "Reagent Atlas: " .. ns.Valuation:GetTierName(tier))
 	if price then
-		local priceText = "· AH " .. ns.Pricing:FormatMoney(price)
-		if age and age >= 1 then
-			priceText = priceText .. (age == 1 and " (1 day old)" or (" (%d days old)"):format(age))
-		end
-		text = text .. " " .. Color(priceText, COLOR_TEXT)
+		text = text .. " " .. Color("· AH " .. ns.Pricing:FormatMoney(price) .. AgeText(age), COLOR_TEXT)
 	end
 	tooltip:AddLine(text)
 end
@@ -388,10 +391,50 @@ local function AddRecipeSections(tooltip, crafted, taught, expanded)
 	end
 end
 
+-- Waylaid Crates ------------------------------------------------------------
+
+-- "20x Peacebloom (have 32)    1g 20s", cheapest first; Shift lists every
+-- bundle with price ages and vendor prices marked.
+local function AddCrateLines(tooltip, options, expanded)
+	tooltip:AddLine(Color("Reagent Atlas: Fill with any one, cheapest first", COLOR_HEADER))
+	local shown = expanded and #options or math.min(#options, MAX_COLLAPSED_BUNDLES)
+	for i = 1, shown do
+		local option = options[i]
+		local name = ns.Browser:GetItemName(option.itemID) or ("Item #" .. option.itemID)
+		local left = ("%dx %s"):format(option.count, name)
+		if option.have > 0 then
+			left = left .. (" (have %d)"):format(option.have)
+		end
+		local right
+		if option.cost then
+			right = ns.Pricing:FormatMoney(option.cost)
+			if expanded then
+				right = right .. (option.vendor and " (vendor)" or AgeText(option.age))
+			end
+			right = Color(right, COLOR_TEXT)
+		else
+			right = Color("no price", COLOR_HINT)
+		end
+		tooltip:AddDoubleLine(Color(left, i == 1 and option.cost and COLOR_YOURS or COLOR_TEXT), right)
+	end
+	if shown < #options then
+		tooltip:AddLine(Color(("%d more · Hold Shift for all"):format(#options - shown), COLOR_HINT))
+	end
+	if not ns.Pricing:IsEnabled() then
+		tooltip:AddLine(Color("Auction prices need Auctionator", COLOR_HINT))
+	end
+end
+
 -- Builds the Reagent Atlas section for an item. Separate from the hook so it
 -- can be tested and reused (e.g. by the browser detail pane). An item can be
 -- both crafted and a reagent, so the sections stack.
 function Tooltip:AddItemLines(tooltip, itemID, expanded)
+	local crate = ns.Pricing:GetCrateOptions(itemID)
+	if crate then
+		tooltip:AddLine(" ")
+		AddCrateLines(tooltip, crate, expanded)
+		return true
+	end
 	local info = ns.Valuation:GetInfo(itemID)
 	local crafted, taught = self:GetRecipesFor(itemID)
 	local hasRecipes = #crafted > 0 or #taught > 0
