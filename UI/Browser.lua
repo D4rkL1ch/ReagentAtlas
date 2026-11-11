@@ -580,10 +580,25 @@ local function CreateDetail(parent)
 	d.Map:SetSize(50, 22)
 	d.Map:SetPoint("RIGHT", d.Track, "LEFT", -4, 0)
 	d.Map:SetText("Map")
-	d.Map:SetScript("OnClick", function() ns.LootMap:ShowOnMap(selected) end)
+	d.Map:SetScript("OnClick", function(self)
+		if ns.LootMap:GetFocus() == selected then
+			ns.LootMap:SetFocus(nil)
+		else
+			ns.LootMap:ShowOnMap(selected)
+		end
+		self:SetText(ns.LootMap:GetFocus() == selected and "Hide" or "Map")
+		if GameTooltip:IsOwned(self) then self:GetScript("OnEnter")(self) end
+	end)
 	d.Map:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_TOP")
-		GameTooltip:AddLine("Show where you looted it on the world map")
+		if ns.LootMap:GetFocus() == selected then
+			GameTooltip:AddLine("Remove its pins from the world map")
+			if ns.Tracker:Find("item", selected) then
+				GameTooltip:AddLine("Tracked items stay on the map.", 0.7, 0.7, 0.7, true)
+			end
+		else
+			GameTooltip:AddLine("Show where you looted it on the world map")
+		end
 		GameTooltip:Show()
 	end)
 	d.Map:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -668,6 +683,7 @@ local function UpdateDetail()
 	d.Where:SetText(Color("Where it is: ", COLOR_HINT) .. Color(where, COLOR_TEXT))
 	d.Looted:SetText(Color("Looted at: ", COLOR_HINT) .. Color(detail.looted or "not recorded yet", COLOR_TEXT))
 	d.Map:SetEnabled(detail.onMap)
+	d.Map:SetText(ns.LootMap:GetFocus() == detail.itemID and "Hide" or "Map")
 	d.UsedIn:SetShown(#detail.recipes > 0)
 	d.Track:SetText(ns.Tracker:Find("item", detail.itemID) and "Untrack" or "Track")
 	d.Recipes:SetDataProvider(CreateDataProvider(detail.recipes),
@@ -866,7 +882,6 @@ end
 
 function Browser:Select(itemID)
 	selected = itemID
-	ns.LootMap:SetFocus(itemID)
 	if frame and frame:IsShown() then
 		frame.List:ForEachFrame(function(button)
 			button.Selected:SetShown(button.itemID == selected)

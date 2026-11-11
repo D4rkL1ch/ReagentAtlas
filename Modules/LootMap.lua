@@ -211,7 +211,7 @@ end
 
 -- Queries -------------------------------------------------------------------
 
-local focus -- item picked in the browser, shown on the map with tracked ones
+local focus -- item sent to the map from the browser, shown with tracked ones
 
 function LootMap:SetFocus(itemID)
 	if focus == itemID then return end
