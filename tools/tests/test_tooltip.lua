@@ -120,30 +120,35 @@ test("tooltip setting off adds nothing", function()
 	eq(#tt.lines, 0, "lines")
 end)
 
-test("pressing Shift refreshes a shown tooltip", function()
+test("Shift is read when the tooltip is built", function()
 	boot()
 	local tt = stubs.newTooltip()
 	tt:SetItem(17056)
-	contains(tt:Text(), "Hold Shift", "collapsed first")
+	contains(tt:Text(), "Hold Shift", "collapsed without Shift")
 	stubs.shift = true
-	stubs.fire("MODIFIER_STATE_CHANGED", "LSHIFT", 1)
-	contains(tt:Text(), "Feathered Jerkin (285)", "expanded after Shift")
+	tt:SetItem(17056) -- the next hover, or a bag button's UpdateTooltip
+	contains(tt:Text(), "Feathered Jerkin (285)", "expanded with Shift")
 	stubs.shift = false
-	stubs.fire("MODIFIER_STATE_CHANGED", "LCTRL", 1)
-	contains(tt:Text(), "Feathered Jerkin", "Ctrl does not refresh")
-	stubs.fire("MODIFIER_STATE_CHANGED", "RSHIFT", 0)
-	contains(tt:Text(), "Hold Shift", "collapsed after release")
 end)
 
-test("hidden tooltips are not refreshed", function()
+-- RefreshData from addon code taints GameTooltip for the session (unit
+-- frames, nameplates and Settings then error on secret values).
+test("pressing Shift never refreshes tooltips from addon code", function()
 	boot()
-	local tt = stubs.newTooltip()
-	tt:SetItem(17056)
-	tt:Hide()
-	local refreshed = false
-	tt.RefreshData = function() refreshed = true end
+	local item, unit = stubs.newTooltip(), stubs.newTooltip()
+	item:SetItem(17056)
+	unit:SetItem(17056)
+	unit:SetUnit("party1")
+	local refreshed = 0
+	item.RefreshData = function() refreshed = refreshed + 1 end
+	unit.RefreshData = item.RefreshData
+	stubs.shift = true
 	stubs.fire("MODIFIER_STATE_CHANGED", "LSHIFT", 1)
-	eq(refreshed, false, "refreshed")
+	stubs.combat = true
+	stubs.fire("MODIFIER_STATE_CHANGED", "RSHIFT", 0)
+	stubs.shift, stubs.combat = false, false
+	eq(refreshed, 0, "refreshed")
+	eq(unit:Text(), "party1", "unit tooltip untouched")
 end)
 
 test("Shift view caps long recipe lists", function()

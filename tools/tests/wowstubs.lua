@@ -157,11 +157,20 @@ function M.newTooltip()
 	function tt:Hide() self.shown = false end
 	function tt:SetItem(itemID)
 		self.itemID, self.shown, self.lines = itemID, true, {}
+		self.data = { type = Enum.TooltipDataType.Item, id = itemID }
 		for _, fn in ipairs(tooltipPostCalls[Enum.TooltipDataType.Item] or {}) do
-			fn(self, { id = itemID })
+			fn(self, self.data)
 		end
 	end
-	function tt:RefreshData() self:SetItem(self.itemID) end
+	-- The same tooltip reused for a unit (e.g. hovering a party frame).
+	function tt:SetUnit(unit)
+		self.itemID, self.shown, self.lines = nil, true, { unit }
+		self.data = { type = Enum.TooltipDataType.Unit }
+	end
+	function tt:RefreshData()
+		if not self.itemID then error("RefreshData on a non-item tooltip") end
+		self:SetItem(self.itemID)
+	end
 	-- Lines with color codes stripped, joined by newlines.
 	function tt:Text()
 		local out = {}
@@ -412,7 +421,7 @@ C_ClassColor = {
 	end,
 }
 
-Enum = { TooltipDataType = { Item = 0 } }
+Enum = { TooltipDataType = { Item = 0, Unit = 2 } }
 TooltipDataProcessor = {
 	AddTooltipPostCall = function(kind, fn)
 		tooltipPostCalls[kind] = tooltipPostCalls[kind] or {}

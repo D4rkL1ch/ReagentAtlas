@@ -455,28 +455,23 @@ end
 
 -- Hooks ---------------------------------------------------------------------
 
--- Tooltips we added lines to, so Shift can refresh them. Weak keys: never
--- keep a tooltip alive.
-local annotated = setmetatable({}, { __mode = "k" })
+-- Shift is read when the tooltip is built. Never call tooltip:RefreshData()
+-- to redraw it: Blizzard's rebuild then writes GameTooltip's own fields from
+-- addon code, which taints the shared tooltip for the session and breaks
+-- unit frames, nameplates and the Settings panel on secret values. Bag and
+-- merchant items redraw themselves every few frames (owner:UpdateTooltip),
+-- so Shift still updates those live; other tooltips on the next hover.
+
+local function IsSecret(value)
+	return issecretvalue ~= nil and issecretvalue(value) == true
+end
 
 local function OnItemTooltip(tooltip, data)
 	if not ns.db.settings.tooltip then return end
 	if tooltip.IsForbidden and tooltip:IsForbidden() then return end
 	local itemID = data and data.id
-	if Tooltip:AddItemLines(tooltip, itemID, IsShiftKeyDown()) then
-		annotated[tooltip] = true
-	end
-end
-
-local function OnModifierChanged(_, key)
-	if key ~= "LSHIFT" and key ~= "RSHIFT" then return end
-	for tooltip in pairs(annotated) do
-		if tooltip:IsShown() and tooltip.RefreshData then
-			tooltip:RefreshData()
-		else
-			annotated[tooltip] = nil
-		end
-	end
+	if IsSecret(itemID) then return end
+	Tooltip:AddItemLines(tooltip, itemID, IsShiftKeyDown())
 end
 
 function Tooltip:OnInit()
@@ -485,5 +480,4 @@ function Tooltip:OnInit()
 		return
 	end
 	TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, OnItemTooltip)
-	ns:RegisterEvent("MODIFIER_STATE_CHANGED", OnModifierChanged)
 end
