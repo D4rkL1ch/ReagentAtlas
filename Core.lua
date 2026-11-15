@@ -156,6 +156,7 @@ local DEFAULT_SETTINGS = {
 	lootMinTier = 5, -- Keep!
 	lootMap = true,  -- record where reagents are looted
 	mapPins = 1,     -- world map: 0 off, 1 tracked and selected, 2 everything looted
+	gatherReminder = true, -- remind when Find Herbs / Find Minerals is off
 }
 
 -- Fill missing keys from defaults without overwriting user values.

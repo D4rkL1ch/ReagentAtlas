@@ -29,6 +29,7 @@ Modules\Tooltip.lua
 Modules\BagMarkers.lua
 Modules\LootAlert.lua
 Modules\LootMap.lua
+Modules\GatherReminder.lua
 
 UI\Settings.lua
 UI\Browser.lua

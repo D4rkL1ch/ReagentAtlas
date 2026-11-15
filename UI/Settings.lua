@@ -20,6 +20,7 @@ local TOGGLES = {
 	{ "trackerSound", "Tracking list sound", "Play a sound when you have enough of something on the tracking list." },
 	{ "lootAlerts", "Loot alerts", "Announce looted recipes one of your characters could learn, and reagents at or above the minimum tier with who can craft with them." },
 	{ "lootSound", "Loot alert sound", "Play a sound with loot alerts." },
+	{ "gatherReminder", "Gathering tracking reminder", "Remind you when Find Herbs or Find Minerals is off: after login, after resurrecting, after leaving an instance, and shortly after it is switched off. Never in combat or inside instances." },
 	{ "lootMap", "Record loot locations", "Remember where reagents and recipe items were looted and what from, for the world map and the browser. Only counts per spot are kept." },
 }
 

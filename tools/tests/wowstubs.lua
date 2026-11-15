@@ -201,6 +201,15 @@ function M.reset()
 	M.accountBankViewable = true
 	M.noBankAPI = false
 	M.combat = false
+	M.dead, M.taxi, M.instance = false, false, false
+	M.tracking = {}          -- minimap tracking list: array of { name, spellID, active }
+	C_Minimap = {
+		GetNumTrackingTypes = function() return #M.tracking end,
+		GetTrackingInfo = function(i)
+			local t = M.tracking[i]
+			return t and { name = t.name, texture = 1, active = t.active or false, type = "spell", subType = 0, spellID = t.spellID }
+		end,
+	}
 	M.popup = nil
 	M.compartment = {}
 	AddonCompartmentFrame = { RegisterAddon = function(_, data) M.compartment[#M.compartment + 1] = data end }
@@ -369,6 +378,9 @@ function strsplit(sep, text)
 end
 function GetNormalizedRealmName() return "StubRealm" end
 function InCombatLockdown() return M.combat end
+function UnitIsDeadOrGhost() return M.dead end
+function UnitOnTaxi() return M.taxi end
+function IsInInstance() return M.instance, M.instance and "party" or "none" end
 function IsShiftKeyDown() return M.shift end
 function UnitClass() return M.classToken, M.classToken end
 
