@@ -65,11 +65,26 @@ test("unlearned profession is dropped, empty list never prunes", function()
 	ns.db.chars[ME].profs[197].known[990004] = true
 	stubs.professions = { { skillLine = 165, rank = 291, maxRank = 300 } }
 	stubs.fire("SKILL_LINES_CHANGED")
-	eq(ns.db.chars[ME].profs[197], nil, "Tailoring dropped")
+	eq(ns.db.chars[ME].profs[197] ~= nil, true, "one scan without it isn't enough")
 	eq(ns.db.chars[ME].profs[165].rank, 291, "rank updated")
+	stubs.runTimers() -- the confirming rescan
+	eq(ns.db.chars[ME].profs[197], nil, "Tailoring dropped")
 	stubs.professions = {}
 	stubs.fire("SKILL_LINES_CHANGED")
+	stubs.runTimers()
 	eq(ns.db.chars[ME].profs[165] ~= nil, true, "kept on empty list")
+end)
+
+test("a profession missing from one partial list keeps its recipes", function()
+	stubs.professions = { { skillLine = 165, rank = 290, maxRank = 300 }, { skillLine = 197, rank = 100, maxRank = 150 } }
+	local ns = boot()
+	ns.db.chars[ME].profs[197].known[990004] = true
+	stubs.professions = { { skillLine = 165, rank = 290, maxRank = 300 } } -- Tailoring not loaded yet
+	stubs.fire("SKILL_LINES_CHANGED")
+	stubs.professions = { { skillLine = 165, rank = 290, maxRank = 300 }, { skillLine = 197, rank = 100, maxRank = 150 } }
+	stubs.runTimers()
+	eq(ns.db.chars[ME].profs[197].known[990004], true, "recipes kept")
+	eq(#stubs.errors, 0, "no errors")
 end)
 
 test("own profession window records learned recipes", function()

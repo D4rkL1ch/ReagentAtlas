@@ -142,7 +142,9 @@ local function SafeToSell(itemID, info, tier, yours)
 	return true
 end
 
--- Rows matching the filters, best tier first, then by score and name. filters:
+-- Rows matching the filters, best tier first, then by score and name. The
+-- search is checked first: it's cheap, and every keystroke rebuilds the list,
+-- while the tier asks Auctionator. filters:
 --   search    substring of the item name, case-insensitive ("" = any)
 --   prof      skill line ID the item must be used in (0 = any)
 --   minTier   lowest tier shown (1 = all)
@@ -159,6 +161,10 @@ function Browser:BuildRows(filters)
 		if info then
 			local keep = filters.prof == 0 or (info.profCounts[filters.prof] or 0) > 0
 			local tier, owned, craftable, name
+			if keep and search ~= "" then
+				name = self:GetItemName(itemID)
+				keep = name ~= nil and name:lower():find(search, 1, true) ~= nil
+			end
 			if keep then
 				tier = ns.Valuation:GetTier(itemID)
 				keep = filters.sell or tier >= filters.minTier
@@ -172,12 +178,8 @@ function Browser:BuildRows(filters)
 				keep = (not filters.craftable or craftable > 0) and (not yours or SafeToSell(itemID, info, tier, yours))
 			end
 			if keep then
-				name = self:GetItemName(itemID)
-				keep = search == "" or (name and name:lower():find(search, 1, true) ~= nil)
-			end
-			if keep then
 				rows[#rows + 1] = {
-					itemID = itemID, name = name, quality = info.quality, score = info.score,
+					itemID = itemID, name = name or self:GetItemName(itemID), quality = info.quality, score = info.score,
 					tier = tier, owned = owned, craftable = craftable,
 				}
 			end

@@ -27,11 +27,12 @@ local TOGGLES = {
 local category
 
 -- Registers one ns.db.settings key with the Settings panel. The panel writes
--- the saved table directly; we only announce the change.
+-- the saved table directly; we only announce the change. The last argument is
+-- what the panel's Defaults button restores.
 local function Register(key, label, varType)
 	local variable = addonName .. "_" .. key
 	local setting = Settings.RegisterAddOnSetting(category, variable, key, ns.db.settings, varType, label,
-		ns.db.settings[key])
+		ns.DEFAULT_SETTINGS[key])
 	Settings.SetOnValueChangedCallback(variable, function()
 		ns:Fire("SETTINGS_CHANGED", key)
 	end)

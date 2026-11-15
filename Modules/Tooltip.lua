@@ -420,8 +420,9 @@ local function AddCrateLines(tooltip, options, expanded)
 	if shown < #options then
 		tooltip:AddLine(Color(("%d more · Hold Shift for all"):format(#options - shown), COLOR_HINT))
 	end
-	if not ns.Pricing:IsEnabled() then
-		tooltip:AddLine(Color("Auction prices need Auctionator", COLOR_HINT))
+	local unavailable = ns.Pricing:UnavailableText()
+	if unavailable then
+		tooltip:AddLine(Color(unavailable, COLOR_HINT))
 	end
 end
 

@@ -77,11 +77,12 @@ function CraftingUI:BuildRows(filters)
 	local rows = {}
 	for recipeID, recipe in pairs(ns.Recipes) do
 		if filters.prof == 0 or recipe.prof == filters.prof then
-			local known = KnownState(recipeID)
+			-- Search first: every keystroke rebuilds the list, and it's the cheapest test.
 			local itemName = recipe.out and ns.Browser:GetItemName(recipe.out)
 			local recipeName = ns.Tooltip:GetRecipeName(recipeID)
-			local keep = (not filters.known or known ~= "none")
-				and (search == "" or Matches(search, itemName) or Matches(search, recipeName))
+			local known = (search == "" or Matches(search, itemName) or Matches(search, recipeName))
+				and KnownState(recipeID)
+			local keep = known and (not filters.known or known ~= "none")
 				and (not filters.ready or ns.Tracker:HasReagents(recipeID))
 				and (not filters.learnable or CanLearn(recipeID))
 			if keep then

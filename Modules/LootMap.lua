@@ -114,17 +114,19 @@ end
 
 -- Source key of a loot slot ("npc:448", "obj:1731", "fish", "item" for
 -- containers from your bags) and a display name if one is known now.
+-- Creatures are only named from a unit showing that exact corpse: the last
+-- spell's target may be another mob or a party member (area loot). Objects
+-- take the gathering or opening cast's target, for one loot window only.
 function LootMap:GetSlotSource(slot)
 	if IsFishingLoot and IsFishingLoot() then return "fish" end
 	if not GetLootSourceInfo then return nil end
 	local ok, guid = pcall(GetLootSourceInfo, slot)
 	if not ok or type(guid) ~= "string" or IsSecret(guid) then return nil end
 	local unitType, _, _, _, _, id = strsplit("-", guid)
-	local recentCast = lastCast and GetTime() - lastCast.time <= NAME_WINDOW and lastCast.name or nil
 	if (unitType == "Creature" or unitType == "Vehicle") and tonumber(id) then
-		return "npc:" .. id, UnitNameFor(guid) or recentCast
+		return "npc:" .. id, UnitNameFor(guid)
 	elseif unitType == "GameObject" and tonumber(id) then
-		return "obj:" .. id, recentCast
+		return "obj:" .. id, lastCast and GetTime() - lastCast.time <= NAME_WINDOW and lastCast.name or nil
 	elseif unitType == "Item" then
 		return "item"
 	end
@@ -205,8 +207,10 @@ local function OnSlotCleared(_, slot)
 	LootMap:Record(entry.itemID, entry.count, entry.src, entry.mapID, entry.cell)
 end
 
+-- The cast named this window's object; it must not name the next one.
 local function OnLootClosed()
 	wipe(snapshot)
+	lastCast = nil
 end
 
 -- Queries -------------------------------------------------------------------
@@ -332,8 +336,12 @@ function LootMap:GetBestMap(itemID)
 end
 
 -- Shows the item on the world map, opened on its best map. Not in combat:
--- opening the map from addon code is restricted then.
+-- opening the map from addon code is restricted then, and nothing changes.
 function LootMap:ShowOnMap(itemID)
+	if InCombatLockdown() then
+		ns:Print("can't open the world map in combat.")
+		return false
+	end
 	self:SetFocus(itemID)
 	local mapID = self:GetBestMap(itemID)
 	if not mapID then
@@ -342,10 +350,6 @@ function LootMap:ShowOnMap(itemID)
 	end
 	if ns.db.settings.mapPins == self.SHOW_OFF then
 		ns:Print("world map pins are off (Settings > World map shows).")
-	end
-	if InCombatLockdown() then
-		ns:Print("can't open the world map in combat.")
-		return false
 	end
 	if C_Map.OpenWorldMap and pcall(C_Map.OpenWorldMap, mapID) then return true end
 	if WorldMapFrame then

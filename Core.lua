@@ -39,16 +39,22 @@ end
 
 -- Event dispatcher ----------------------------------------------------------
 -- Several handlers may listen to the same event; each receives (event, ...).
+-- A handler that errors is reported and the others still run. WoW's xpcall
+-- passes the extra arguments on, unlike plain Lua 5.1.
+
+local function Dispatch(list, name, ...)
+	local onError = geterrorhandler()
+	for i = 1, #list do
+		xpcall(list[i], onError, name, ...)
+	end
+end
 
 local eventFrame = CreateFrame("Frame")
 local handlers = {}
 
 eventFrame:SetScript("OnEvent", function(_, event, ...)
 	local list = handlers[event]
-	if not list then return end
-	for i = 1, #list do
-		list[i](event, ...)
-	end
+	if list then Dispatch(list, event, ...) end
 end)
 
 function ns:RegisterEvent(event, handler)
@@ -93,10 +99,7 @@ end
 
 function ns:Fire(message, ...)
 	local list = messageHandlers[message]
-	if not list then return end
-	for i = 1, #list do
-		list[i](message, ...)
-	end
+	if list then Dispatch(list, message, ...) end
 end
 
 -- CHAR_DATA_CHANGED carries this when only item counts changed, so listeners
@@ -158,6 +161,7 @@ local DEFAULT_SETTINGS = {
 	mapPins = 1,     -- world map: 0 off, 1 tracked and selected, 2 everything looted
 	gatherReminder = true, -- remind when Find Herbs / Find Minerals is off
 }
+ns.DEFAULT_SETTINGS = DEFAULT_SETTINGS -- the Settings panel's Defaults button; read-only
 
 -- Fill missing keys from defaults without overwriting user values.
 local function ApplyDefaults(target, defaults)

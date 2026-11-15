@@ -154,6 +154,15 @@ test("loot map: taken reagents are counted at the spot, with the mob's name", fu
 	eq(#stubs.errors, 0, "no errors")
 end)
 
+test("loot map: a creature is never named after the last spell's target", function()
+	local ns = boot()
+	stubs.now = 100
+	stubs.fire("UNIT_SPELLCAST_SENT", "player", "Bob", "Cast-1", 2061) -- a heal on a party member
+	loot({ { FEATHER, 1, npc(448) } }) -- area loot: the corpse isn't targeted
+	eq(ns.db.lootMap.names["npc:448"], nil, "no name recorded")
+	eq(ns.db.lootMap.sources[FEATHER]["npc:448"], 1, "source still counted")
+end)
+
 test("loot map: loot left in the window is not recorded", function()
 	local ns = boot()
 	loot({ { FEATHER, 1, npc(448) }, { ARCANITE, 2, npc(448) } }, { [2] = true })
@@ -177,6 +186,11 @@ test("loot map: recipe items, gathering nodes, fishing and containers", function
 	eq(store.sources[ARCANITE]["obj:1731"], 1, "node source")
 	eq(store.names["obj:1731"], "Copper Vein", "node name from the gathering cast")
 
+	stubs.now = 101 -- recent, but that cast already named its window
+	loot({ { ARCANITE, 1, obj(1733) } })
+	eq(store.names["obj:1733"], nil, "one cast names one loot window")
+
+	stubs.fire("UNIT_SPELLCAST_SENT", "player", "Copper Vein", "Cast-2", 2575)
 	stubs.now = 200 -- the cast is too old to name another object
 	loot({ { ARCANITE, 1, obj(1732) } })
 	eq(store.names["obj:1732"], nil, "stale cast not used")
@@ -280,9 +294,11 @@ test("loot map: Show on map opens the best map, not in combat", function()
 	eq(ns.LootMap:GetFocus(), FEATHER, "focused")
 
 	L.opened = nil
+	ns.LootMap:SetFocus(nil)
 	stubs.combat = true
 	eq(ns.LootMap:ShowOnMap(FEATHER), false, "combat")
 	eq(L.opened, nil, "not opened in combat")
+	eq(ns.LootMap:GetFocus(), nil, "nothing changes in combat")
 	stubs.combat = false
 	eq(ns.LootMap:ShowOnMap(ARCANITE), false, "nothing recorded")
 	contains(stubs.printed[#stubs.printed], "no looted spots", "says why")

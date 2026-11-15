@@ -3,6 +3,7 @@ local addonName, ns = ...
 local Professions = ns:RegisterModule("Professions", {})
 
 local SCAN_DELAY = 0.5 -- seconds; TRADE_SKILL_LIST_UPDATE fires in bursts
+local CONFIRM_DELAY = 3 -- seconds before a profession missing from the list is checked again
 
 -- Map a skill line (possibly a child tier line) to the top-level profession
 -- used in the generated data, or nil if it isn't one we track.
@@ -29,6 +30,10 @@ local function GetProf(char, profID)
 end
 
 -- Skill ranks ---------------------------------------------------------------
+
+-- Professions missing from the last scan: dropped only if the next scan still
+-- lacks them, so one partial list (skill data still loading) loses nothing.
+local missingOnce = {}
 
 -- Ranks come from the spellbook profession list, so they're current without
 -- opening a profession window. Professions no longer listed are dropped,
@@ -58,11 +63,21 @@ function Professions:ScanRanks()
 
 	-- An empty list may just mean skill data isn't loaded yet; never prune on it.
 	if any then
+		local missing = {}
 		for profID in pairs(char.profs) do
 			if not seen[profID] then
-				char.profs[profID] = nil
-				changed = true
+				if missingOnce[profID] then
+					char.profs[profID] = nil
+					changed = true
+				else
+					missing[profID] = true
+				end
 			end
+		end
+		missingOnce = missing
+		-- Confirm soon: another SKILL_LINES_CHANGED may not come this session.
+		if next(missing) then
+			C_Timer.After(CONFIRM_DELAY, function() Professions:ScanRanks() end)
 		end
 	end
 	-- SKILL_LINES_CHANGED also fires for weapon skills, which rise in combat.

@@ -103,7 +103,9 @@ test("skill events announce only a changed rank or profession", function()
 	stubs.professions = { { skillLine = 197, rank = 1, maxRank = 75 } }
 	stubs.fire("SKILL_LINES_CHANGED")
 	eq(fired.total, 2, "swapped profession")
+	stubs.runTimers() -- the old one is dropped once a second scan confirms it
 	eq(ns.db.chars[ME].profs[165], nil, "old one pruned")
+	eq(fired.total, 3, "announced once more for the drop")
 end)
 
 local function openLeatherworking(recipes)

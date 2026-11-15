@@ -38,7 +38,7 @@ TABLES = [
     "Item", "ItemEffect", "ItemXItemEffect", "Faction", "AreaTable",
 ]
 OUT_DIR = Path(__file__).resolve().parent / "db2"
-QUESTIEDB_COMMIT = "5fba5d86641d1a64a787884e28e15ee16b115060"
+QUESTIEDB_COMMIT = "4dbb82440a27856f8dccf57094a5d792cdc7cc9b"
 QUESTIEDB_FILES = ["foreverItemDB.lua", "foreverNpcDB.lua", "foreverQuestDB.lua"]
 # Saved by file name into tools/db2/questie/corrections/.
 QUESTIEDB_CORRECTIONS = [

@@ -248,6 +248,15 @@ test("crate tooltip without Auctionator: vendor prices only, with a note", funct
 	contains(text, "Auction prices need Auctionator", "note")
 end)
 
+test("crate tooltip says why prices are missing when Auctionator is there", function()
+	fakeAuctionator({ [700001] = 100 })
+	local ns = bootCrate()
+	ns.db.settings.useAuctionator = false
+	contains(crateTooltip(ns, true), "Auction prices are turned off in settings", "turned off")
+	ns.db.settings.useAuctionator = true
+	eq(crateTooltip(ns, true):find("Auction prices", 1, true), nil, "no note while prices work")
+end)
+
 test("real data: every crate renders and its reagents have names in the data", function()
 	local ns = T.boot(nil)
 	local crates = 0

@@ -172,6 +172,14 @@ function Pricing:FormatMoney(copper)
 	return table.concat(parts, " ")
 end
 
+-- Why there are no auction prices, for tooltips; nil when there are.
+function Pricing:UnavailableText()
+	if self:IsEnabled() then return nil end
+	if brokenReason then return "Auction prices are off after an Auctionator error" end
+	if API() then return "Auction prices are turned off in settings" end
+	return "Auction prices need Auctionator"
+end
+
 -- One line for /ratlas version.
 function Pricing:StatusText()
 	if brokenReason then
