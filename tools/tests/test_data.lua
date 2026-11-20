@@ -97,3 +97,152 @@ test("output counts and conversion flags are well formed", function()
 		end
 	end
 end)
+
+-- Duplicate and dead entries ---------------------------------------------------
+
+local function sortedKeys(t)
+	local keys = {}
+	for k in pairs(t) do keys[#keys + 1] = k end
+	table.sort(keys)
+	return keys
+end
+
+local function noRepeats(list, msg)
+	local seen = {}
+	for _, v in ipairs(list) do
+		eq(seen[v], nil, ("%s: %s repeated"):format(msg, tostring(v)))
+		seen[v] = true
+	end
+end
+
+test("data files assign every key once", function()
+	-- Lua keeps the last of two assignments, so repeats only show in the text.
+	for _, file in ipairs({ "Recipes", "Reagents", "Crates", "Sources" }) do
+		local seen = {}
+		for line in io.lines(T.repoRoot .. "/Data/" .. file .. ".lua") do
+			local var, id = line:match("^(%a+)%[(%d+)%] = ")
+			if var then
+				local key = var .. "[" .. id .. "]"
+				eq(seen[key], nil, file .. ".lua assigns " .. key .. " twice")
+				seen[key] = true
+				local reagents = line:match("reagents = (%b{})")
+				if reagents then
+					local inRecipe = {}
+					for item in reagents:gmatch("%[(%d+)%]") do
+						eq(inRecipe[item], nil, key .. " lists reagent " .. item .. " twice")
+						inRecipe[item] = true
+					end
+				end
+			end
+		end
+	end
+end)
+
+test("data lists have no repeats and no dead entries", function()
+	local ns = T.boot(nil)
+	local usedBy = {}
+	for recipeID, recipe in pairs(ns.Recipes) do
+		eq(next(recipe.reagents) ~= nil, true, "recipe " .. recipeID .. " has reagents")
+		for itemID in pairs(recipe.reagents) do
+			eq(ns.Reagents[itemID] ~= nil, true, ("reagent %d of recipe %d exists"):format(itemID, recipeID))
+			usedBy[itemID] = (usedBy[itemID] or 0) + 1
+		end
+	end
+
+	local inCrate = {}
+	for crateID, bundles in pairs(ns.Crates or {}) do
+		local items = {}
+		for i, bundle in ipairs(bundles) do
+			items[i] = bundle[1]
+			inCrate[bundle[1]] = true
+			eq(ns.Reagents[bundle[1]] ~= nil, true, ("crate %d item %d is a reagent"):format(crateID, bundle[1]))
+		end
+		noRepeats(items, "crate " .. crateID)
+	end
+
+	for _, itemID in ipairs(sortedKeys(ns.Reagents)) do
+		local entry = ns.Reagents[itemID]
+		noRepeats(entry.r, "recipes of item " .. itemID)
+		eq(#entry.r, usedBy[itemID] or 0, "item " .. itemID .. " lists every recipe that uses it")
+		if entry.spell then noRepeats(entry.spell, "classes of item " .. itemID) end
+		eq(#entry.r > 0 or entry.spell ~= nil or entry.vendor or inCrate[itemID] or false, true,
+			"item " .. itemID .. " is used by something")
+	end
+
+	-- Same profession, output, count and reagents is a copy the build should drop.
+	-- Enchants have no output item, so equal reagents there are different enchants.
+	local seen = {}
+	for _, recipeID in ipairs(sortedKeys(ns.Recipes)) do
+		local recipe = ns.Recipes[recipeID]
+		if recipe.out then
+			local parts = { recipe.prof, recipe.out, recipe.n or 1 }
+			for _, itemID in ipairs(sortedKeys(recipe.reagents)) do
+				parts[#parts + 1] = itemID .. "x" .. recipe.reagents[itemID]
+			end
+			local key = table.concat(parts, ":")
+			eq(seen[key], nil, ("recipe %d copies recipe %s"):format(recipeID, tostring(seen[key])))
+			seen[key] = recipeID
+		end
+	end
+
+	if ns.RecipeSources then
+		local npcUsed = {}
+		for recipeID, src in pairs(ns.RecipeSources) do
+			for _, field in ipairs({ "v", "d", "dz", "q" }) do
+				if src[field] then noRepeats(src[field], ("%s of recipe %d"):format(field, recipeID)) end
+			end
+			for _, npcID in ipairs(src.v or {}) do npcUsed[npcID] = true end
+			for _, npcID in ipairs(src.d or {}) do npcUsed[npcID] = true end
+		end
+		for npcID in pairs(ns.SourceNPCs) do
+			eq(npcUsed[npcID], true, "NPC " .. npcID .. " is named by a source")
+		end
+	end
+end)
+
+test("real data: hand-kept lists have no repeats and no dead rows", function()
+	local ns = T.boot(nil)
+	if ns.DATA_BUILD == "sample" then return end
+	local function rows(name)
+		local result, header = {}, nil
+		for line in io.lines(T.repoRoot .. "/tools/" .. name) do
+			local cells = {}
+			for cell in (line .. ","):gmatch("([^,]*),") do cells[#cells + 1] = cell end
+			if not header then
+				header = cells
+			elseif line ~= "" then
+				local row = {}
+				for i, col in ipairs(header) do row[col] = cells[i] end
+				result[#result + 1] = row
+			end
+		end
+		return result
+	end
+	local function unique(name, ...)
+		local cols, seen = { ... }, {}
+		for _, row in ipairs(rows(name)) do
+			local parts = {}
+			for i, col in ipairs(cols) do parts[i] = row[col] end
+			local key = table.concat(parts, ",")
+			eq(seen[key], nil, name .. " repeats " .. key)
+			seen[key] = true
+		end
+	end
+	unique("vendor_reagents.csv", "itemID")
+	unique("spell_reagents.csv", "itemID", "class")
+	unique("crate_bundles.csv", "crateID", "itemID")
+
+	for _, row in ipairs(rows("vendor_reagents.csv")) do
+		local entry = ns.Reagents[tonumber(row.itemID)]
+		eq(entry ~= nil and entry.vendor, true, "vendor_reagents.csv row " .. row.itemID .. " is a vendor reagent")
+	end
+	for _, row in ipairs(rows("spell_reagents.csv")) do
+		local entry = ns.Reagents[tonumber(row.itemID)]
+		local class, remove = row.class:gsub("^%-", "")
+		local has = false
+		for _, c in ipairs(entry and entry.spell or {}) do
+			if c == class then has = true end
+		end
+		eq(has, remove == 0, "spell_reagents.csv row " .. row.itemID .. "," .. row.class .. " is applied")
+	end
+end)

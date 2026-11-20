@@ -9,7 +9,7 @@ local repoRoot = assert(arg and arg[1], "usage: run.lua <repoRoot>")
 local testDir = repoRoot .. "/tools/tests/"
 local stubs = dofile(testDir .. "wowstubs.lua")
 
-local T = { stubs = stubs }
+local T = { stubs = stubs, repoRoot = repoRoot }
 local failures, passed = 0, 0
 
 function T.test(name, fn)
