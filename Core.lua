@@ -160,6 +160,7 @@ local DEFAULT_SETTINGS = {
 	lootMap = true,  -- record where reagents are looted
 	mapPins = 1,     -- world map: 0 off, 1 tracked and selected, 2 everything looted
 	gatherReminder = true, -- remind when Find Herbs / Find Minerals is off
+	gatherSound = true,    -- sound with that reminder
 }
 ns.DEFAULT_SETTINGS = DEFAULT_SETTINGS -- the Settings panel's Defaults button; read-only
 

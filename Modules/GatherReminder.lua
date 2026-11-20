@@ -13,7 +13,10 @@ local TRACKING_SPELLS = {
 
 local LOGIN_DELAY = 5  -- seconds; tracking state loads a moment after login
 local CHECK_DELAY = 3  -- seconds; resurrect and loading-screen events come in bursts
+local RETRY_DELAY = 5  -- seconds between retries while a reminder is owed but blocked
 local MIN_GAP = 60     -- seconds between two reminders
+local LOAD_GRACE = 60  -- seconds after login an empty tracking list may still be loading
+local FALLBACK_SOUND = 8959 -- raid warning, if the client lacks the constant
 
 local COLOR = { r = 1, g = 0.82, b = 0 }
 
@@ -45,29 +48,54 @@ function GatherReminder:GetReminder()
 end
 
 -- Checking ------------------------------------------------------------------
+-- A trigger (login, death, resurrect, instance change, tracking switched off)
+-- marks a reminder as owed. The check shows it once nothing blocks it; while
+-- something does (combat, dead, flying, the one-minute gap) it retries on a
+-- timer instead of dropping it, so no order of events can lose it.
 
 local lastReminder      -- GetTime() of the last reminder, session only
-local afterCombat = false
+local loginTime = 0
+local owed = false
 local checkQueued = false
 local wasInInstance = false
 
-local function Check()
-	if not ns.db.settings.gatherReminder then return end
-	if InCombatLockdown() then
-		afterCombat = true
-		return
-	end
-	if UnitIsDeadOrGhost("player") or UnitOnTaxi("player") then return end
-	if IsInInstance() then return end
-	if lastReminder and GetTime() - lastReminder < MIN_GAP then return end
-	local text = GatherReminder:GetReminder()
-	if not text then return end
-	lastReminder = GetTime()
-	ns:Print(text .. ". Turn it on from the tracking menu on the minimap.")
-	ns:ShowAlert(text, COLOR)
+local QueueCheck
+
+-- Battlegrounds and arenas have nothing to gather; dungeons and raids do.
+local function InPvPInstance()
+	local _, instanceType = IsInInstance()
+	return instanceType == "pvp" or instanceType == "arena"
 end
 
-local function QueueCheck(delay)
+local function Check()
+	if not owed then return end
+	if not ns.db.settings.gatherReminder or InPvPInstance() then
+		owed = false -- leaving the battleground asks again
+		return
+	end
+	if InCombatLockdown() or UnitIsDeadOrGhost("player") or UnitOnTaxi("player") then
+		QueueCheck(RETRY_DELAY)
+		return
+	end
+	local now = GetTime()
+	if lastReminder and now - lastReminder < MIN_GAP then
+		QueueCheck(MIN_GAP - (now - lastReminder))
+		return
+	end
+	local names, anyActive = GatherReminder:GetState()
+	if #names == 0 and now - loginTime < LOAD_GRACE then
+		QueueCheck(RETRY_DELAY) -- the tracking list may not be loaded yet
+		return
+	end
+	owed = false
+	if #names == 0 or anyActive then return end
+	local text = GatherReminder:GetReminder()
+	lastReminder = now
+	ns:Print(text .. ". Turn it on from the tracking menu on the minimap.")
+	ns:ShowAlert(text, COLOR, ns.db.settings.gatherSound and (SOUNDKIT and SOUNDKIT.RAID_WARNING or FALLBACK_SOUND))
+end
+
+function QueueCheck(delay)
 	if checkQueued then return end
 	checkQueued = true
 	C_Timer.After(delay or CHECK_DELAY, function()
@@ -76,35 +104,36 @@ local function QueueCheck(delay)
 	end)
 end
 
--- Login, /reload and leaving an instance; not every loading screen.
+local function Request(delay)
+	owed = true
+	QueueCheck(delay)
+end
+
+-- Login, /reload, and entering or leaving an instance; not every loading screen.
 local function OnEnteringWorld(_, isInitialLogin, isReloadingUi)
-	local inInstance = IsInInstance()
+	local inInstance = IsInInstance() and true or false
 	if isInitialLogin or isReloadingUi then
-		QueueCheck(LOGIN_DELAY)
-	elseif wasInInstance and not inInstance then
-		QueueCheck()
+		loginTime = GetTime()
+		Request(LOGIN_DELAY)
+	elseif inInstance ~= wasInInstance then
+		Request()
 	end
 	wasInInstance = inInstance
 end
 
--- Gathering tracking switched off (on purpose or by accident). Switching
--- from herbs to minerals may pass through "off"; the delayed check reads the
--- state again, so only a tracking that stays off reminds.
+-- Gathering tracking switched off (on purpose, by accident or by dying).
+-- Switching from herbs to minerals may pass through "off"; the delayed check
+-- reads the state again, so only a tracking that stays off reminds.
 local wasActive = false
 
 local function OnTrackingChanged()
 	local _, anyActive = GatherReminder:GetState()
 	if wasActive and not anyActive then
-		QueueCheck()
+		Request()
+	elseif owed then
+		QueueCheck() -- the list may have just loaded after login
 	end
 	wasActive = anyActive
-end
-
-local function OnRegenEnabled()
-	if afterCombat then
-		afterCombat = false
-		QueueCheck()
-	end
 end
 
 -- Prints the minimap tracking list, to confirm spell IDs in-game.
@@ -132,11 +161,16 @@ function GatherReminder:OnInit()
 end
 
 function GatherReminder:OnLogin()
-	wasInInstance = IsInInstance()
+	wasInInstance = IsInInstance() and true or false
 	wasActive = select(2, self:GetState())
 	ns:RegisterEvent("MINIMAP_UPDATE_TRACKING", OnTrackingChanged)
 	ns:RegisterEvent("PLAYER_ENTERING_WORLD", OnEnteringWorld)
-	ns:RegisterEvent("PLAYER_ALIVE", function() QueueCheck() end)   -- resurrected at the body or by a spell
-	ns:RegisterEvent("PLAYER_UNGHOST", function() QueueCheck() end) -- resurrected from ghost form
-	ns:RegisterEvent("PLAYER_REGEN_ENABLED", OnRegenEnabled)
+	-- Death may clear tracking. Owed from the moment of death, the reminder
+	-- comes once alive and out of combat, however the resurrect happened.
+	ns:RegisterEvent("PLAYER_DEAD", function() Request() end)
+	ns:RegisterEvent("PLAYER_ALIVE", function() Request() end)   -- resurrected at the body, or released
+	ns:RegisterEvent("PLAYER_UNGHOST", function() Request() end) -- resurrected from ghost form
+	ns:RegisterEvent("PLAYER_REGEN_ENABLED", function()
+		if owed then QueueCheck() end
+	end)
 end

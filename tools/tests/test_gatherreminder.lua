@@ -26,7 +26,7 @@ end
 
 local function login()
 	stubs.fire("PLAYER_ENTERING_WORLD", true, false)
-	stubs.runTimers()
+	stubs.runTimers(10) -- not unbounded: an owed reminder retries while blocked
 end
 
 test("reminder: herbalist with tracking off is reminded after login", function()
@@ -84,49 +84,6 @@ test("reminder: waits for combat to end", function()
 	eq(#stubs.notices, 1, "after combat")
 end)
 
-test("reminder: after resurrecting, not while dead, at most once a minute", function()
-	track(HERBS)
-	boot()
-	stubs.dead = true
-	stubs.fire("PLAYER_ALIVE") -- releasing the spirit fires it too
-	stubs.runTimers()
-	eq(#stubs.notices, 0, "ghost")
-	stubs.dead = false
-	stubs.fire("PLAYER_UNGHOST")
-	stubs.fire("PLAYER_ALIVE")
-	stubs.runTimers()
-	eq(#stubs.notices, 1, "resurrected")
-	stubs.fire("PLAYER_ALIVE")
-	stubs.runTimers()
-	eq(#stubs.notices, 1, "within a minute")
-	stubs.runTimers(61)
-	stubs.fire("PLAYER_ALIVE")
-	stubs.runTimers()
-	eq(#stubs.notices, 2, "a minute later")
-end)
-
-test("reminder: quiet inside instances and on flights, checks on leaving an instance", function()
-	track(HERBS)
-	boot()
-	stubs.instance = true
-	stubs.fire("PLAYER_ENTERING_WORLD", false, false)
-	stubs.fire("PLAYER_ALIVE")
-	stubs.runTimers()
-	eq(#stubs.notices, 0, "in instance")
-	stubs.instance = false
-	stubs.taxi = true
-	stubs.fire("PLAYER_ENTERING_WORLD", false, false)
-	stubs.runTimers()
-	eq(#stubs.notices, 0, "on taxi")
-	stubs.taxi = false
-	stubs.instance = true
-	stubs.fire("PLAYER_ENTERING_WORLD", false, false)
-	stubs.instance = false
-	stubs.fire("PLAYER_ENTERING_WORLD", false, false)
-	stubs.runTimers()
-	eq(#stubs.notices, 1, "left instance")
-end)
-
 test("reminder: /ratlas tracking lists the tracking types", function()
 	track(on(TREASURE), HERBS)
 	boot()
@@ -173,6 +130,140 @@ test("reminder: ordinary loading screens don't check", function()
 	track(HERBS)
 	boot()
 	stubs.fire("PLAYER_ENTERING_WORLD", false, false)
+	stubs.runTimers()
+	eq(#stubs.notices, 0, "notices")
+end)
+test("reminder: after resurrecting, not while dead, at most once a minute", function()
+	track(HERBS)
+	boot()
+	stubs.dead = true
+	stubs.fire("PLAYER_ALIVE") -- releasing the spirit fires it too
+	stubs.runTimers(30)
+	eq(#stubs.notices, 0, "ghost")
+	stubs.dead = false
+	stubs.fire("PLAYER_UNGHOST")
+	stubs.fire("PLAYER_ALIVE")
+	stubs.runTimers(10)
+	eq(#stubs.notices, 1, "resurrected")
+	stubs.fire("PLAYER_ALIVE")
+	stubs.runTimers(10)
+	eq(#stubs.notices, 1, "within a minute")
+	stubs.runTimers(60)
+	eq(#stubs.notices, 2, "owed reminder comes once the minute is up")
+	stubs.runTimers()
+	eq(#stubs.notices, 2, "and only once")
+end)
+
+test("reminder: plays a sound unless turned off", function()
+	track(HERBS)
+	boot()
+	stubs.sounds = {}
+	login()
+	eq(#stubs.sounds, 1, "sound")
+	eq(stubs.sounds[1].kit, 8959, "raid warning")
+	track(HERBS)
+	boot({ settings = { gatherSound = false } })
+	stubs.sounds = {}
+	login()
+	eq(#stubs.notices, 1, "still reminds")
+	eq(#stubs.sounds, 0, "silent")
+end)
+
+test("reminder: resurrected in combat reminds after combat", function()
+	track(on(HERBS))
+	boot()
+	stubs.combat = true
+	stubs.dead = true
+	track(HERBS) -- dying clears tracking
+	stubs.fire("PLAYER_DEAD")
+	stubs.fire("MINIMAP_UPDATE_TRACKING")
+	stubs.runTimers(20)
+	stubs.dead = false
+	stubs.fire("PLAYER_ALIVE") -- battle resurrection, still in combat
+	stubs.runTimers(20)
+	eq(#stubs.notices, 0, "in combat")
+	stubs.combat = false
+	stubs.runTimers(10) -- no PLAYER_REGEN_ENABLED needed; the retry picks it up
+	eq(#stubs.notices, 1, "after combat")
+end)
+
+test("reminder: owed through death even if no resurrect event comes", function()
+	track(on(MINERALS))
+	boot()
+	stubs.dead = true
+	track(MINERALS)
+	stubs.fire("MINIMAP_UPDATE_TRACKING")
+	stubs.fire("PLAYER_DEAD")
+	stubs.runTimers(60)
+	eq(#stubs.notices, 0, "dead")
+	stubs.dead = false
+	stubs.runTimers(10)
+	eq(#stubs.notices, 1, "alive again")
+end)
+
+test("reminder: shows in dungeons and raids, not in battlegrounds", function()
+	track(HERBS)
+	boot()
+	stubs.instance = true
+	stubs.fire("PLAYER_ENTERING_WORLD", false, false)
+	stubs.runTimers(10)
+	eq(#stubs.notices, 1, "entering a dungeon")
+	stubs.runTimers(120)
+	stubs.dead = true
+	stubs.fire("PLAYER_DEAD")
+	stubs.runTimers(10)
+	stubs.dead = false
+	stubs.fire("PLAYER_ALIVE")
+	stubs.runTimers(10)
+	eq(#stubs.notices, 2, "resurrected in a dungeon")
+	stubs.runTimers(120)
+	stubs.instanceType = "raid"
+	stubs.fire("PLAYER_ALIVE")
+	stubs.runTimers(10)
+	eq(#stubs.notices, 3, "raid")
+	stubs.runTimers(120)
+	stubs.instanceType = "pvp"
+	stubs.fire("PLAYER_ALIVE")
+	stubs.runTimers(120)
+	eq(#stubs.notices, 3, "battleground")
+	stubs.instance, stubs.instanceType = false, nil
+	stubs.fire("PLAYER_ENTERING_WORLD", false, false)
+	stubs.runTimers(10)
+	eq(#stubs.notices, 4, "left the battleground")
+end)
+
+test("reminder: waits for a flight to land", function()
+	track(HERBS)
+	boot()
+	stubs.taxi = true
+	stubs.fire("PLAYER_ALIVE")
+	stubs.runTimers(120)
+	eq(#stubs.notices, 0, "flying")
+	stubs.taxi = false
+	stubs.runTimers(10)
+	eq(#stubs.notices, 1, "landed")
+end)
+
+test("reminder: tracking list that loads late after login still reminds", function()
+	track()
+	boot()
+	login()
+	stubs.runTimers(20)
+	eq(#stubs.notices, 0, "nothing loaded")
+	track(HERBS)
+	stubs.fire("MINIMAP_UPDATE_TRACKING")
+	stubs.runTimers(10)
+	eq(#stubs.notices, 1, "loaded")
+end)
+
+test("reminder: turning tracking on before the check cancels it", function()
+	track(HERBS)
+	boot()
+	stubs.combat = true
+	login()
+	stubs.runTimers(30)
+	track(on(HERBS))
+	stubs.combat = false
 	stubs.runTimers()
 	eq(#stubs.notices, 0, "notices")
 end)

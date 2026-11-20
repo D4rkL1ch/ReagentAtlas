@@ -202,6 +202,7 @@ function M.reset()
 	M.noBankAPI = false
 	M.combat = false
 	M.dead, M.taxi, M.instance = false, false, false
+	M.instanceType = nil     -- with M.instance: "party", "raid", "pvp", "arena"
 	M.tracking = {}          -- minimap tracking list: array of { name, spellID, active }
 	C_Minimap = {
 		GetNumTrackingTypes = function() return #M.tracking end,
@@ -380,7 +381,7 @@ function GetNormalizedRealmName() return "StubRealm" end
 function InCombatLockdown() return M.combat end
 function UnitIsDeadOrGhost() return M.dead end
 function UnitOnTaxi() return M.taxi end
-function IsInInstance() return M.instance, M.instance and "party" or "none" end
+function IsInInstance() return M.instance, M.instance and (M.instanceType or "party") or "none" end
 function IsShiftKeyDown() return M.shift end
 function UnitClass() return M.classToken, M.classToken end
 
@@ -445,7 +446,7 @@ TooltipDataProcessor = {
 C_Timer = { After = function(delay, fn) M.timers[#M.timers + 1] = { at = M.now + delay, fn = fn } end }
 function GetTime() return M.now end
 
-SOUNDKIT = { IG_QUEST_LIST_COMPLETE = 878 }
+SOUNDKIT = { IG_QUEST_LIST_COMPLETE = 878, RAID_WARNING = 8959 }
 function PlaySound(kit, channel) M.sounds[#M.sounds + 1] = { kit = kit, channel = channel } end
 RaidWarningFrame = {}
 function RaidNotice_AddMessage(_, text) M.notices[#M.notices + 1] = text end
