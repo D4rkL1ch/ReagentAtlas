@@ -19,7 +19,7 @@ for _, name in ipairs({
 	"StopMovingOrSizing", "SetJustifyH", "SetWordWrap", "SetRotation", "SetHighlightTexture",
 	"SetOwner", "SetItemByID", "SetSpellByID", "SetElementExtent", "SetFrameLevel", "RegisterForClicks",
 	"SetNormalTexture", "Raise", "AddLine", "SetAutoFocus", "SetNumeric", "SetMaxLetters", "SetFocus",
-	"ClearFocus", "HighlightText", "SetHitRectInsets", "SetTexCoord", "AddDoubleLine",
+	"ClearFocus", "HighlightText", "SetHitRectInsets", "SetTexCoord", "AddDoubleLine", "IsOwned",
 }) do W[name] = noop end
 
 local function newWidget(kind, parent)

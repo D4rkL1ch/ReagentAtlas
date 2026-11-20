@@ -335,15 +335,26 @@ function LootMap:GetBestMap(itemID)
 	return best
 end
 
--- Shows the item on the world map, opened on its best map. Not in combat:
--- opening the map from addon code is restricted then, and nothing changes.
-function LootMap:ShowOnMap(itemID)
+-- Maps where an item has pins (instances have none), most looted first:
+-- array of { mapID, name, count, spots }.
+function LootMap:GetPinnedMaps(itemID)
+	local maps = {}
+	for _, m in ipairs(self:GetSummary(itemID).maps) do
+		if m.spots > 0 then maps[#maps + 1] = m end
+	end
+	return maps
+end
+
+-- Shows the item on the world map, opened on mapID or else its best map. Not
+-- in combat: opening the map from addon code is restricted then, and nothing
+-- changes.
+function LootMap:ShowOnMap(itemID, mapID)
 	if InCombatLockdown() then
 		ns:Print("can't open the world map in combat.")
 		return false
 	end
 	self:SetFocus(itemID)
-	local mapID = self:GetBestMap(itemID)
+	mapID = mapID or self:GetBestMap(itemID)
 	if not mapID then
 		ns:Print("no looted spots recorded for that item yet.")
 		return false

@@ -569,6 +569,38 @@ function Browser:CreateWindow(width, height, title, pointKey, ...)
 	return window
 end
 
+-- "Hide" toggles the pins off; an item looted in several zones always says
+-- "Map", since the click opens the zone menu (which can also remove them).
+local function MapButtonLabel(itemID)
+	if ns.LootMap:GetFocus() == itemID and #ns.LootMap:GetPinnedMaps(itemID) <= 1 then return "Hide" end
+	return "Map"
+end
+
+-- Menu of the zones an item was looted in; picking one opens the world map
+-- there. Returns false if the menu couldn't open (caller opens the best map).
+local function OpenZoneMenu(owner, itemID, onDone)
+	if not (MenuUtil and MenuUtil.CreateContextMenu) then return false end
+	local maps = ns.LootMap:GetPinnedMaps(itemID)
+	local focused = ns.LootMap:GetFocus() == itemID
+	local ok, menu = pcall(MenuUtil.CreateContextMenu, owner, function(_, root)
+		root:CreateTitle("Show on the world map")
+		for _, m in ipairs(maps) do
+			root:CreateButton(m.name .. "  " .. Color(tostring(m.count), COLOR_HINT), function()
+				ns.LootMap:ShowOnMap(itemID, m.mapID)
+				onDone(owner)
+			end)
+		end
+		if focused then
+			root:CreateDivider()
+			root:CreateButton("Remove its pins", function()
+				ns.LootMap:SetFocus(nil)
+				onDone(owner)
+			end)
+		end
+	end)
+	return ok and menu ~= nil
+end
+
 local function CreateDetail(parent)
 	local d = {}
 	d.Edge, d.Icon = CreateIcon(parent, 44)
@@ -582,18 +614,29 @@ local function CreateDetail(parent)
 	d.Map:SetSize(50, 22)
 	d.Map:SetPoint("RIGHT", d.Track, "LEFT", -4, 0)
 	d.Map:SetText("Map")
+	local function MapClicked(button)
+		button:SetText(MapButtonLabel(selected))
+		if GameTooltip:IsOwned(button) then button:GetScript("OnEnter")(button) end
+	end
 	d.Map:SetScript("OnClick", function(self)
-		if ns.LootMap:GetFocus() == selected then
+		local itemID = selected
+		if #ns.LootMap:GetPinnedMaps(itemID) > 1 and not InCombatLockdown() and OpenZoneMenu(self, itemID, MapClicked) then
+			return
+		end
+		if ns.LootMap:GetFocus() == itemID then
 			ns.LootMap:SetFocus(nil)
 		else
-			ns.LootMap:ShowOnMap(selected)
+			ns.LootMap:ShowOnMap(itemID)
 		end
-		self:SetText(ns.LootMap:GetFocus() == selected and "Hide" or "Map")
-		if GameTooltip:IsOwned(self) then self:GetScript("OnEnter")(self) end
+		MapClicked(self)
 	end)
 	d.Map:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_TOP")
-		if ns.LootMap:GetFocus() == selected then
+		local zones = #ns.LootMap:GetPinnedMaps(selected)
+		if zones > 1 then
+			GameTooltip:AddLine(("Show where you looted it on the world map (%d zones)"):format(zones))
+			GameTooltip:AddLine("Click to choose the zone.", 0.7, 0.7, 0.7, true)
+		elseif ns.LootMap:GetFocus() == selected then
 			GameTooltip:AddLine("Remove its pins from the world map")
 			if ns.Tracker:Find("item", selected) then
 				GameTooltip:AddLine("Tracked items stay on the map.", 0.7, 0.7, 0.7, true)
@@ -685,7 +728,7 @@ local function UpdateDetail()
 	d.Where:SetText(Color("Where it is: ", COLOR_HINT) .. Color(where, COLOR_TEXT))
 	d.Looted:SetText(Color("Looted at: ", COLOR_HINT) .. Color(detail.looted or "not recorded yet", COLOR_TEXT))
 	d.Map:SetEnabled(detail.onMap)
-	d.Map:SetText(ns.LootMap:GetFocus() == detail.itemID and "Hide" or "Map")
+	d.Map:SetText(MapButtonLabel(detail.itemID))
 	d.UsedIn:SetShown(#detail.recipes > 0)
 	d.Track:SetText(ns.Tracker:Find("item", detail.itemID) and "Untrack" or "Track")
 	d.Recipes:SetDataProvider(CreateDataProvider(detail.recipes),

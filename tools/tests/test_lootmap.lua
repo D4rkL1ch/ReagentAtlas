@@ -512,5 +512,99 @@ test("browser detail: where it was looted", function()
 	eq(ns.LootMap:GetShownItems()[FEATHER], nil, "cleared focus leaves the map")
 end)
 
+test("loot map: pinned maps skip instances; Show on map takes a chosen zone", function()
+	local ns = boot()
+	loot({ { FEATHER, 5, npc(448) } })
+	L.mapID, L.x, L.y = WESTFALL, 0.5, 0.5
+	loot({ { FEATHER, 2, npc(500) } })
+	L.mapID = DUNGEON
+	loot({ { FEATHER, 9, npc(600) } })
+	local maps = ns.LootMap:GetPinnedMaps(FEATHER)
+	eq(#maps, 2, "dungeon has no pins")
+	eq(maps[1].mapID, ELWYNN, "most looted first")
+	eq(maps[2].name, "Westfall", "named")
+	eq(#ns.LootMap:GetPinnedMaps(ARCANITE), 0, "never looted")
+	eq(ns.LootMap:ShowOnMap(FEATHER, WESTFALL), true, "opened")
+	eq(L.opened, WESTFALL, "on the chosen zone")
+end)
+
+-- Map button in the browser: one zone toggles, several open a zone menu.
+local function mapButton(ns, itemID)
+	stubs.slash("/ratlas", "")
+	ns.Browser:Select(itemID)
+	for _, w in ipairs(stubs.allWidgets()) do
+		if w.kind == "Button" and (w.text == "Map" or w.text == "Hide") and w.template == "UIPanelButtonTemplate" then
+			return w
+		end
+	end
+end
+
+local function fakeMenu()
+	local menu = { items = {} }
+	MenuUtil = {
+		CreateContextMenu = function(owner, generator)
+			menu.owner, menu.items = owner, {}
+			local root = {
+				CreateTitle = function(_, text) table.insert(menu.items, { title = text }) end,
+				CreateButton = function(_, text, callback) table.insert(menu.items, { text = text, click = callback }) end,
+				CreateDivider = function() table.insert(menu.items, { divider = true }) end,
+			}
+			generator(owner, root)
+			return {}
+		end,
+	}
+	return menu
+end
+
+local function menuButton(menu, text)
+	for _, item in ipairs(menu.items) do
+		if item.text and item.text:find(text, 1, true) then return item end
+	end
+end
+
+test("Map button: one zone toggles the pins without a menu", function()
+	local ns = boot()
+	local menu = fakeMenu()
+	loot({ { FEATHER, 4, npc(448) } })
+	local button = mapButton(ns, FEATHER)
+	button.scripts.OnClick(button)
+	eq(menu.owner, nil, "no menu")
+	eq(L.opened, ELWYNN, "opened")
+	eq(button.text, "Hide", "now hides")
+	button.scripts.OnClick(button)
+	eq(ns.LootMap:GetFocus(), nil, "pins removed")
+	eq(button.text, "Map", "back to Map")
+	MenuUtil = nil
+end)
+
+test("Map button: several zones open a menu to pick one", function()
+	local ns = boot()
+	local menu = fakeMenu()
+	loot({ { FEATHER, 5, npc(448) } })
+	L.mapID, L.x, L.y = WESTFALL, 0.5, 0.5
+	loot({ { FEATHER, 2, npc(500) } })
+	local button = mapButton(ns, FEATHER)
+	button.scripts.OnClick(button)
+	eq(menu.owner, button, "menu on the button")
+	eq(L.opened, nil, "nothing opened yet")
+	assert(menuButton(menu, "Elwynn Forest"), "Elwynn listed")
+	eq(menuButton(menu, "Remove"), nil, "nothing to remove yet")
+	menuButton(menu, "Westfall").click()
+	eq(L.opened, WESTFALL, "opened the chosen zone")
+	eq(ns.LootMap:GetFocus(), FEATHER, "focused")
+	eq(button.text, "Map", "still Map: the click opens the menu")
+
+	button.scripts.OnClick(button)
+	menuButton(menu, "Remove").click()
+	eq(ns.LootMap:GetFocus(), nil, "pins removed from the menu")
+
+	-- Without the menu API, it opens the best map as before.
+	MenuUtil = nil
+	L.opened = nil
+	button.scripts.OnClick(button)
+	eq(L.opened, ELWYNN, "fallback: best map")
+	eq(#stubs.errors, 0, "no errors")
+end)
+
 uninstall()
 UnitName = savedUnitName
