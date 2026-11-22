@@ -259,8 +259,24 @@ test("collapsed tooltip shows alt crafting and owned totals", function()
 	tt:SetItem(17056)
 	local text = tt:Text()
 	contains(text, "\nYour alts can craft 3 (Brewdin, Frostia-OtherRealm)\n", "alts line")
-	contains(text, "\nOwned: 28 across 2 characters + warband bank\n", "owned line")
+	contains(text, "\nOwned: 28 (Brewdin 20, Frostia-OtherRealm 5, warband 3)\n", "owned line")
 	contains(table.concat(tt.lines, "\n"), "|cff66b3ffYour alts can craft", "blue")
+end)
+
+test("where text: one alt by name, more than three alts as others", function()
+	local ns = boot()
+	ns.db.account.bank = {}
+	for key in pairs(ns.db.chars) do
+		if key ~= ns:GetCharKey() then ns.db.chars[key] = nil end
+	end
+	ns.db.chars["Aa-StubRealm"] = { bags = { [2589] = 4 }, bank = {}, profs = {} }
+	local total, where, alone = ns.Inventory:GetWhereText(2589)
+	eq(("%d %s %s"):format(total, where, tostring(alone)), "4 on Aa true", "single alt")
+	for i, name in ipairs({ "Bb", "Cc", "Dd" }) do
+		ns.db.chars[name .. "-StubRealm"] = { bags = {}, bank = { [2589] = i }, profs = {} }
+	end
+	total, where = ns.Inventory:GetWhereText(2589)
+	eq(("%d %s"):format(total, where), "10 Aa 4, Dd 3, Cc 2, others 1", "capped, most first")
 end)
 
 test("collapsed tooltip: you can craft, you listed first", function()
@@ -284,7 +300,7 @@ test("mockup order of collapsed lines", function()
 		"Highest: Leatherworking 285",
 		"Your alts can craft 3 (Brewdin, Frostia-OtherRealm)",
 		"Spell reagent for Mage, Priest",
-		"Owned: 28 across 2 characters + warband bank",
+		"Owned: 28 (Brewdin 20, Frostia-OtherRealm 5, warband 3)",
 		"Hold Shift for all recipes",
 	}, "\n"))
 end)

@@ -132,6 +132,41 @@ function Inventory:GetCounts(itemID)
 	return total + warband, holders, warband
 end
 
+local MAX_NAMED_ALTS = 3
+
+-- Where an item is, in a few words: "(have 32 in bank)" when it's all in one
+-- place, else "(have 66: 3 bags, 27 bank, Brissa 4, warband 32)". Your own
+-- bags and bank first, then alts by count (the rest as "others N"), then the
+-- warband bank. Returns total, the text without "have"/brackets, and whether
+-- it's a single place:
+--   66, "3 bags, 27 bank, Brissa 4, warband 32", false
+--   27, "in bank", true
+-- or 0, nil when nobody holds any.
+function Inventory:GetWhereText(itemID)
+	local total, holders, warband = self:GetCounts(itemID)
+	if total <= 0 then return 0, nil end
+	local parts = {} -- { text, alone }
+	local alts, others = 0, 0
+	for _, h in ipairs(holders) do
+		if h.isMe then
+			if h.bags > 0 then parts[#parts + 1] = { h.bags .. " bags", "in bags" } end
+			if h.bank > 0 then parts[#parts + 1] = { h.bank .. " bank", "in bank" } end
+		elseif alts < MAX_NAMED_ALTS then
+			alts = alts + 1
+			local name = ns:CharDisplayName(h.key)
+			parts[#parts + 1] = { ("%s %d"):format(name, h.total), "on " .. name }
+		else
+			others = others + h.total
+		end
+	end
+	if others > 0 then parts[#parts + 1] = { "others " .. others } end
+	if warband > 0 then parts[#parts + 1] = { "warband " .. warband, "in warband bank" } end
+	if #parts == 1 and parts[1][2] then return total, parts[1][2], true end
+	local texts = {}
+	for i, part in ipairs(parts) do texts[i] = part[1] end
+	return total, table.concat(texts, ", "), false
+end
+
 -- Lifecycle -----------------------------------------------------------------
 
 function Inventory:OnLogin()

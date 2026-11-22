@@ -150,16 +150,9 @@ local function AddCraftLine(tooltip, info)
 end
 
 local function AddOwnedLine(tooltip, info)
-	local total, holders, warband = ns.Inventory:GetCounts(info.itemID)
-	if total == 0 then return end
-	local text = ("Owned: %d"):format(total)
-	if #holders > 1 then
-		text = text .. (" across %d characters"):format(#holders)
-	end
-	if warband > 0 then
-		text = text .. (#holders > 0 and " + warband bank" or " (warband bank)")
-	end
-	tooltip:AddLine(Color(text, COLOR_TEXT))
+	local total, where, alone = ns.Inventory:GetWhereText(info.itemID)
+	if not where then return end
+	tooltip:AddLine(Color((alone and "Owned: %d %s" or "Owned: %d (%s)"):format(total, where), COLOR_TEXT))
 end
 
 local function AddCollapsed(tooltip, info)
@@ -393,27 +386,11 @@ end
 
 -- Waylaid Crates ------------------------------------------------------------
 
--- " (have 32: 5 bags, 27 bank)" with the non-zero places, or " (have 27 in
--- bank)" when it's all in one; "" when none. Alts and warband bank count too.
+-- " (have 32: 5 bags, 27 bank)" or " (have 27 in bank)"; "" when none.
 local function HaveText(itemID)
-	local total, holders, warband = ns.Inventory:GetCounts(itemID)
-	if total <= 0 then return "" end
-	local bags, bank, alts = 0, 0, 0
-	for _, holder in ipairs(holders) do
-		if holder.isMe then
-			bags, bank = holder.bags, holder.bank
-		else
-			alts = alts + holder.total
-		end
-	end
-	local parts = {}
-	for _, part in ipairs({ { bags, "bags" }, { bank, "bank" }, { alts, "alts" }, { warband, "warband" } }) do
-		if part[1] > 0 then parts[#parts + 1] = ("%d %s"):format(part[1], part[2]) end
-	end
-	if #parts == 1 then
-		return (" (have %d in %s)"):format(total, parts[1]:match("^%d+ (.+)$"))
-	end
-	return (" (have %d: %s)"):format(total, table.concat(parts, ", "))
+	local total, where, alone = ns.Inventory:GetWhereText(itemID)
+	if not where then return "" end
+	return (alone and " (have %d %s)" or " (have %d: %s)"):format(total, where)
 end
 
 -- "20x Peacebloom (have 32: 5 bags, 27 bank)    1g 20s", cheapest first;
