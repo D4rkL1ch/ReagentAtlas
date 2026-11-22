@@ -106,6 +106,83 @@ test("char key is Name-Realm", function()
 	eq(ns:GetCharKey(), "Tester-StubRealm", "key")
 end)
 
+test("empty normalized realm falls back to GetRealmName", function()
+	local orig = GetNormalizedRealmName
+	_G.GetNormalizedRealmName = function() return "" end
+	_G.GetRealmName = function() return "Stub Realm" end
+	local ok, err = pcall(function()
+		local ns = T.boot(nil)
+		eq(ns:GetCharKey(), "Tester-StubRealm", "key")
+		eq(ns.db.chars["Tester-"], nil, "no empty-realm record")
+	end)
+	_G.GetNormalizedRealmName, _G.GetRealmName = orig, nil
+	assert(ok, err)
+end)
+
+local function withoutRealm(fn)
+	local orig = GetNormalizedRealmName
+	_G.GetNormalizedRealmName = function() return "" end
+	_G.GetRealmName = function() return "" end
+	local ok, err = pcall(fn)
+	_G.GetNormalizedRealmName, _G.GetRealmName = orig, nil
+	assert(ok, err)
+end
+
+test("no realm at all reuses the character's existing record and merges Name-", function()
+	withoutRealm(function()
+		local ns = T.boot({
+			chars = {
+				["Tester-"] = { lastSeen = 200, bank = { [2776] = 27 } },
+				["Tester-OldRealm"] = { lastSeen = 50, bank = { [2776] = 5 } },
+				["Tester-StubRealm"] = { lastSeen = 100, bank = { [2776] = 41 } },
+				["Testerson-StubRealm"] = { lastSeen = 300, bank = { [2776] = 1 } },
+			},
+		})
+		eq(ns:GetCharKey(), "Tester-StubRealm", "most recently seen Tester record")
+		eq(ns.db.chars["Tester-"], nil, "Name- merged")
+		eq(ns.db.chars["Tester-StubRealm"].bank[2776], 27, "newer bank")
+		eq(ns:CharDisplayName("Tester-StubRealm"), "Tester", "own realm shown short")
+		eq(ns:CharDisplayName("Tester-OldRealm"), "Tester-OldRealm", "other realm shown long")
+	end)
+end)
+
+test("no realm and no earlier record uses Name-", function()
+	withoutRealm(function()
+		local ns = T.boot(nil)
+		eq(ns:GetCharKey(), "Tester-", "key")
+		eq(ns.db.chars["Tester-"] ~= nil, true, "record created")
+		eq(ns:CharDisplayName("Tester-"), "Tester", "display without dash")
+	end)
+end)
+
+test("empty-realm record is merged into the real one, newer data wins", function()
+	local ns = T.boot({
+		chars = {
+			["Tester-"] = { lastSeen = 200, bags = { [2776] = 1 }, bank = { [2776] = 27 },
+				profs = { [186] = { rank = 201 } } },
+			["Tester-StubRealm"] = { lastSeen = 100, bags = { [2776] = 2 }, bank = { [2776] = 41 },
+				profs = { [186] = { rank = 150 }, [165] = { rank = 50 } } },
+		},
+	})
+	eq(ns.db.chars["Tester-"], nil, "empty-realm record removed")
+	local char = ns.db.chars["Tester-StubRealm"]
+	eq(char.bank[2776], 27, "newer bank")
+	eq(char.profs[186].rank, 201, "newer profession")
+	eq(char.profs[165].rank, 50, "other profession kept")
+	eq(ns.Inventory:GetTotal(2776) < 70, true, "not counted twice")
+end)
+
+test("older empty-realm record is dropped", function()
+	local ns = T.boot({
+		chars = {
+			["Tester-"] = { lastSeen = 50, bank = { [2776] = 99 } },
+			["Tester-StubRealm"] = { lastSeen = 100, bank = { [2776] = 41 } },
+		},
+	})
+	eq(ns.db.chars["Tester-"], nil, "removed")
+	eq(ns.db.chars["Tester-StubRealm"].bank[2776], 41, "real kept")
+end)
+
 test("/ratlas version prints version, interface and price status", function()
 	T.boot(nil)
 	stubs.printed = {}

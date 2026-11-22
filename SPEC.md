@@ -261,7 +261,7 @@ Forever uses the modern retail-style API. Names below are from the retail API; c
 | Professions | `C_TradeSkillUI.GetBaseProfessionInfo` | Profession skill line and rank. |
 | Vendors | `MERCHANT_SHOW`, `MERCHANT_UPDATE`, `GetMerchantNumItems`, `GetMerchantItemID`, `UnitGUID("npc")` | Record recipe items for sale. Auctionator uses the first three on Forever. |
 | Items | `C_Item.GetItemInfo`, `Item:CreateFromItemID():ContinueOnItemLoad` | Names, icons, quality; handle uncached items async. |
-| Character | `UnitName`, `GetNormalizedRealmName`, `UnitClass` | Build the `Name-Realm` key. |
+| Character | `UnitName`, `GetNormalizedRealmName`, `UnitClass` | Build the `Name-Realm` key. Confirmed in-game (1.60.1, Nov 2026): every realm API can return empty for a whole session (`""`, `UnitFullName` without realm, `GetRealmID()` 0); the key then reuses the character's existing `Name-Realm` record, else `Name-`. |
 | UI list | `CreateScrollBoxListLinearView`, `ScrollUtil.InitScrollBoxListWithScrollBar` | Virtualized reagent list in the browser. |
 | Settings | `Settings.RegisterVerticalLayoutCategory`, `Settings.RegisterAddOnCategory` | Options panel. |
 | Alerts | `RaidNotice_AddMessage(RaidWarningFrame, text, color)`, fallback `UIErrorsFrame:AddMessage`; `PlaySound(SOUNDKIT.IG_QUEST_LIST_COMPLETE, "Master")`, fallback kit 888 | Tracking list goals (`ns:ShowAlert` in Core; loot alerts use their own notice and `ns:PlayAlertSound`). The names come from retail annotations; the raid notice and kit 888 are used by addons running on Forever. Loot alerts play `SOUNDKIT.RAID_WARNING`, fallback kit 8959. |

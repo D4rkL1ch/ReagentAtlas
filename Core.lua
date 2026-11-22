@@ -232,12 +232,71 @@ end
 -- once known: lookups ask for it for every recipe in a list.
 local charKey
 
+-- Forever can return "" from every realm API for a whole session (seen with
+-- client 1.60.1: GetNormalizedRealmName, GetRealmName, UnitFullName's realm
+-- and GetRealmID all empty). Try both name calls, normalized (no spaces or
+-- dashes); nil when neither knows.
+local function RealmName()
+	local realm = GetNormalizedRealmName and GetNormalizedRealmName()
+	if not realm or realm == "" then
+		realm = GetRealmName and GetRealmName()
+		realm = realm and realm:gsub("[%s%-]", "")
+	end
+	if not realm or realm == "" then return nil end
+	return realm
+end
+
+-- Earlier builds saved a character as "Name-" when the realm came back empty,
+-- next to its real "Name-Realm" record, so its items were counted twice. Folds
+-- that record into the real one; the newer data wins.
+local function MergeEmptyRealmRecord(name, key)
+	local chars = ns.db and ns.db.chars
+	local broken = chars and chars[name .. "-"]
+	if not broken then return end
+	chars[name .. "-"] = nil
+	local real = chars[key]
+	if not real then
+		chars[key] = broken
+		return
+	end
+	if (broken.lastSeen or 0) < (real.lastSeen or 0) then return end
+	for field, value in pairs(broken) do
+		if field == "profs" and type(real.profs) == "table" then
+			for profID, prof in pairs(value) do
+				real.profs[profID] = prof
+			end
+		else
+			real[field] = value
+		end
+	end
+end
+
+-- Without a realm, reuse this character's existing "Name-Realm" record (the
+-- most recently seen one if the name exists on several realms), so its data
+-- stays in one place. A character never seen with a realm gets "Name-".
+local function KeyWithoutRealm(name)
+	local prefix = name .. "-"
+	local best, bestSeen
+	for key, char in pairs(ns.db and ns.db.chars or {}) do
+		if #key > #prefix and key:sub(1, #prefix) == prefix then
+			local seen = char.lastSeen or 0
+			if not best or seen > bestSeen then
+				best, bestSeen = key, seen
+			end
+		end
+	end
+	return best or prefix
+end
+
 function ns:GetCharKey()
 	if charKey then return charKey end
 	local name = UnitName("player")
-	local realm = GetNormalizedRealmName()
-	if not name or not realm then return nil end
-	charKey = name .. "-" .. realm
+	if not name then return nil end
+	local realm = RealmName()
+	charKey = realm and (name .. "-" .. realm) or KeyWithoutRealm(name)
+	if charKey ~= name .. "-" then
+		MergeEmptyRealmRecord(name, charKey)
+	end
 	return charKey
 end
 
@@ -258,11 +317,14 @@ function ns:GetCharData()
 	return char, key
 end
 
--- Character name for display: "Name" on the current realm, else "Name-Realm".
+-- Character name for display: "Name" on the current realm (or with no realm
+-- known), else "Name-Realm".
 function ns:CharDisplayName(key)
-	local name, realm = key:match("^(.-)%-(.+)$")
+	local name, realm = key:match("^(.-)%-(.*)$")
 	if not name then return key end
-	if realm == GetNormalizedRealmName() then
+	local myKey = self:GetCharKey()
+	local myRealm = myKey and myKey:match("^.-%-(.*)$")
+	if realm == "" or realm == myRealm then
 		return name
 	end
 	return key

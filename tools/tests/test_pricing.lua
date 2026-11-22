@@ -229,7 +229,13 @@ test("crate tooltip: top 3 collapsed, all with Shift", function()
 	contains(text, "Reagent Atlas: Fill with any one, cheapest first", "header")
 	contains(text, "5x Thread C | 2s 50c", "vendor first, no note collapsed")
 	contains(text, "10x Herb B | 15s\n", "no age collapsed")
-	contains(text, "20x Herb A (have 32) | 20s", "owned count")
+	contains(text, "20x Herb A (have 32 in warband) | 20s", "owned count, one place")
+	local me = ns.db.chars[ns:GetCharKey()]
+	me.bags[700001], me.bank[700001] = 3, 27
+	ns.db.chars["Alt-StubRealm"] = { bags = { [700001] = 4 }, bank = {}, profs = {} }
+	text = crateTooltip(ns, false)
+	contains(text, "20x Herb A (have 66: 3 bags, 27 bank, 4 alts, 32 warband) | 20s", "owned count split")
+	me.bags[700001], me.bank[700001], ns.db.chars["Alt-StubRealm"] = nil, nil, nil
 	contains(text, "1 more · Hold Shift for all", "more hint")
 	eq(text:find("Shard D", 1, true), nil, "4th hidden")
 	text = crateTooltip(ns, true)

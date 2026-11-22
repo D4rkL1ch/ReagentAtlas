@@ -393,18 +393,38 @@ end
 
 -- Waylaid Crates ------------------------------------------------------------
 
--- "20x Peacebloom (have 32)    1g 20s", cheapest first; Shift lists every
--- bundle with price ages and vendor prices marked.
+-- " (have 32: 5 bags, 27 bank)" with the non-zero places, or " (have 27 in
+-- bank)" when it's all in one; "" when none. Alts and warband bank count too.
+local function HaveText(itemID)
+	local total, holders, warband = ns.Inventory:GetCounts(itemID)
+	if total <= 0 then return "" end
+	local bags, bank, alts = 0, 0, 0
+	for _, holder in ipairs(holders) do
+		if holder.isMe then
+			bags, bank = holder.bags, holder.bank
+		else
+			alts = alts + holder.total
+		end
+	end
+	local parts = {}
+	for _, part in ipairs({ { bags, "bags" }, { bank, "bank" }, { alts, "alts" }, { warband, "warband" } }) do
+		if part[1] > 0 then parts[#parts + 1] = ("%d %s"):format(part[1], part[2]) end
+	end
+	if #parts == 1 then
+		return (" (have %d in %s)"):format(total, parts[1]:match("^%d+ (.+)$"))
+	end
+	return (" (have %d: %s)"):format(total, table.concat(parts, ", "))
+end
+
+-- "20x Peacebloom (have 32: 5 bags, 27 bank)    1g 20s", cheapest first;
+-- Shift lists every bundle with price ages and vendor prices marked.
 local function AddCrateLines(tooltip, options, expanded)
 	tooltip:AddLine(Color("Reagent Atlas: Fill with any one, cheapest first", COLOR_HEADER))
 	local shown = expanded and #options or math.min(#options, MAX_COLLAPSED_BUNDLES)
 	for i = 1, shown do
 		local option = options[i]
 		local name = ns.Browser:GetItemName(option.itemID) or ("Item #" .. option.itemID)
-		local left = ("%dx %s"):format(option.count, name)
-		if option.have > 0 then
-			left = left .. (" (have %d)"):format(option.have)
-		end
+		local left = ("%dx %s"):format(option.count, name) .. HaveText(option.itemID)
 		local right
 		if option.cost then
 			right = ns.Pricing:FormatMoney(option.cost)
