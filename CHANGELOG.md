@@ -1,10 +1,6 @@
 # Reagent Atlas
 
-## 1.2.0
+## 1.2.1
 
-- **New:** the Map button in the browser opens a menu of zones when an item was looted in more than one zone, most looted first with counts, so you can pick where to look. The menu can also remove the item's pins from the map.
-- **New:** the gathering tracking reminder plays a sound. Turn it off in Settings with "Gathering reminder sound".
-- **Changed:** the gathering tracking reminder now also shows in dungeons and raids, when you enter and when you leave. It still never shows in battlegrounds or arenas.
-- **Fixed:** a gathering tracking reminder that came up while you were in combat, dead or on a flight was skipped. It now waits and shows as soon as it can, for example after a resurrection in combat. Dying also counts as a reason to remind you.
-- **Fixed:** the reminder could miss the first check after logging in when the minimap tracking list loaded late.
-- **Updated:** recipe data checked against the latest WoW Forever client.
+- **Fixed:** owned counts could be far too high, for example in Waylaid Crate tooltips and the tracker. When the game didn't report your realm name, a character got saved twice and its old bag and bank counts were added on top of the current ones. The two entries are now merged automatically when you log in on that character, and it shows only once in the character list.
+- **Changed:** item tooltips (also when hovering items in the reagent browser) and Waylaid Crate tooltips now show where your items are, by name: your bags and bank, each character that has some, and the warband bank. For example "Owned: 66 (3 bags, 27 bank, Brissa 4, warband 32)" or "have 27 in bank".
